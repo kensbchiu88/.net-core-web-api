@@ -8,15 +8,9 @@ namespace PolarBearEapApi.Services
 {
     public class GetSnBySnFixtureCommand : IMesCommand
     {
-        private readonly ILogger<GetSnBySnFixtureCommand> _logger;
-
         string IMesCommand.CommandName { get; } = "GET_SN_BY_SN_FIXTURE";
 
-        /*
-        public GetSnBySnFixtureCommand()
-        {
-        }
-        */
+        private readonly ILogger<GetSnBySnFixtureCommand> _logger;
 
         public GetSnBySnFixtureCommand(ILogger<GetSnBySnFixtureCommand> logger) => _logger = logger;
 
@@ -27,41 +21,18 @@ namespace PolarBearEapApi.Services
             string refValue = JsonUtil.GetParameter(serializedData, "OPRequestInfo.REF_VALUE");
             string refType = JsonUtil.GetParameter(serializedData, "OPRequestInfo.REF_VALUE");
 
-            string mesReturn = _Service.GET_SN_BY_SN_FIXTURE(refValue);
-
-            Debug.WriteLine("REF_VALUE:" + refValue);
-            Debug.WriteLine("REF_TYPE:" + refType);
-            Debug.WriteLine("MES RETURN:" + mesReturn);
-
-            return new MesCommandResponse(mesReturn);
-        }
-
-        /*
-        private MesCommandResponse GetResponse(string mesReturnString)
-        {
-            MesCommandResponse response = new MesCommandResponse();
-            var fitMesResponse = JsonConvert.DeserializeObject<FITMesResponse>(mesReturnString);
-            if (fitMesResponse != null)
+            try 
             {
-                if (fitMesResponse.Result != null && "OK".Equals(fitMesResponse.Result.ToUpper()))
-                {
-                    response.OpResponseInfo = "{\"SN\":\"" + fitMesResponse.ResultCode + "\"}";
-                }
-                else
-                {
-                    response.OpResponseInfo = "{\"SN\":\"\"}";
-                    response.ErrorMessage = fitMesResponse.Display;
-                }
+                string mesReturn = _Service.GET_SN_BY_SN_FIXTURE(refValue);
+                return new MesCommandResponse(mesReturn);
             }
-            else
+            catch (Exception ex)
             {
-                response.OpResponseInfo = "{\"SN\":\"\"}";
-                response.ErrorMessage = ErrorCodeEnum.NoMesReturn.ToString();
+                _logger.LogError(LogMessageGenerator.GetErrorMessage(serializedData, ex.StackTrace ?? ""));
+                _logger.LogError(LogMessageGenerator.GetErrorMessage(serializedData, ex.Message));
+                return MesCommandResponse.CallMesServiceException();
             }
-
-            return response;
         }
-        */
     }
 
 

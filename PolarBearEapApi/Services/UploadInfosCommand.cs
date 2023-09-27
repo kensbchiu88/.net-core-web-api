@@ -7,13 +7,15 @@ namespace PolarBearEapApi.Services
 {
     public class UploadInfosCommand : IMesCommand
     {
-        private readonly UploadInfoDbContext _uploadInfoDbContext;
-
         string IMesCommand.CommandName { get; } = "UPLOAD_INFOS";
 
-        public UploadInfosCommand(UploadInfoDbContext uploadInfoDbContext)
+        private readonly UploadInfoDbContext _uploadInfoDbContext;
+        private readonly ILogger<UploadInfosCommand> _logger;
+
+        public UploadInfosCommand(UploadInfoDbContext uploadInfoDbContext, ILogger<UploadInfosCommand> logger)
         {
             _uploadInfoDbContext = uploadInfoDbContext;
+            logger = logger;
         }
         MesCommandResponse IMesCommand.Execute(string serializedData)
         {
@@ -23,23 +25,23 @@ namespace PolarBearEapApi.Services
                 string stationCode = JsonUtil.GetParameter(serializedData, "StationCode");
                 string sn = JsonUtil.GetParameter(serializedData, "OPRequestInfo.SN");
                 string opRequestInfo = JsonUtil.RemoveSn(JsonUtil.GetParameter(serializedData, "OPRequestInfo")).Replace(System.Environment.NewLine, string.Empty); ;
-
-                //using (var db = new UploadInfoDbContext())
-                {
-                    var entity = new UploadInfoEntity();
-                    entity.LineCode = lineCode;
-                    entity.SectionCode = sectionCode;
-                    entity.StationCode = int.Parse(stationCode);
-                    entity.Sn = sn;
-                    entity.OpRequestInfo = opRequestInfo;
-                    entity.UploadTime = DateTime.Now;
-                    _uploadInfoDbContext.UploadInfoEnties.Add(entity);
-                    _uploadInfoDbContext.SaveChanges();
-                }
+                
+                //insert into db
+                var entity = new UploadInfoEntity();
+                entity.LineCode = lineCode;
+                entity.SectionCode = sectionCode;
+                entity.StationCode = int.Parse(stationCode);
+                entity.Sn = sn;
+                entity.OpRequestInfo = opRequestInfo;
+                entity.UploadTime = DateTime.Now;
+                _uploadInfoDbContext.UploadInfoEnties.Add(entity);
+                _uploadInfoDbContext.SaveChanges();
+                
                 return Success();
-            } catch {
+            } catch (Exception ex) {
+                _logger.LogError(LogMessageGenerator.GetErrorMessage(serializedData, ex.StackTrace ?? ""));
+                _logger.LogError(LogMessageGenerator.GetErrorMessage(serializedData, ex.Message));
                 return Fail();
-
             }
         }
 

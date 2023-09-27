@@ -7,6 +7,7 @@
         NoSuchCommand,
         NoDataFound,
         NoMesReturn,
-        UploadFail
+        UploadFail,
+        CallMesServiceException
     }
 }

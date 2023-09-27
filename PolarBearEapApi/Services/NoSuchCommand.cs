@@ -18,8 +18,8 @@ namespace PolarBearEapApi.Services
             response.OpResponseInfo = "{\"Result\":\"NG\"}";
             response.ErrorMessage = ErrorCodeEnum.NoSuchCommand.ToString();
 
-            return response;
             //return "{\"Result\":\"NG\",\"ResultCoded\":\"NoSuchCommand\"}";
+            return response;
         }
     }
 }

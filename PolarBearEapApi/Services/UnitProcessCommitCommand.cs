@@ -8,6 +8,10 @@ namespace PolarBearEapApi.Services
     public class UnitProcessCommitCommand : IMesCommand
     {
         string IMesCommand.CommandName { get; } = "UNIT_PROCESS_COMMIT";
+
+        private readonly ILogger<UnitProcessCommitCommand> _logger;
+
+        public UnitProcessCommitCommand(ILogger<UnitProcessCommitCommand> logger) => _logger = logger;
         MesCommandResponse IMesCommand.Execute(string serializedData)
         {
             EquipmentService service = new EquipmentService();
@@ -16,42 +20,17 @@ namespace PolarBearEapApi.Services
             string sectionCode = JsonUtil.GetParameter(serializedData, "SectionCode");
             string sn = JsonUtil.GetParameter(serializedData, "OPRequestInfo.SN");
 
-            string mesReturn = service.UNIT_PROCESS_COMMIT(lineCode, sectionCode, sn);
-            //return GetResponse(mesReturn);
-            return new MesCommandResponse(mesReturn);
-        }
-
-        /*
-        MesCommandResponse response = new MesCommandResponse();
-        response.OpResponseInfo = "{\"Result\":\"OK\"}";
-        return response;
-        */
-        /*
-        private MesCommandResponse GetResponse(string mesReturnString)
-        {
-
-            MesCommandResponse response = new MesCommandResponse();
-            var fitMesResponse = JsonConvert.DeserializeObject<FITMesResponse>(mesReturnString);
-            if (fitMesResponse != null)
+            try
             {
-                if (fitMesResponse.Result != null && "OK".Equals(fitMesResponse.Result.ToUpper()))
-                {
-                    response.OpResponseInfo = "{\"Result\":\"OK\"}";
-                }
-                else
-                {
-                    response.OpResponseInfo = "{\"Result\":\"NG\"}";
-                    response.ErrorMessage = fitMesResponse.Display;
-                }
-            }
-            else
+                string mesReturn = service.UNIT_PROCESS_COMMIT(lineCode, sectionCode, sn);
+                return new MesCommandResponse(mesReturn);
+            } 
+            catch (Exception ex) 
             {
-                response.OpResponseInfo = "{\"Result\":\"NG\"}";
-                response.ErrorMessage = ErrorCodeEnum.NoMesReturn.ToString();
+                _logger.LogError(LogMessageGenerator.GetErrorMessage(serializedData, ex.StackTrace ?? ""));
+                _logger.LogError(LogMessageGenerator.GetErrorMessage(serializedData, ex.Message));
+                return MesCommandResponse.CallMesServiceException();
             }
-
-            return response;
         }
-        */
     }
 }

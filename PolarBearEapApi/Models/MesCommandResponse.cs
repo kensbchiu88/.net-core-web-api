@@ -66,5 +66,12 @@ namespace PolarBearEapApi.Models
         public MesCommandResponse()
         {
         }
+
+        public static MesCommandResponse CallMesServiceException() {
+            MesCommandResponse response = new MesCommandResponse();
+            response.OpResponseInfo = "{\"Result\":\"NG\"}";
+            response.ErrorMessage = ErrorCodeEnum.CallMesServiceException.ToString();
+            return response;   
+        }
     }
 }

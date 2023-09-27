@@ -7,13 +7,6 @@ namespace PolarBearEapApi.Models
 {
     public class ApiResponse
     {
-
-        //[JsonPropertyName("Cmd")]
-        //public int Cmd { get; set; }
-
-        //[JsonPropertyName("Hwd")]
-        //public string? Hwd { get; set; }
-
         [JsonPropertyName("Indicator")]
         [Required]
         public string Indicator { get; set; }
@@ -24,8 +17,5 @@ namespace PolarBearEapApi.Models
 
         [JsonPropertyName("Display")]
         public string? Display {  get; set; }
-
-        //[JsonPropertyName("BindInfo")]
-        //public string? BindInfo { get; set; }
     }
 }

@@ -35,28 +35,23 @@ namespace PolarBearEapApi.Services
             }
 
             try
-            {
-                //using (var db = new UploadInfoDbContext())
+            {                
+                var uploadInfos = _uploadInfoDbContext.UploadInfoEnties
+                    .Where(e => e.LineCode.ToUpper().Equals(lineCode) && e.SectionCode.ToUpper().Equals(sectionCode) && e.StationCode == stationCode && e.Sn.ToUpper().Equals(sn));
+
+                if (uploadInfos.Count() > 0)
                 {
-                    var uploadInfos = _uploadInfoDbContext.UploadInfoEnties
-                        .Where(e => e.LineCode.ToUpper().Equals(lineCode) && e.SectionCode.ToUpper().Equals(sectionCode) && e.StationCode == stationCode && e.Sn.ToUpper().Equals(sn));
-
-                    if (uploadInfos.Count() > 0)
-                    {
-                        var uploadInfo = uploadInfos.OrderByDescending(e => e.UploadTime).First();
-                        
-                        Debug.WriteLine("UploadInfo:" + uploadInfo.OpRequestInfo.Replace("\\", "\\\\\\"));
+                    var uploadInfo = uploadInfos.OrderByDescending(e => e.UploadTime).First();                    
  
-                        //return Success(uploadInfo.OpRequestInfo.Replace("\\", "\\\\\\"));
-                        return Success(uploadInfo.OpRequestInfo.Replace("\\", "\\\\\\"), uploadInfo.UploadTime);
-
-                    }
-                    else {
-                        return NoDataFound(); 
-                    }                
+                    return Success(uploadInfo.OpRequestInfo.Replace("\\", "\\\\\\"), uploadInfo.UploadTime);
                 }
+                else {
+                    return NoDataFound(); 
+                }                
+                
             }
             catch (Exception e) {
+                _logger.LogError(LogMessageGenerator.GetErrorMessage(serializedData, e.StackTrace ?? ""));
                 _logger.LogError(LogMessageGenerator.GetErrorMessage(serializedData, e.Message));
                 return Fail(ErrorCodeEnum.QueryDbError);
             }

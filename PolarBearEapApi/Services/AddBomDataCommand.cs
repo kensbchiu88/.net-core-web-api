@@ -10,6 +10,10 @@ namespace PolarBearEapApi.Services
     {
         string IMesCommand.CommandName { get; } = "ADD_BOM_DATA";
 
+        private readonly ILogger<AddBomDataCommand> _logger;
+
+        public AddBomDataCommand(ILogger<AddBomDataCommand> logger) => _logger = logger;
+
         MesCommandResponse IMesCommand.Execute(string serializedData)
         {
             EquipmentService service = new EquipmentService();
@@ -18,43 +22,17 @@ namespace PolarBearEapApi.Services
             string sectionCode = JsonUtil.GetParameter(serializedData, "SectionCode");
             string sn = JsonUtil.GetParameter(serializedData, "OPRequestInfo.SN");
             string rawSn = JsonUtil.GetParameter(serializedData, "OPRequestInfo.RAW_SN");
-
-            string mesReturn = service.ADD_BOM_DATA(lineCode, sectionCode, sn, rawSn);
-            return new MesCommandResponse(mesReturn, "{\"Result\":\"OK\",\"ResultCoded\":\"DEFAULT\"}");
-        }
-
-
-        /*
-        MesCommandResponse response = new MesCommandResponse();
-        response.OpResponseInfo = "{\"Result\":\"OK\",\"ResultCoded\":\"DEFAULT\"}";
-        return response;
-        */
-        /*
-        private MesCommandResponse GetResponse(string mesReturnString)
-        {
-
-            MesCommandResponse response = new MesCommandResponse();
-            var fitMesResponse = JsonConvert.DeserializeObject<FITMesResponse>(mesReturnString);
-            if (fitMesResponse != null)
+            try
             {
-                if (fitMesResponse.Result != null && "OK".Equals(fitMesResponse.Result.ToUpper()))
-                {
-                    response.OpResponseInfo = "{\"Result\":\"OK\",\"ResultCoded\":\"DEFAULT\"}";
-                }
-                else
-                {
-                    response.OpResponseInfo = "{\"Result\":\"NG\"}";
-                    response.ErrorMessage = fitMesResponse.Display;
-                }
-            }
-            else
+                string mesReturn = service.ADD_BOM_DATA(lineCode, sectionCode, sn, rawSn);
+                return new MesCommandResponse(mesReturn, "{\"Result\":\"OK\",\"ResultCoded\":\"DEFAULT\"}");
+            } catch (Exception ex)
             {
-                response.OpResponseInfo = "{\"Result\":\"NG\"}";
-                response.ErrorMessage = ErrorCodeEnum.NoMesReturn.ToString();
+                _logger.LogError(LogMessageGenerator.GetErrorMessage(serializedData, ex.StackTrace ?? ""));
+                _logger.LogError(LogMessageGenerator.GetErrorMessage(serializedData, ex.Message));
+                return MesCommandResponse.CallMesServiceException();
             }
 
-            return response;
         }
-        */
     }
 }

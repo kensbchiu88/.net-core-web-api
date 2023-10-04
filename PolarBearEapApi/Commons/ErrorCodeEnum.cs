@@ -8,6 +8,10 @@
         NoDataFound,
         NoMesReturn,
         UploadFail,
-        CallMesServiceException
+        CallMesServiceException,
+        SaveTokenFail,
+        InvalidToken,
+        TokenExpired,
+        LoginFail
     }
 }

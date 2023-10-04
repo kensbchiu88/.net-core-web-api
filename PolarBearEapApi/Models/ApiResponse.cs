@@ -7,6 +7,9 @@ namespace PolarBearEapApi.Models
 {
     public class ApiResponse
     {
+        [JsonPropertyName("Hwd")]
+        [Required]
+        public string Hwd { get; set; }
         [JsonPropertyName("Indicator")]
         [Required]
         public string Indicator { get; set; }

@@ -10,24 +10,28 @@ namespace PolarBearEapApi.Services
         string IMesCommand.CommandName { get; } = "UNIT_PROCESS_CHECK";
 
         private readonly ILogger<UnitProcessCheckCommand> _logger;
-        public UnitProcessCheckCommand(ILogger<UnitProcessCheckCommand> logger) => _logger = logger;
+        public UnitProcessCheckCommand(ILogger<UnitProcessCheckCommand> logger) 
+        { 
+            _logger = logger;
+        }
 
-        MesCommandResponse IMesCommand.Execute(string serializedData)
+        MesCommandResponse IMesCommand.Execute(MesCommandRequest input)
         {
             EquipmentService service = new EquipmentService();
 
-            string stationCode = JsonUtil.GetParameter(serializedData, "SectionCode");
-            string sn = JsonUtil.GetParameter(serializedData, "OPRequestInfo.SN");
+            string? sectionCode = JsonUtil.GetParameter(input.SerializeData, "SectionCode");
+            string? stationCode = JsonUtil.GetParameter(input.SerializeData, "StationCode");
+            string? sn = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.SN");
 
             try 
             {
-                string mesReturn = service.UNIT_PROCESS_CHECK(sn, stationCode);
+                string mesReturn = service.UNIT_PROCESS_CHECK(sn, sectionCode, stationCode);
                 return new MesCommandResponse(mesReturn);
             } catch (Exception ex) 
             {
-                _logger.LogError(LogMessageGenerator.GetErrorMessage(serializedData, ex.StackTrace ?? ""));
-                _logger.LogError(LogMessageGenerator.GetErrorMessage(serializedData, ex.Message));
-                return MesCommandResponse.CallMesServiceException();
+                _logger.LogError(LogMessageGenerator.GetErrorMessage(input.SerializeData, ex.StackTrace ?? ""));
+                _logger.LogError(LogMessageGenerator.GetErrorMessage(input.SerializeData, ex.Message));
+                return MesCommandResponse.Fail(ErrorCodeEnum.CallMesServiceException);
             }
         }
 

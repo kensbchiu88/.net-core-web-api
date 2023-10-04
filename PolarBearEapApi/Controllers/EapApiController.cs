@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PolarBearEapApi.Commons;
+using PolarBearEapApi.Commons.Exceptions;
 using PolarBearEapApi.Models;
 using PolarBearEapApi.Services;
 using System.Diagnostics;
@@ -22,24 +23,31 @@ namespace PolarBearEapApi.Controllers
         }
 
         [HttpPost]
-        public ApiResponse Api([FromBody] ApiRequest data) {
-
-            _logger.LogInformation("Api Request :" + JsonConvert.SerializeObject(data));
-
+        public ApiResponse Api([FromBody] ApiRequest data) 
+        {
             var commandName = JsonUtil.GetParameter(data.SerializeData, "OPCategory");
+            MesCommandRequest serviceInput = new MesCommandRequest
+            {
+                Hwd = data.Hwd,
+                SerializeData = data.SerializeData
+            };
 
             //excute
-            var command = _mesCommandFactory.Get(commandName);
-            MesCommandResponse serviceReturn = command.Execute(data.SerializeData);
+            var command = _mesCommandFactory.Get(commandName ?? string.Empty);
+            MesCommandResponse serviceReturn = command.Execute(serviceInput);
 
-            ApiResponse response = new ApiResponse();
-            response.Indicator = data.Indicator;
+            //construct response
+            ApiResponse response = new ApiResponse
+            {
+                Indicator = data.Indicator,
+                Hwd = data.Hwd
+            };
             response.SerializeData = ResponseGenerator.WithOpResponseInfoJson(data.SerializeData, serviceReturn.OpResponseInfo);
-            if (serviceReturn.ErrorMessage != null) { 
+            if (serviceReturn.ErrorMessage != null)
+            {
                 response.Display = serviceReturn.ErrorMessage;
             }
-
-            _logger.LogInformation("Api Response:" + JsonConvert.SerializeObject(response));
+            
             return response;
         }
     }

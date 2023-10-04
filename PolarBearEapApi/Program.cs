@@ -2,6 +2,9 @@ using PolarBearEapApi.Repository;
 using Serilog;
 using Microsoft.EntityFrameworkCore;
 using PolarBearEapApi.Services;
+using PolarBearEapApi.Commons.Middlewares;
+using Microsoft.Extensions.Caching.Memory;
+using PolarBearEapApi.Commons;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,9 +32,13 @@ try
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+    builder.Services.AddMemoryCache();
 
     builder.Services.AddDbContext<UploadInfoDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
+    builder.Services.AddDbContext<EapTokenDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
 
+    builder.Services.AddScoped<ITokenService, DbTokenService>();
+    builder.Services.AddScoped<IMesCommandFactory<IMesCommand>, MesCommandFactory<IMesCommand>>();
     builder.Services.AddSingleton<IMesCommand, NoSuchCommand>();
     builder.Services.AddScoped<IMesCommand, AddBomDataCommand>();
     builder.Services.AddScoped<IMesCommand, GetInputDataCommand>();
@@ -39,7 +46,10 @@ try
     builder.Services.AddScoped<IMesCommand, UnitProcessCheckCommand>();
     builder.Services.AddScoped<IMesCommand, UnitProcessCommitCommand>();
     builder.Services.AddScoped<IMesCommand, UploadInfosCommand>();
-    builder.Services.AddScoped<IMesCommandFactory<IMesCommand>, MesCommandFactory<IMesCommand>>();
+    builder.Services.AddScoped<IMesCommand, LoginCommand>();
+    builder.Services.AddScoped<IMesCommand, BindCommand>();
+
+    builder.Services.AddSingleton<ICacheService, MemoryCacheService>();
 
     builder.Host.UseSerilog();
 
@@ -53,6 +63,11 @@ try
     }
 
     app.UseHttpsRedirection();
+
+    app.UseMiddleware<LoggerMiddleware>();
+    app.UseMiddleware<ErrorHandlerMiddleware>();
+    app.UseMiddleware<TokenMiddleware>();
+    
 
     app.UseAuthorization();
 

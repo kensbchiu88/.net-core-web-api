@@ -14,24 +14,48 @@ namespace PolarBearEapApi.Services
 
         public GetSnBySnFixtureCommand(ILogger<GetSnBySnFixtureCommand> logger) => _logger = logger;
 
-        MesCommandResponse IMesCommand.Execute(string serializedData)
+        MesCommandResponse IMesCommand.Execute(MesCommandRequest input)
         {
             EquipmentService _Service = new EquipmentService();
 
-            string refValue = JsonUtil.GetParameter(serializedData, "OPRequestInfo.REF_VALUE");
-            string refType = JsonUtil.GetParameter(serializedData, "OPRequestInfo.REF_VALUE");
+            string? refValue = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.REF_VALUE");
 
             try 
             {
                 string mesReturn = _Service.GET_SN_BY_SN_FIXTURE(refValue);
-                return new MesCommandResponse(mesReturn);
+                return GetResponse(mesReturn);
             }
             catch (Exception ex)
             {
-                _logger.LogError(LogMessageGenerator.GetErrorMessage(serializedData, ex.StackTrace ?? ""));
-                _logger.LogError(LogMessageGenerator.GetErrorMessage(serializedData, ex.Message));
-                return MesCommandResponse.CallMesServiceException();
+                _logger.LogError(LogMessageGenerator.GetErrorMessage(input.SerializeData, ex.StackTrace ?? ""));
+                _logger.LogError(LogMessageGenerator.GetErrorMessage(input.SerializeData, ex.Message));
+                return MesCommandResponse.Fail(ErrorCodeEnum.CallMesServiceException);
             }
+        }
+
+        private static MesCommandResponse GetResponse(string mesReturn) 
+        {
+            var response = new MesCommandResponse();
+            var fitMesResponse = JsonConvert.DeserializeObject<FITMesResponse>(mesReturn);
+            if (fitMesResponse != null)
+            {
+                if (fitMesResponse.Result != null && "OK".Equals(fitMesResponse.Result.ToUpper()))
+                {
+                    response.OpResponseInfo = "{\"SN\":\"" + fitMesResponse.ResultCode + "\"}"; ;
+                }
+                else
+                {
+                    response.OpResponseInfo = "{\"Result\":\"NG\"}";
+                    response.ErrorMessage = fitMesResponse.Display;
+                }
+            }
+            else
+            {
+                response.OpResponseInfo = "{\"Result\":\"NG\"}";
+                response.ErrorMessage = ErrorCodeEnum.NoMesReturn.ToString();
+            }
+
+            return response; 
         }
     }
 

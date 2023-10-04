@@ -6,6 +6,6 @@ namespace PolarBearEapApi.Services
     public interface IMesCommand
     {
         string CommandName { get; }
-        MesCommandResponse Execute(string serializedData);
+        MesCommandResponse Execute(MesCommandRequest input);
     }
 }

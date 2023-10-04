@@ -18,21 +18,12 @@ namespace PolarBearEapApi.Services
         }
 
 
-        MesCommandResponse IMesCommand.Execute(string serializedData)
+        MesCommandResponse IMesCommand.Execute(MesCommandRequest input)
         {
-            string lineCode = "";
-            string sectionCode = "";
-            int stationCode = 0;
-            string sn = "";
-            try {
-                lineCode = JsonUtil.GetParameter(serializedData, "LineCode").ToUpper();
-                sectionCode = JsonUtil.GetParameter(serializedData, "SectionCode").ToUpper();
-                stationCode = int.Parse(JsonUtil.GetParameter(serializedData, "StationCode"));
-                sn = JsonUtil.GetParameter(serializedData, "OPRequestInfo.SN").ToUpper();
-            } catch (Exception ex) {
-                _logger.LogError(LogMessageGenerator.GetErrorMessage(serializedData, ex.Message));
-                return Fail(ErrorCodeEnum.ParseJsonError);
-            }
+            string? lineCode = JsonUtil.GetParameter(input.SerializeData, "LineCode");
+            string? sectionCode = JsonUtil.GetParameter(input.SerializeData, "SectionCode");
+            int stationCode = int.Parse(JsonUtil.GetParameter(input.SerializeData, "StationCode") ?? "0");
+            string? sn = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.SN");
 
             try
             {                
@@ -51,8 +42,8 @@ namespace PolarBearEapApi.Services
                 
             }
             catch (Exception e) {
-                _logger.LogError(LogMessageGenerator.GetErrorMessage(serializedData, e.StackTrace ?? ""));
-                _logger.LogError(LogMessageGenerator.GetErrorMessage(serializedData, e.Message));
+                _logger.LogError(LogMessageGenerator.GetErrorMessage(input.SerializeData, e.StackTrace ?? ""));
+                _logger.LogError(LogMessageGenerator.GetErrorMessage(input.SerializeData, e.Message));
                 return Fail(ErrorCodeEnum.QueryDbError);
             }
         }

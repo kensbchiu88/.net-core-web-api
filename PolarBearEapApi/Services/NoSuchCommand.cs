@@ -7,7 +7,7 @@ namespace PolarBearEapApi.Services
     public class NoSuchCommand : IMesCommand
     {
         string IMesCommand.CommandName { get; } = "NO_SUCH_COMMAND";
-        MesCommandResponse IMesCommand.Execute(string serializedData)
+        MesCommandResponse IMesCommand.Execute(MesCommandRequest input)
         {
             return GetResponse("");
         }

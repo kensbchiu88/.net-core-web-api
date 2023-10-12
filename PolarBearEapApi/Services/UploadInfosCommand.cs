@@ -8,27 +8,28 @@ namespace PolarBearEapApi.Services
 {
     public class UploadInfosCommand : IMesCommand
     {
-        string IMesCommand.CommandName { get; } = "UPLOAD_INFOS";
+        public string CommandName { get; } = "UPLOAD_INFOS";
 
-        private readonly UploadInfoDbContext _uploadInfoDbContext;
+        private readonly IUploadInfoService _uploadInfoService;
         private readonly ILogger<UploadInfosCommand> _logger;
 
-        public UploadInfosCommand(UploadInfoDbContext uploadInfoDbContext, ILogger<UploadInfosCommand> logger)
+        public UploadInfosCommand(IUploadInfoService uploadInfoService, ILogger<UploadInfosCommand> logger)
         {
-            _uploadInfoDbContext = uploadInfoDbContext;
+            _uploadInfoService = uploadInfoService;
             _logger = logger;
         }
-        MesCommandResponse IMesCommand.Execute(MesCommandRequest input)
+        public MesCommandResponse Execute(MesCommandRequest input)
         {
             ValidateInput(input);
 
-            try {
-                string lineCode = JsonUtil.GetParameter(input.SerializeData, "LineCode")!;
-                string sectionCode = JsonUtil.GetParameter(input.SerializeData, "SectionCode")!;
-                string stationCode = JsonUtil.GetParameter(input.SerializeData, "StationCode")!;
-                string sn = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.SN")!;
-                string opRequestInfo = JsonUtil.RemoveSn(JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo")!).Replace(System.Environment.NewLine, string.Empty);
+            string lineCode = JsonUtil.GetParameter(input.SerializeData, "LineCode")!;
+            string sectionCode = JsonUtil.GetParameter(input.SerializeData, "SectionCode")!;
+            string stationCode = JsonUtil.GetParameter(input.SerializeData, "StationCode")!;
+            string sn = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.SN")!;
+            string opRequestInfo = JsonUtil.RemoveSn(JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo")!).Replace(System.Environment.NewLine, string.Empty);
 
+            try 
+            { 
                 //insert into db
                 var entity = new UploadInfoEntity
                 {
@@ -39,9 +40,8 @@ namespace PolarBearEapApi.Services
                     OpRequestInfo = opRequestInfo,
                     UploadTime = DateTime.Now
                 };
-                _uploadInfoDbContext.UploadInfoEnties.Add(entity);
-                _uploadInfoDbContext.SaveChanges();
-                
+                _uploadInfoService.Insert(entity);
+
                 return Success();
             } catch (Exception ex) {
                 _logger.LogError(LogMessageGenerator.GetErrorMessage(input.SerializeData, ex.StackTrace ?? ""));

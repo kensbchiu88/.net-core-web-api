@@ -22,6 +22,7 @@ namespace PolarBearEapApi.Commons.Middlewares
         public async Task Invoke(HttpContext context)
         {
             ApiRequest? requestModel = new ApiRequest();
+            string? requestHwd = string.Empty;
             string? requestIndicator = string.Empty;
             string? requestSerializeData = string.Empty;
             try
@@ -41,6 +42,7 @@ namespace PolarBearEapApi.Commons.Middlewares
 
                         if (requestModel != null)
                         {
+                            requestHwd = requestModel.Hwd;
                             requestIndicator = requestModel.Indicator;
                             requestSerializeData = ResponseGenerator.Fail(requestModel.SerializeData);
                         }
@@ -54,6 +56,7 @@ namespace PolarBearEapApi.Commons.Middlewares
                 var response = context.Response;
                 response.ContentType = "application/json";
                 var responseModel = new ApiResponse();
+                responseModel.Hwd = requestHwd;
                 responseModel.Indicator = requestIndicator;
                 responseModel.SerializeData = requestSerializeData;
 

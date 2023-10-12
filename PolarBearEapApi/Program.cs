@@ -3,8 +3,8 @@ using Serilog;
 using Microsoft.EntityFrameworkCore;
 using PolarBearEapApi.Services;
 using PolarBearEapApi.Commons.Middlewares;
-using Microsoft.Extensions.Caching.Memory;
 using PolarBearEapApi.Commons;
+using FIT.MES.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,10 +34,17 @@ try
     builder.Services.AddSwaggerGen();
     builder.Services.AddMemoryCache();
 
+    //add context 
     builder.Services.AddDbContext<UploadInfoDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
     builder.Services.AddDbContext<EapTokenDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
 
+    //add adaptor
     builder.Services.AddScoped<ITokenService, DbTokenService>();
+    builder.Services.AddScoped<IUploadInfoService, DbUploadInfoService>();
+    builder.Services.AddScoped<IMesService, FitMesService>();
+    builder.Services.AddScoped<EquipmentService>();
+
+    //add application service
     builder.Services.AddScoped<IMesCommandFactory<IMesCommand>, MesCommandFactory<IMesCommand>>();
     builder.Services.AddSingleton<IMesCommand, NoSuchCommand>();
     builder.Services.AddScoped<IMesCommand, AddBomDataCommand>();
@@ -49,7 +56,7 @@ try
     builder.Services.AddScoped<IMesCommand, LoginCommand>();
     builder.Services.AddScoped<IMesCommand, BindCommand>();
 
-    builder.Services.AddSingleton<ICacheService, MemoryCacheService>();
+    builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
 
     builder.Host.UseSerilog();
 

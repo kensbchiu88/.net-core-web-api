@@ -9,16 +9,16 @@ namespace PolarBearEapApi.Services
     public class GetInputDataCommand : IMesCommand
     {
         private readonly ILogger<GetInputDataCommand> _logger;
-        private readonly UploadInfoDbContext _uploadInfoDbContext;
+        private readonly IUploadInfoService _uploadInfoService;
 
         string IMesCommand.CommandName { get; } = "GET_INPUT_DATA";
-        public GetInputDataCommand(ILogger<GetInputDataCommand> logger, UploadInfoDbContext uploadInfoDbContext) { 
+
+        public GetInputDataCommand(ILogger<GetInputDataCommand> logger, IUploadInfoService uploadInfoService) { 
             _logger = logger;
-            _uploadInfoDbContext = uploadInfoDbContext;
+            _uploadInfoService = uploadInfoService;
         }
 
-
-        MesCommandResponse IMesCommand.Execute(MesCommandRequest input)
+        public MesCommandResponse Execute(MesCommandRequest input)
         {
             string? lineCode = JsonUtil.GetParameter(input.SerializeData, "LineCode");
             string? sectionCode = JsonUtil.GetParameter(input.SerializeData, "SectionCode");
@@ -26,7 +26,8 @@ namespace PolarBearEapApi.Services
             string? sn = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.SN");
 
             try
-            {                
+            {
+                /*
                 var uploadInfos = _uploadInfoDbContext.UploadInfoEnties
                     .Where(e => e.LineCode.ToUpper().Equals(lineCode) && e.SectionCode.ToUpper().Equals(sectionCode) && e.StationCode == stationCode && e.Sn.ToUpper().Equals(sn));
 
@@ -38,8 +39,17 @@ namespace PolarBearEapApi.Services
                 }
                 else {
                     return NoDataFound(); 
+                }   
+                */
+                var uploadInfo = _uploadInfoService.GetOne(lineCode, sectionCode, stationCode, sn);
+                if (uploadInfo != null)
+                {
+                    return Success(uploadInfo.OpRequestInfo.Replace("\\", "\\\\\\"), uploadInfo.UploadTime);
+                }
+                else
+                {
+                    return NoDataFound();
                 }                
-                
             }
             catch (Exception e) {
                 _logger.LogError(LogMessageGenerator.GetErrorMessage(input.SerializeData, e.StackTrace ?? ""));

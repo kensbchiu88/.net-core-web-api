@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using PolarBearEapApi.Commons;
 
 namespace PolarBearEapApi.Models
 {
@@ -15,5 +16,18 @@ namespace PolarBearEapApi.Models
         public string? Display {  get; set; }
         [JsonProperty("BindInfo", NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
         public string? BindInfo { get; set; }
+
+        /** 檢查MES執行結果 */
+        public static bool IsResultOk(string mesReturnJson) 
+        {
+            if(string.IsNullOrWhiteSpace(mesReturnJson)) return false;
+
+            FITMesResponse? fitMesResponse = JsonConvert.DeserializeObject<FITMesResponse>(mesReturnJson);
+            if (fitMesResponse == null || string.IsNullOrEmpty(fitMesResponse.Result) || !fitMesResponse.Result.ToUpper().Equals("OK"))
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

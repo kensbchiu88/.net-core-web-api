@@ -2,18 +2,18 @@
 
 namespace PolarBearEapApi.Commons
 {
-    public class MemoryCacheService : ICacheService
+    public class ConfigCacheService : IConfigCacheService
     {
         private readonly IConfiguration _configuration;
         private readonly IMemoryCache _memoryCache;
 
-        public MemoryCacheService(IConfiguration configuration, IMemoryCache memoryCache)
+        public ConfigCacheService(IConfiguration configuration, IMemoryCache memoryCache)
         {
             _configuration = configuration;
             _memoryCache = memoryCache;
         }
 
-        string ICacheService.TryGetValue(string cacheKey)
+        string IConfigCacheService.GetValue(string cacheKey)
         {
             if (_memoryCache.TryGetValue(cacheKey, out string cachedValue))
             {

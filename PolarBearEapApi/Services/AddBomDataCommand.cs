@@ -8,16 +8,20 @@ namespace PolarBearEapApi.Services
 {
     public class AddBomDataCommand : IMesCommand
     {
-        string IMesCommand.CommandName { get; } = "ADD_BOM_DATA";
+        public string CommandName { get; } = "ADD_BOM_DATA";
 
         private readonly ILogger<AddBomDataCommand> _logger;
+        private readonly IMesService _equipmentService;
 
-        public AddBomDataCommand(ILogger<AddBomDataCommand> logger) => _logger = logger;
+        public AddBomDataCommand(ILogger<AddBomDataCommand> logger, IMesService equipmentService) 
+        { 
+            _logger = logger;
+            _equipmentService = equipmentService;
+        } 
 
-        MesCommandResponse IMesCommand.Execute(MesCommandRequest input)
+        public MesCommandResponse Execute(MesCommandRequest input)
         {
-            EquipmentService service = new EquipmentService();
-
+            
             string? lineCode = JsonUtil.GetParameter(input.SerializeData, "LineCode");
             string? sectionCode = JsonUtil.GetParameter(input.SerializeData, "SectionCode");
             string? stationCode = JsonUtil.GetParameter(input.SerializeData, "StationCode");
@@ -26,7 +30,7 @@ namespace PolarBearEapApi.Services
 
             try
             {
-                string mesReturn = service.ADD_BOM_DATA(lineCode, sectionCode, stationCode, sn, rawSn);
+                string mesReturn = _equipmentService.ADD_BOM_DATA(lineCode, sectionCode, stationCode, sn, rawSn);
                 //return new MesCommandResponse(mesReturn, "{\"Result\":\"OK\",\"ResultCoded\":\"DEFAULT\"}");
                 return new MesCommandResponse(mesReturn);
             } catch (Exception ex)

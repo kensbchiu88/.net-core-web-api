@@ -1,28 +1,30 @@
-﻿using FIT.MES.Service;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using PolarBearEapApi.Commons;
-using System.Diagnostics;
 using PolarBearEapApi.Models;
 
 namespace PolarBearEapApi.Services
 {
     public class GetSnBySnFixtureCommand : IMesCommand
     {
-        string IMesCommand.CommandName { get; } = "GET_SN_BY_SN_FIXTURE";
+        public string CommandName { get; } = "GET_SN_BY_SN_FIXTURE";
 
         private readonly ILogger<GetSnBySnFixtureCommand> _logger;
+        private readonly IMesService _equipmentService;
 
-        public GetSnBySnFixtureCommand(ILogger<GetSnBySnFixtureCommand> logger) => _logger = logger;
-
-        MesCommandResponse IMesCommand.Execute(MesCommandRequest input)
+        public GetSnBySnFixtureCommand(ILogger<GetSnBySnFixtureCommand> logger, IMesService equipmentService) 
         {
-            EquipmentService _Service = new EquipmentService();
+            _logger = logger;
+            _equipmentService = equipmentService;
+        }
 
+        public MesCommandResponse Execute(MesCommandRequest input)
+        {
+            
             string? refValue = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.REF_VALUE");
 
             try 
             {
-                string mesReturn = _Service.GET_SN_BY_SN_FIXTURE(refValue);
+                string mesReturn = _equipmentService.GET_SN_BY_SN_FIXTURE(refValue);
                 return GetResponse(mesReturn);
             }
             catch (Exception ex)
@@ -45,13 +47,14 @@ namespace PolarBearEapApi.Services
                 }
                 else
                 {
-                    response.OpResponseInfo = "{\"Result\":\"NG\"}";
+                    //response.OpResponseInfo = "{\"Result\":\"NG\"}";
+                    response.OpResponseInfo = "{\"SN\":\"\"}";
                     response.ErrorMessage = fitMesResponse.Display;
                 }
             }
             else
             {
-                response.OpResponseInfo = "{\"Result\":\"NG\"}";
+                response.OpResponseInfo = "{\"SN\":\"\"}";
                 response.ErrorMessage = ErrorCodeEnum.NoMesReturn.ToString();
             }
 

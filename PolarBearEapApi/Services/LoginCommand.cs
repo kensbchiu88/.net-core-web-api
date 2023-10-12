@@ -1,8 +1,6 @@
 ﻿using PolarBearEapApi.Commons;
 using PolarBearEapApi.Models;
 using PolarBearEapApi.Commons.Exceptions;
-using FIT.MES.Service;
-using Newtonsoft.Json;
 
 namespace PolarBearEapApi.Services
 {
@@ -12,11 +10,13 @@ namespace PolarBearEapApi.Services
 
         private readonly ITokenService _tokenService;
         private readonly ILogger<LoginCommand> _logger;
+        private readonly IMesService _equipmentService;
 
-        public LoginCommand(ITokenService tokenService, ILogger<LoginCommand> logger) 
+        public LoginCommand(ITokenService tokenService, ILogger<LoginCommand> logger, IMesService equipmentService) 
         {
             _tokenService = tokenService;
-            _logger = logger; 
+            _logger = logger;
+            _equipmentService = equipmentService;
         }
 
         public MesCommandResponse Execute(MesCommandRequest input)
@@ -33,8 +33,7 @@ namespace PolarBearEapApi.Services
             //驗證帳密
             try 
             {
-                EquipmentService service = new EquipmentService();
-                mesReturn = service.CHECK_OP_PASSWORD(username, password);
+                mesReturn = _equipmentService.CHECK_OP_PASSWORD(username, password);
             }
             catch (Exception ex)
             {
@@ -44,28 +43,29 @@ namespace PolarBearEapApi.Services
             }
 
             //驗證MES結果
-            fitMesResponse = JsonConvert.DeserializeObject<FITMesResponse>(mesReturn);
-            if (fitMesResponse == null || string.IsNullOrEmpty(fitMesResponse.Result) || !fitMesResponse.Result.ToUpper().Equals("OK"))
-            { 
-                return MesCommandResponse.Fail(ErrorCodeEnum.LoginFail);
+            if(!FITMesResponse.IsResultOk(mesReturn))
+            {
+                //return MesCommandResponse.Fail(ErrorCodeEnum.LoginFail);
+                return Fail(ErrorCodeEnum.LoginFail);
             }
 
             //產生token
             try 
             {
                 string id = _tokenService.Create(username);
-                return Success(id.ToString());
+                return Success(id);
             }
             catch (Exception ex)
             {
                 _logger.LogError(LogMessageGenerator.GetErrorMessage(input.SerializeData, ex.StackTrace ?? ""));
                 _logger.LogError(LogMessageGenerator.GetErrorMessage(input.SerializeData, ex.Message));
-                return MesCommandResponse.Fail(ErrorCodeEnum.SaveTokenFail);
+                //return MesCommandResponse.Fail(ErrorCodeEnum.SaveTokenFail);
+                return Fail(ErrorCodeEnum.SaveTokenFail);
             }
         }
 
         //return example : OPResponseInfo\":{\"Hwd\":\"36bd2cd3-3c94-4d53-a494-79eab5d34e9f\"}
-        private MesCommandResponse Success(String token)
+        private MesCommandResponse Success(string token)
         {
             MesCommandResponse response = new MesCommandResponse();
             response.OpResponseInfo = "{\"Hwd\":\"" + token + "\"}";
@@ -75,7 +75,7 @@ namespace PolarBearEapApi.Services
         private MesCommandResponse Fail(ErrorCodeEnum errorCodeEnum)
         {
             MesCommandResponse response = new MesCommandResponse();
-            response.OpResponseInfo = "{\"Result\":\"NG\"}";
+            response.OpResponseInfo = "{\"Hwd\":\"\"}";
             response.ErrorMessage = errorCodeEnum.ToString();
             return response;
         }

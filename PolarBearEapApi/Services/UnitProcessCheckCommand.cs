@@ -7,25 +7,25 @@ namespace PolarBearEapApi.Services
 {
     public class UnitProcessCheckCommand : IMesCommand
     {
-        string IMesCommand.CommandName { get; } = "UNIT_PROCESS_CHECK";
+        public string CommandName { get; } = "UNIT_PROCESS_CHECK";
 
         private readonly ILogger<UnitProcessCheckCommand> _logger;
-        public UnitProcessCheckCommand(ILogger<UnitProcessCheckCommand> logger) 
+        private readonly IMesService _equipmentService;
+        public UnitProcessCheckCommand(ILogger<UnitProcessCheckCommand> logger, IMesService equipmentService) 
         { 
             _logger = logger;
+            _equipmentService = equipmentService;
         }
 
-        MesCommandResponse IMesCommand.Execute(MesCommandRequest input)
+        public MesCommandResponse Execute(MesCommandRequest input)
         {
-            EquipmentService service = new EquipmentService();
-
             string? sectionCode = JsonUtil.GetParameter(input.SerializeData, "SectionCode");
             string? stationCode = JsonUtil.GetParameter(input.SerializeData, "StationCode");
             string? sn = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.SN");
 
             try 
             {
-                string mesReturn = service.UNIT_PROCESS_CHECK(sn, sectionCode, stationCode);
+                string mesReturn = _equipmentService.UNIT_PROCESS_CHECK(sn, sectionCode, stationCode);
                 return new MesCommandResponse(mesReturn);
             } catch (Exception ex) 
             {

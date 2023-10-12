@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using PolarBearEapApi.Commons;
 
 namespace PolarBearEapApi.Repository
 {
@@ -23,6 +24,20 @@ namespace PolarBearEapApi.Repository
         public DateTime LoginTime { get; set; }
         [Column("bind_time")]
         public DateTime? BindTime { get; set; }
+
+        public static TokenInfo ConvertToTokenInfo(EapTokenEntity source)
+        {
+            TokenInfo tokenInfo = new TokenInfo();
+            tokenInfo.Id = source.Id.ToString();
+            tokenInfo.username = source.username;
+            tokenInfo.LineCode = source.LineCode;
+            tokenInfo.SectionCode = source.SectionCode;
+            tokenInfo.StationCode = source.StationCode;
+            tokenInfo.LoginTime = source.LoginTime;
+            tokenInfo.BindTime = source.BindTime;   
+
+            return tokenInfo;
+        }
 
     }
 }

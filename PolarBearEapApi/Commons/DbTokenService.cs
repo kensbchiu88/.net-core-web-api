@@ -10,10 +10,10 @@ namespace PolarBearEapApi.Commons
     {
         private readonly EapTokenDbContext _context;
         private readonly ILogger<DbTokenService> _logger;
-        private readonly ICacheService _cacheService;
+        private readonly IConfigCacheService _cacheService;
         private const int _DEFAULT_EXPIRED_HOURS = -4;
 
-        public DbTokenService(EapTokenDbContext context, ILogger<DbTokenService> logger, ICacheService cacheService)
+        public DbTokenService(EapTokenDbContext context, ILogger<DbTokenService> logger, IConfigCacheService cacheService)
         {
             _context = context;
             _logger = logger;
@@ -21,13 +21,13 @@ namespace PolarBearEapApi.Commons
         }
 
         //throw InvalidOperationException, TokenExpireException
-        public void Validate(string tokenString)
+        public void Validate(string id)
         {
             int expiredHours = GetExpiredHours();
 
-            var expiredTimeString = _cacheService.TryGetValue("TokenExpireHours");
+            var expiredTimeString = _cacheService.GetValue("TokenExpireHours");
 
-            Guid tokenId = new Guid(tokenString);
+            Guid tokenId = new Guid(id);
 
             var tokens = _context.EapTokenEntities.Where(e => e.Id == tokenId);
 
@@ -35,7 +35,7 @@ namespace PolarBearEapApi.Commons
             {
                 if (tokens.First().LoginTime.CompareTo(DateTime.Now.AddHours(expiredHours)) < 0)
                 {
-                    throw new TokenExpireException("TokenExpired:" + tokenString);
+                    throw new TokenExpireException("TokenExpired:" + id);
                 }
             }
             else
@@ -54,15 +54,54 @@ namespace PolarBearEapApi.Commons
             entity.username = username;
             entity.LoginTime = DateTime.Now;
             _context.EapTokenEntities.Add(entity);
-            _context.SaveChanges();
+            _context.SaveChangesAsync();
             return id.ToString();
+        }
+
+        public TokenInfo GetTokenInfo(string id) 
+        {
+            Guid tokenId = new Guid(id);
+
+            var tokens = _context.EapTokenEntities.Where(e => e.Id == tokenId);
+
+            if (tokens.Any())
+            {
+                return EapTokenEntity.ConvertToTokenInfo(tokens.First());
+            }
+            else
+            {
+                throw new InvalidTokenException("Ivalid Token");
+            }
+        }
+
+        public void BindMachine(string id, string lineCode, string sectionCode, string stationCode, string serverVersion)
+        {
+            Guid tokenId = new Guid(id);
+
+            var tokens = _context.EapTokenEntities.Where(e => e.Id == tokenId);
+
+            if (tokens.Any())
+            {
+                var token = tokens.First();
+                token.LineCode = lineCode;
+                token.SectionCode = sectionCode;
+                token.StationCode = int.Parse(stationCode ?? "0");
+                token.ServerVersion = serverVersion;
+                token.BindTime = DateTime.Now;
+                _context.Update(token);
+                _context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new InvalidTokenException("Ivalid Token");
+            }
         }
 
         private int GetExpiredHours()
         {
             int expiredHours = _DEFAULT_EXPIRED_HOURS;
 
-            var expiredTimeString = _cacheService.TryGetValue("TokenExpireHours");
+            var expiredTimeString = _cacheService.GetValue("TokenExpireHours");
 
             if (!string.IsNullOrEmpty(expiredTimeString))
             {

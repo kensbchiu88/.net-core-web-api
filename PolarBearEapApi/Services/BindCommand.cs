@@ -1,24 +1,24 @@
 ﻿using PolarBearEapApi.Commons;
-using PolarBearEapApi.Commons.Exceptions;
 using PolarBearEapApi.Models;
-using PolarBearEapApi.Repository;
 
 namespace PolarBearEapApi.Services
 {
     public class BindCommand : IMesCommand
     {
-        string IMesCommand.CommandName { get; } = "BIND";
+        public string CommandName { get; } = "BIND";
 
-        private readonly EapTokenDbContext _context;
+        private readonly ITokenService _tokenService;
         private readonly ILogger<BindCommand> _logger;
+        private readonly IMesService _equipmentService;
 
-        public BindCommand(EapTokenDbContext context, ILogger<BindCommand> logger)
+        public BindCommand(ITokenService context, ILogger<BindCommand> logger, IMesService equipmentService)
         {
-            _context = context;
+            _tokenService = context;
             _logger = logger;
+            _equipmentService = equipmentService;
         }
 
-        MesCommandResponse IMesCommand.Execute(MesCommandRequest input)
+        public MesCommandResponse Execute(MesCommandRequest input)
         {
             string? lineCode = JsonUtil.GetParameter(input.SerializeData, "LineCode");
             string? sectionCode = JsonUtil.GetParameter(input.SerializeData, "SectionCode");
@@ -26,26 +26,28 @@ namespace PolarBearEapApi.Services
             string? serverVersion = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.ServerVersion");
 
             //Todo : call mes 檢查職能
+            TokenInfo tokenInfo = _tokenService.GetTokenInfo(input.Hwd);
 
-            Guid tokenId = new Guid(input.Hwd);
-
-            var tokens = _context.EapTokenEntities.Where(e => e.Id == tokenId);
-
-            if (tokens.Any())
+        
+            string? mesReturn;
+            try
             {
-                var token = tokens.First();
-                token.LineCode = lineCode;
-                token.SectionCode = sectionCode;
-                token.StationCode = int.Parse(stationCode ?? "0");
-                token.ServerVersion = serverVersion;
-                token.BindTime = DateTime.Now;
-                _context.Update(token);
-                _context.SaveChanges();
+                mesReturn = _equipmentService.CHECK_SECTION_PERMISSION(tokenInfo.username, sectionCode, stationCode);
             }
-            else
+            catch (Exception ex)
             {
-                throw new InvalidTokenException("Ivalid Token");
+                _logger.LogError(LogMessageGenerator.GetErrorMessage(input.SerializeData, ex.StackTrace ?? ""));
+                _logger.LogError(LogMessageGenerator.GetErrorMessage(input.SerializeData, ex.Message));
+                return MesCommandResponse.Fail(ErrorCodeEnum.CallMesServiceException);
             }
+
+            if (!FITMesResponse.IsResultOk(mesReturn))
+            {
+                return new MesCommandResponse(mesReturn);
+            }
+
+            //Bind
+            _tokenService.BindMachine(input.Hwd, lineCode, sectionCode, stationCode, serverVersion);
 
             return MesCommandResponse.Ok();
         }

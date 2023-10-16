@@ -1,11 +1,7 @@
-﻿using PolarBearEapApi.Commons;
-using PolarBearEapApi.Models;
-using PolarBearEapApi.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PolarBearEapApi.ApplicationCore.Constants;
+using PolarBearEapApi.ApplicationCore.Interfaces;
+using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Services;
 
 namespace PolarBearEapApiTests
 {

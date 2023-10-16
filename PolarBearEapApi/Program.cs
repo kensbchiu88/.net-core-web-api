@@ -1,10 +1,10 @@
-using PolarBearEapApi.Repository;
 using Serilog;
 using Microsoft.EntityFrameworkCore;
-using PolarBearEapApi.Services;
-using PolarBearEapApi.Commons.Middlewares;
-using PolarBearEapApi.Commons;
 using FIT.MES.Service;
+using PolarBearEapApi.ApplicationCore.Interfaces;
+using PolarBearEapApi.ApplicationCore.Services;
+using PolarBearEapApi.PublicApi.Middlewares;
+using PolarBearEapApi.Infra;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,7 +36,7 @@ try
 
     //add context 
     builder.Services.AddDbContext<UploadInfoDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
-    builder.Services.AddDbContext<EapTokenDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
+    builder.Services.AddDbContext<EapTokenDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection"))) ;
 
     //add adaptor
     builder.Services.AddScoped<ITokenService, DbTokenService>();

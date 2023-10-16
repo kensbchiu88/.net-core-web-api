@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
-using PolarBearEapApi.Commons;
-using PolarBearEapApi.Models;
-using PolarBearEapApi.Services;
+using PolarBearEapApi.ApplicationCore.Constants;
+using PolarBearEapApi.ApplicationCore.Entities;
+using PolarBearEapApi.ApplicationCore.Interfaces;
+using PolarBearEapApi.ApplicationCore.Services;
+using PolarBearEapApi.PublicApi.Models;
 
 namespace PolarBearEapApiTests
 {

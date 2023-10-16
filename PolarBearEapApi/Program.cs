@@ -5,6 +5,7 @@ using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.ApplicationCore.Services;
 using PolarBearEapApi.PublicApi.Middlewares;
 using PolarBearEapApi.Infra;
+using PolarBearEapApi.Infra.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

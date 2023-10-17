@@ -56,7 +56,7 @@ namespace PolarBearEapApi.Infra.Services
             entity.username = username;
             entity.LoginTime = DateTime.Now;
             _context.EapTokenEntities.Add(entity);
-            _context.SaveChangesAsync();
+            _context.SaveChanges();
             return id.ToString();
         }
 
@@ -91,7 +91,7 @@ namespace PolarBearEapApi.Infra.Services
                 token.ServerVersion = serverVersion;
                 token.BindTime = DateTime.Now;
                 _context.Update(token);
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
             }
             else
             {

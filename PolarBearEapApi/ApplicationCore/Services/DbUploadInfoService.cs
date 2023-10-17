@@ -15,7 +15,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
         public UploadInfoEntity Insert(UploadInfoEntity entity)
         {
             _uploadInfoDbContext.UploadInfoEnties.Add(entity);
-            _uploadInfoDbContext.SaveChangesAsync();
+            _uploadInfoDbContext.SaveChanges();
             return entity;
         }
 

@@ -5,7 +5,9 @@ VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolarBearEapApi", "PolarBearEapApi\PolarBearEapApi.csproj", "{7253956A-1C9F-419C-8A4B-E74C480D5D60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolarBearEapApiTests", "PolarBearEapApiTests\PolarBearEapApiTests.csproj", "{D3DBA33B-BC34-4FAB-A398-3FD84418F484}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PolarBearEapApiUnitTests", "PolarBearEapApiTests\PolarBearEapApiUnitTests.csproj", "{D3DBA33B-BC34-4FAB-A398-3FD84418F484}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTest", "IntegrationTest\IntegrationTest.csproj", "{8AE83663-F13D-4537-877F-45333CDF9AFE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{D3DBA33B-BC34-4FAB-A398-3FD84418F484}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3DBA33B-BC34-4FAB-A398-3FD84418F484}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3DBA33B-BC34-4FAB-A398-3FD84418F484}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AE83663-F13D-4537-877F-45333CDF9AFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AE83663-F13D-4537-877F-45333CDF9AFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AE83663-F13D-4537-877F-45333CDF9AFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AE83663-F13D-4537-877F-45333CDF9AFE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

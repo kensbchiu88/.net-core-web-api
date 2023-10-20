@@ -40,7 +40,7 @@ namespace PolarBearEapApi.PublicApi.Middlewares
                         {
                             requestHwd = requestModel.Hwd;
                             requestIndicator = requestModel.Indicator;
-                            requestSerializeData = ResponseGenerator.Fail(requestModel.SerializeData);
+                            requestSerializeData = requestModel.SerializeData;
                         }
                     }
                 }
@@ -54,7 +54,7 @@ namespace PolarBearEapApi.PublicApi.Middlewares
                 var responseModel = new ApiResponse();
                 responseModel.Hwd = requestHwd;
                 responseModel.Indicator = requestIndicator;
-                responseModel.SerializeData = requestSerializeData;
+                responseModel.SerializeData = ResponseSerializeDataGenerator.Fail(requestSerializeData);
 
                 switch (error)
                 {

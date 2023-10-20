@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 
 namespace PolarBearEapApi.ApplicationCore.Extensions
@@ -24,7 +25,7 @@ namespace PolarBearEapApi.ApplicationCore.Extensions
                     return string.Empty;
                 }
 
-                return jToken.ToString();
+                return jToken.ToString().Replace(Environment.NewLine, string.Empty);
             }
             catch (Exception ex)
             {
@@ -50,7 +51,7 @@ namespace PolarBearEapApi.ApplicationCore.Extensions
                     return string.Empty;
                 }
 
-                return jToken.ToString();
+                return jToken.ToString().Replace(Environment.NewLine, string.Empty);
             }
             catch (Exception ex)
             {
@@ -66,7 +67,7 @@ namespace PolarBearEapApi.ApplicationCore.Extensions
             {
                 if (o.ContainsKey("SN"))
                     o.Remove("SN");
-                return o.ToString();
+                return o.ToString(Formatting.None);
             }
 
             return opRequestInfo;
@@ -76,7 +77,7 @@ namespace PolarBearEapApi.ApplicationCore.Extensions
         {
             JObject o = JObject.Parse(jsonString);
             o[fieldName] = value;
-            return o.ToString();
+            return o.ToString(Formatting.None);
         }
     }
 }

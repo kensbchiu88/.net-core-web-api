@@ -67,6 +67,9 @@ namespace PolarBearEapApi.PublicApi.Middlewares
                     case InvalidTokenException e2:
                         responseModel.Display = ErrorCodeEnum.InvalidToken.ToString();
                         break;
+                    case InvalidTokenFormatException e3:
+                        responseModel.Display = ErrorCodeEnum.InvalidTokenFormat.ToString();
+                        break;
                     default:
                         // unhandled error
                         responseModel.Display = error.Message;

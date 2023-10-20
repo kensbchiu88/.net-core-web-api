@@ -12,6 +12,7 @@
         SaveTokenFail,
         InvalidToken,
         TokenExpired,
-        LoginFail
+        LoginFail,
+        InvalidTokenFormat
     }
 }

@@ -68,7 +68,7 @@ namespace IntegrationTest
             Assert.True(!string.IsNullOrEmpty(result));
             Assert.Empty(JsonUtil.GetCaseSensitiveParameter(result, "Hwd"));
             Assert.Equal("NG", JsonUtil.GetParameter(JsonUtil.GetParameter(result, "SerializeData"), "OPResponseInfo.Result"));
-            Assert.NotEmpty(JsonUtil.GetParameter(result, "Display"));
+            Assert.Equal(ErrorCodeEnum.InvalidTokenFormat.ToString(), JsonUtil.GetCaseSensitiveParameter(result, "Display"));
         }
 
         /** 

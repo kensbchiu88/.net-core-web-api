@@ -25,6 +25,8 @@ namespace PolarBearEapApi.Infra.Services
         //throw InvalidOperationException, TokenExpireException
         public void Validate(string id)
         {
+            ValidateTokenFormat(id);
+
             int expiredHours = GetExpiredHours();
 
             var expiredTimeString = _cacheService.GetValue("TokenExpireHours");
@@ -62,6 +64,8 @@ namespace PolarBearEapApi.Infra.Services
 
         public TokenInfo GetTokenInfo(string id)
         {
+            ValidateTokenFormat(id);
+
             Guid tokenId = new Guid(id);
 
             var tokens = _context.EapTokenEntities.Where(e => e.Id == tokenId);
@@ -78,6 +82,8 @@ namespace PolarBearEapApi.Infra.Services
 
         public void BindMachine(string id, string lineCode, string sectionCode, string stationCode, string serverVersion)
         {
+            ValidateTokenFormat(id);
+
             Guid tokenId = new Guid(id);
 
             var tokens = _context.EapTokenEntities.Where(e => e.Id == tokenId);
@@ -117,6 +123,14 @@ namespace PolarBearEapApi.Infra.Services
                 }
             }
             return expiredHours;
+        }
+
+        private void ValidateTokenFormat(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                throw new InvalidTokenFormatException("Token is empty");
+            if (!Guid.TryParse(id, out var newGuid))
+                throw new InvalidTokenFormatException("Token format should contain 32 digits with 4 dashes (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)");
         }
     }
 }

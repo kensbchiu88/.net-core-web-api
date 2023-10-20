@@ -22,7 +22,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
         public MesCommandResponse Execute(MesCommandRequest input)
         {
             ValidateInput(input);
-
+         
             string lineCode = JsonUtil.GetParameter(input.SerializeData, "LineCode")!;
             string sectionCode = JsonUtil.GetParameter(input.SerializeData, "SectionCode")!;
             string stationCode = JsonUtil.GetParameter(input.SerializeData, "StationCode")!;
@@ -49,7 +49,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             {
                 _logger.LogError(LogMessageGenerator.GetErrorMessage(input.SerializeData, ex.StackTrace ?? ""));
                 _logger.LogError(LogMessageGenerator.GetErrorMessage(input.SerializeData, ex.Message));
-                return Fail();
+                return Fail(ErrorCodeEnum.UploadFail);
             }
         }
 
@@ -60,11 +60,19 @@ namespace PolarBearEapApi.ApplicationCore.Services
             return response;
         }
 
-        private MesCommandResponse Fail()
+        private MesCommandResponse Fail(ErrorCodeEnum errorCodeEnum)
         {
             MesCommandResponse response = new MesCommandResponse();
             response.OpResponseInfo = "{\"Result\":\"NG\"}";
-            response.ErrorMessage = ErrorCodeEnum.UploadFail.ToString();
+            response.ErrorMessage = errorCodeEnum.ToString();
+            return response;
+        }
+
+        private MesCommandResponse FailWithErrorMessage(string message)
+        {
+            MesCommandResponse response = new MesCommandResponse();
+            response.OpResponseInfo = "{\"Result\":\"NG\"}";
+            response.ErrorMessage = message;
             return response;
         }
 

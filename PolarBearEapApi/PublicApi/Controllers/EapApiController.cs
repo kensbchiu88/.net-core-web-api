@@ -38,7 +38,7 @@ namespace PolarBearEapApi.PublicApi.Controllers
                 Indicator = data.Indicator,
                 Hwd = data.Hwd
             };
-            response.SerializeData = ResponseGenerator.WithOpResponseInfoJson(data.SerializeData, serviceReturn.OpResponseInfo);
+            response.SerializeData = ResponseSerializeDataGenerator.WithOpResponseInfoJson(data.SerializeData, serviceReturn.OpResponseInfo);
             if (serviceReturn.ErrorMessage != null)
             {
                 response.Display = serviceReturn.ErrorMessage;

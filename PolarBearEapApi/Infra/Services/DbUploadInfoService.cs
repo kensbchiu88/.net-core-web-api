@@ -2,7 +2,7 @@
 using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.Infra;
 
-namespace PolarBearEapApi.ApplicationCore.Services
+namespace PolarBearEapApi.Infra.Services
 {
     public class DbUploadInfoService : IUploadInfoService
     {

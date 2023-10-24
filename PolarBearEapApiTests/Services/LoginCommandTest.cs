@@ -49,8 +49,8 @@ namespace PolarBearEapApiTests
         public void TestInputWithoutUsername() 
         {
             var command = new LoginCommand(null, null, null);
-            var caughtException = Assert.Throws<JsonFieldRequireException>(() => command.Execute(MockMesCommandRequestWithoutUsername()));
-            //Assert.Equal("user field is required", caughtException.Message);
+            var caughtException = Assert.Throws<EapException>(() => command.Execute(MockMesCommandRequestWithoutUsername()));
+            Assert.Contains("JsonFieldRequire", caughtException.Message);
         }
 
         /** 
@@ -62,8 +62,8 @@ namespace PolarBearEapApiTests
         public void TestInputWithoutPassword()
         {
             var command = new LoginCommand(null, null, null);
-            var caughtException = Assert.Throws<JsonFieldRequireException>(() => command.Execute(MockMesCommandRequestWithoutPassword()));
-            //Assert.Equal("user field is required", caughtException.Message);
+            var caughtException = Assert.Throws<EapException>(() => command.Execute(MockMesCommandRequestWithoutPassword()));
+            Assert.Contains("JsonFieldRequire", caughtException.Message);
         }
 
         /** 

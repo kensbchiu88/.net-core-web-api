@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json.Linq;
+using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Entities;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
@@ -42,8 +43,8 @@ namespace PolarBearEapApiUnitTests.Infra.Services
         public void TestValidateEmptyToken()
         {
             var service = new DbTokenService(_context, null, null);
-            var caughtException = Assert.Throws<InvalidTokenFormatException>(() => service.Validate(""));
-            //Assert.Equal("user field is required", caughtException.Message);
+            var caughtException = Assert.Throws<EapException>(() => service.Validate(""));
+            Assert.Contains("InvalidToken", caughtException.Message);
         }
 
         /** 
@@ -56,7 +57,8 @@ namespace PolarBearEapApiUnitTests.Infra.Services
         {
             var service = new DbTokenService(_context, null, null);
             string? id = null;
-            Assert.Throws<InvalidTokenFormatException>(() => service.Validate(id!));
+            var caughtException = Assert.Throws<EapException>(() => service.Validate(id!));
+            Assert.Contains("InvalidToken", caughtException.Message);
         }
 
         /** 
@@ -68,7 +70,8 @@ namespace PolarBearEapApiUnitTests.Infra.Services
         public void TestValidateWrongFormatToken()
         {
             var service = new DbTokenService(_context, null, null);
-            Assert.Throws<InvalidTokenFormatException>(() => service.Validate("Hello"));
+            var caughtException = Assert.Throws<EapException>(() => service.Validate("Hello"));
+            Assert.Contains(ErrorCodeEnum.InvalidTokenFormat.ToString(), caughtException.Message);
         }
 
         /** 
@@ -81,7 +84,8 @@ namespace PolarBearEapApiUnitTests.Infra.Services
         {
             _cacheService.Setup(service => service.GetValue(It.IsAny<string>())).Returns(TOKEN_EXPIRED_HOURS);
             var service = new DbTokenService(_context, _logger.Object, _cacheService.Object);
-            Assert.Throws<InvalidTokenException>(() => service.Validate(FAKE_TOKEN_ID));
+            var caughtException = Assert.Throws<EapException>(() => service.Validate(FAKE_TOKEN_ID));
+            Assert.Contains(ErrorCodeEnum.InvalidToken.ToString(), caughtException.Message);
         }
 
         /** 
@@ -99,7 +103,8 @@ namespace PolarBearEapApiUnitTests.Infra.Services
 
             _cacheService.Setup(service => service.GetValue(It.IsAny<string>())).Returns(TOKEN_EXPIRED_HOURS);
             var service = new DbTokenService(_context, _logger.Object, _cacheService.Object);
-            Assert.Throws<TokenExpireException>(() => service.Validate(entity.Id.ToString()));
+            var caughtException = Assert.Throws<EapException>(() => service.Validate(entity.Id.ToString()));
+            Assert.Contains(ErrorCodeEnum.TokenExpired.ToString(), caughtException.Message);
         }
 
         /** 
@@ -156,7 +161,8 @@ namespace PolarBearEapApiUnitTests.Infra.Services
         {
             //_cacheService.Setup(service => service.GetValue(It.IsAny<string>())).Returns(TOKEN_EXPIRED_HOURS);
             var service = new DbTokenService(_context, null, null);
-            Assert.Throws<InvalidTokenException>(() => service.GetTokenInfo(FAKE_TOKEN_ID));
+            var caughtException = Assert.Throws<EapException>(() => service.GetTokenInfo(FAKE_TOKEN_ID));
+            Assert.Contains(ErrorCodeEnum.InvalidToken.ToString(), caughtException.Message);
         }
 
         /** 
@@ -225,7 +231,8 @@ namespace PolarBearEapApiUnitTests.Infra.Services
         public void TestBindMachineWithInvalidToken()
         {
             var service = new DbTokenService(_context, null, null);
-            Assert.Throws<InvalidTokenException>(() => service.BindMachine(FAKE_TOKEN_ID, LINE_CODE, SECTION_CODE, STATION_CODE, SERVER_VERSION));
+            var caughtException = Assert.Throws<EapException>(() => service.BindMachine(FAKE_TOKEN_ID, LINE_CODE, SECTION_CODE, STATION_CODE, SERVER_VERSION));
+            Assert.Contains(ErrorCodeEnum.InvalidToken.ToString(), caughtException.Message);
         }
 
         private static EapTokenEntity FakeExpiredEapTokenEntity()

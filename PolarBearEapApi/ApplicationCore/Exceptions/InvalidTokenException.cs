@@ -10,5 +10,9 @@
             : base(message, innerException)
         {
         }
+
+        public InvalidTokenException() : base()
+        {
+        }
     }
 }

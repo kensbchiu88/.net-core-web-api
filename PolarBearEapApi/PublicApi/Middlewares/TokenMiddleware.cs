@@ -53,14 +53,4 @@ namespace PolarBearEapApi.PublicApi.Middlewares
         }
 
     }
-
-    public static class TokenMiddlewareExtensions
-    {
-        public static IApplicationBuilder UseMyCustomMiddleware(
-        this IApplicationBuilder builder)
-        {
-            return builder.UseMiddleware<TokenMiddleware>();
-        }
-
-    }
 }

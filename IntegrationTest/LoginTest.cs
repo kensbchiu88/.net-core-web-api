@@ -8,6 +8,7 @@ using System.Text;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using PolarBearEapApi.ApplicationCore.Constants;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace IntegrationTest
 {
@@ -20,6 +21,8 @@ namespace IntegrationTest
         private const string CORRECT_PASSWORD = "V0228172";
         private const string WRONG_USERNAME = "bbbbb";
         private const string WRONG_PASSWORD = "aaaaa";
+        private const string IN_MEMORY_DB_NAME = "LoginTest";
+
         public LoginTest()
         {
             var webApplicationFactory = new WebApplicationFactory<Program>()
@@ -27,9 +30,7 @@ namespace IntegrationTest
                 {
                     host.ConfigureServices(services =>
                     {
-                        var dbContextDescriptor = services.SingleOrDefault(
-                     d => d.ServiceType ==
-                         typeof(DbContextOptions<EapTokenDbContext>));
+                        var dbContextDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<EapTokenDbContext>));
 
                         if (dbContextDescriptor != null)
                             services.Remove(dbContextDescriptor);
@@ -37,7 +38,7 @@ namespace IntegrationTest
 
                         services.AddDbContext<EapTokenDbContext>(options =>
                         {
-                            options.UseInMemoryDatabase("InMemoryEmployeeTest");
+                            options.UseInMemoryDatabase(IN_MEMORY_DB_NAME);
                         });
                     });
                 });
@@ -67,7 +68,7 @@ namespace IntegrationTest
             Assert.Empty(JsonUtil.GetParameter(result, "Display"));
 
             var token = JsonUtil.GetCaseSensitiveParameter(JsonUtil.GetCaseSensitiveParameter(result, "SerializeData"), "OPResponseInfo.Hwd");
-            var options = new DbContextOptionsBuilder<EapTokenDbContext>().UseInMemoryDatabase(databaseName: "InMemoryEmployeeTest").Options;
+            var options = new DbContextOptionsBuilder<EapTokenDbContext>().UseInMemoryDatabase(databaseName: IN_MEMORY_DB_NAME).Options;
             using (var context = new EapTokenDbContext(options))
             {
                 var entities = context.EapTokenEntities.ToList();

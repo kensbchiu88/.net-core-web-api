@@ -5,6 +5,7 @@ using PolarBearEapApi.ApplicationCore.Entities;
 using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.Infra;
+using PolarBearEapApi.ApplicationCore.Constants;
 
 namespace PolarBearEapApi.Infra.Services
 {
@@ -39,12 +40,12 @@ namespace PolarBearEapApi.Infra.Services
             {
                 if (tokens.First().LoginTime.CompareTo(DateTime.Now.AddHours(expiredHours)) < 0)
                 {
-                    throw new TokenExpireException("TokenExpired:" + id);
+                    throw new EapException(ErrorCodeEnum.TokenExpired, "TokenExpired:" + id);
                 }
             }
             else
             {
-                throw new InvalidTokenException("Ivalid Token");
+                throw new EapException(ErrorCodeEnum.InvalidToken);
             }
         }
 
@@ -76,7 +77,7 @@ namespace PolarBearEapApi.Infra.Services
             }
             else
             {
-                throw new InvalidTokenException("Ivalid Token");
+                throw new EapException(ErrorCodeEnum.InvalidToken);
             }
         }
 
@@ -101,7 +102,7 @@ namespace PolarBearEapApi.Infra.Services
             }
             else
             {
-                throw new InvalidTokenException("Ivalid Token");
+                throw new EapException(ErrorCodeEnum.InvalidToken);
             }
         }
 
@@ -128,9 +129,9 @@ namespace PolarBearEapApi.Infra.Services
         private void ValidateTokenFormat(string id)
         {
             if (string.IsNullOrEmpty(id))
-                throw new InvalidTokenFormatException("Token is empty");
+                throw new EapException(ErrorCodeEnum.InvalidTokenFormat, "Token is empty");
             if (!Guid.TryParse(id, out var newGuid))
-                throw new InvalidTokenFormatException("Token format should contain 32 digits with 4 dashes (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)");
+                throw new EapException(ErrorCodeEnum.InvalidTokenFormat, "Token format should contain 32 digits with 4 dashes (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)");
         }
     }
 }

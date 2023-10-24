@@ -56,6 +56,10 @@ namespace PolarBearEapApi.PublicApi.Middlewares
                 responseModel.Indicator = requestIndicator;
                 responseModel.SerializeData = ResponseSerializeDataGenerator.Fail(requestSerializeData);
 
+                responseModel.Display = error.Message;
+
+
+                /*
                 switch (error)
                 {
                     case EapJsonParseException e:
@@ -75,6 +79,7 @@ namespace PolarBearEapApi.PublicApi.Middlewares
                         responseModel.Display = error.Message;
                         break;
                 }
+                */
 
                 _logger.LogError(LogMessageGenerator.GetErrorMessage(requestSerializeData, error.StackTrace ?? ""));
                 _logger.LogError(LogMessageGenerator.GetErrorMessage(requestSerializeData, error.Message));

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 
 namespace PolarBearEapApi.ApplicationCore.Extensions
@@ -29,7 +30,7 @@ namespace PolarBearEapApi.ApplicationCore.Extensions
             }
             catch (Exception ex)
             {
-                throw new EapJsonParseException("Json Parse Fail", ex);
+                throw new EapException(ErrorCodeEnum.ParseJsonError, ex);
             }
         }
 
@@ -55,7 +56,7 @@ namespace PolarBearEapApi.ApplicationCore.Extensions
             }
             catch (Exception ex)
             {
-                throw new EapJsonParseException("Json Parse Fail", ex);
+                throw new EapException(ErrorCodeEnum.ParseJsonError, ex);
             }
         }
 

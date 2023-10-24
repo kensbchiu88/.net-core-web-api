@@ -68,7 +68,7 @@ namespace IntegrationTest
             Assert.True(!string.IsNullOrEmpty(result));
             Assert.Empty(JsonUtil.GetCaseSensitiveParameter(result, "Hwd"));
             Assert.Equal("NG", JsonUtil.GetParameter(JsonUtil.GetParameter(result, "SerializeData"), "OPResponseInfo.Result"));
-            Assert.Equal(ErrorCodeEnum.InvalidTokenFormat.ToString(), JsonUtil.GetCaseSensitiveParameter(result, "Display"));
+            Assert.Contains(ErrorCodeEnum.InvalidTokenFormat.ToString(), JsonUtil.GetCaseSensitiveParameter(result, "Display"));
         }
 
         /** 
@@ -122,7 +122,7 @@ namespace IntegrationTest
             Assert.True(!string.IsNullOrEmpty(result));
             Assert.Equal(guid.ToString(), JsonUtil.GetCaseSensitiveParameter(result, "Hwd"));
             Assert.Equal("NG", JsonUtil.GetParameter(JsonUtil.GetParameter(result, "SerializeData"), "OPResponseInfo.Result"));
-            Assert.Equal(ErrorCodeEnum.TokenExpired.ToString(), JsonUtil.GetCaseSensitiveParameter(result, "Display"));
+            Assert.Contains(ErrorCodeEnum.TokenExpired.ToString(), JsonUtil.GetCaseSensitiveParameter(result, "Display"));
 
             //移除DB中測試資料，避免影響其他測試
             using (var context = new EapTokenDbContext(options))

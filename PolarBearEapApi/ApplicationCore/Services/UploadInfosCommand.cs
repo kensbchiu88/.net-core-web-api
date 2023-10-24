@@ -98,7 +98,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
                 requiredFields.Add("OPRequestInfo");
 
             if (requiredFields.Count > 0)
-                throw new JsonFieldRequireException("Json Fields Required: " + string.Join(",", requiredFields));
+                throw new EapException(ErrorCodeEnum.JsonFieldRequire, "Json Fields Required: " + string.Join(",", requiredFields));
         }
     }
 }

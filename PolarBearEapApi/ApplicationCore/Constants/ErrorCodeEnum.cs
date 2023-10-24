@@ -13,6 +13,7 @@
         InvalidToken,
         TokenExpired,
         LoginFail,
-        InvalidTokenFormat
+        InvalidTokenFormat,
+        JsonFieldRequire
     }
 }

@@ -89,12 +89,12 @@ namespace PolarBearEapApi.ApplicationCore.Services
 
             if (string.IsNullOrEmpty(username))
             {
-                throw new JsonFieldRequireException("user field is required");
+                throw new EapException(ErrorCodeEnum.JsonFieldRequire, "user field is required");
             }
 
             if (string.IsNullOrEmpty(password))
             {
-                throw new JsonFieldRequireException("pwd field is required");
+                throw new EapException(ErrorCodeEnum.JsonFieldRequire, "pwd field is required");
             }
         }
     }

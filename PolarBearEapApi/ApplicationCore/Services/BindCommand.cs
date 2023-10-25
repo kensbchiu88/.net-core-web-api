@@ -31,7 +31,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             //Todo : call mes 檢查職能
             TokenInfo tokenInfo = _tokenService.GetTokenInfo(input.Hwd);
 
-
+            /*
             string? mesReturn;
             try
             {
@@ -48,6 +48,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             {
                 return new MesCommandResponse(mesReturn);
             }
+            */
 
             //Bind
             _tokenService.BindMachine(input.Hwd, lineCode, sectionCode, stationCode, serverVersion);

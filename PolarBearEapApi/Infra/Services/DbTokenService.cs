@@ -30,17 +30,15 @@ namespace PolarBearEapApi.Infra.Services
 
             int expiredHours = GetExpiredHours();
 
-            var expiredTimeString = _cacheService.GetValue("TokenExpireHours");
-
             Guid tokenId = new Guid(id);
 
             var tokens = _context.EapTokenEntities.Where(e => e.Id == tokenId);
 
             if (tokens.Any())
             {
-                if (tokens.First().LoginTime.CompareTo(DateTime.Now.AddHours(expiredHours)) < 0)
+                if (expiredHours > 0 && tokens.First().LoginTime.CompareTo(DateTime.Now.AddHours(0 - expiredHours)) < 0)
                 {
-                    throw new EapException(ErrorCodeEnum.TokenExpired, "TokenExpired:" + id);
+                    throw new EapException(ErrorCodeEnum.TokenExpired);
                 }
             }
             else
@@ -116,7 +114,7 @@ namespace PolarBearEapApi.Infra.Services
             {
                 try
                 {
-                    expiredHours = 0 - int.Parse(expiredTimeString);
+                    expiredHours = int.Parse(expiredTimeString);
                 }
                 catch
                 {

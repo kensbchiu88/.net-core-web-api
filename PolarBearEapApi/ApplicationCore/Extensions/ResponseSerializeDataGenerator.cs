@@ -91,6 +91,9 @@ namespace PolarBearEapApi.ApplicationCore.Extensions
                 case "LOGIN":
                     opResponseInfoObj.Add("Hwd", "");
                     break;
+                case "GET_SN_BY_SMTSN":
+                    opResponseInfoObj.Add("SN", "");
+                    break;
                 default:
                     opResponseInfoObj.Add("Result", "NG");
                     break;

@@ -46,5 +46,10 @@ namespace PolarBearEapApi.ApplicationCore.Services
         {
             return _equipmentService.UNIT_PROCESS_COMMIT(pLineName, pSectionCode, pStationCode, pSN, pResult, pList_of_failing_tests, pFailure_Message);
         }
+
+        string IMesService.GET_SN_BY_SMTSN(string pSMTSN)
+        {
+            return _equipmentService.GET_SN_BY_SMTSN(pSMTSN);
+        }
     }
 }

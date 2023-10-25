@@ -47,7 +47,7 @@ namespace PolarBearEapApiUnitTests.PublicApi.Middlewares
             var middleware = new TokenMiddleware(requestDelegate, mockLogger.Object);
 
             // Act
-            var exception = await Record.ExceptionAsync(() => middleware.InvokeAsync(context, mockTokenService.Object));
+            var exception = await Record.ExceptionAsync(() => middleware.Invoke(context, mockTokenService.Object));
 
             //assert
             Assert.NotNull(exception);
@@ -77,7 +77,7 @@ namespace PolarBearEapApiUnitTests.PublicApi.Middlewares
             var middleware = new TokenMiddleware(requestDelegate, mockLogger.Object);
 
             // Act
-            var exception = await Record.ExceptionAsync(() => middleware.InvokeAsync(context, mockTokenService.Object));
+            var exception = await Record.ExceptionAsync(() => middleware.Invoke(context, mockTokenService.Object));
 
             //assert
             Assert.NotNull(exception);
@@ -108,7 +108,7 @@ namespace PolarBearEapApiUnitTests.PublicApi.Middlewares
             var middleware = new TokenMiddleware(requestDelegate, mockLogger.Object);
 
             // Act
-            var exception = await Record.ExceptionAsync(() => middleware.InvokeAsync(context, mockTokenService.Object));
+            var exception = await Record.ExceptionAsync(() => middleware.Invoke(context, mockTokenService.Object));
 
             //assert
             Assert.NotNull(exception);
@@ -138,7 +138,7 @@ namespace PolarBearEapApiUnitTests.PublicApi.Middlewares
             var middleware = new TokenMiddleware(requestDelegate, mockLogger.Object);
 
             //assert
-            var exception = await Record.ExceptionAsync(() => middleware.InvokeAsync(context, mockTokenService.Object));
+            var exception = await Record.ExceptionAsync(() => middleware.Invoke(context, mockTokenService.Object));
             Assert.Null(exception);
             Assert.Equal(HttpStatusCode.OK, (HttpStatusCode)context.Response.StatusCode);
         }

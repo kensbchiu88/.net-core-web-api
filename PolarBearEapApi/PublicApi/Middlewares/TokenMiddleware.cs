@@ -16,14 +16,14 @@ namespace PolarBearEapApi.PublicApi.Middlewares
             _logger = logger;
         }
 
-        public async Task InvokeAsync(HttpContext context, ITokenService tokenService)
+        public async Task Invoke(HttpContext context, ITokenService tokenService)
         {
             List<string> validateList = new List<string>(new string[] { "UNIT_PROCESS_CHECK", "BIND", "GET_SN_BY_SN_FIXTURE" });
 
             ApiRequest? requestModel = new ApiRequest();
 
             var request = context.Request;
-            if (request.Method == HttpMethods.Post && request.ContentLength > 0)
+            if (!request.Path.ToString().Contains("soap") && request.Method == HttpMethods.Post && request.ContentLength > 0)
             {
                 request.EnableBuffering();
 

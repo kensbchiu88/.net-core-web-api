@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Azure.Core;
+using Newtonsoft.Json;
 using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
@@ -21,10 +22,10 @@ namespace PolarBearEapApi.PublicApi.Middlewares
             string? requestHwd = string.Empty;
             string? requestIndicator = string.Empty;
             string? requestSerializeData = string.Empty;
+            var request = context.Request;
             try
-            {
-                var request = context.Request;
-                if (request.Method == HttpMethods.Post && request.ContentLength > 0)
+            {                
+                if (!request.Path.ToString().Contains("soap") && request.Method == HttpMethods.Post && request.ContentLength > 0)
                 {
                     request.EnableBuffering();
 
@@ -49,43 +50,24 @@ namespace PolarBearEapApi.PublicApi.Middlewares
             }
             catch (Exception error)
             {
-                var response = context.Response;
-                response.ContentType = "application/json";
-                var responseModel = new ApiResponse();
-                responseModel.Hwd = requestHwd;
-                responseModel.Indicator = requestIndicator;
-                responseModel.SerializeData = ResponseSerializeDataGenerator.Fail(requestSerializeData);
-
-                responseModel.Display = error.Message;
-
-
-                /*
-                switch (error)
-                {
-                    case EapJsonParseException e:
-                        responseModel.Display = ErrorCodeEnum.ParseJsonError.ToString();
-                        break;
-                    case TokenExpireException e1:
-                        responseModel.Display = ErrorCodeEnum.TokenExpired.ToString();
-                        break;
-                    case InvalidTokenException e2:
-                        responseModel.Display = ErrorCodeEnum.InvalidToken.ToString();
-                        break;
-                    case InvalidTokenFormatException e3:
-                        responseModel.Display = ErrorCodeEnum.InvalidTokenFormat.ToString();
-                        break;
-                    default:
-                        // unhandled error
-                        responseModel.Display = error.Message;
-                        break;
-                }
-                */
-
                 _logger.LogError(LogMessageGenerator.GetErrorMessage(requestSerializeData, error.StackTrace ?? ""));
                 _logger.LogError(LogMessageGenerator.GetErrorMessage(requestSerializeData, error.Message));
 
-                var result = JsonConvert.SerializeObject(responseModel);
-                await response.WriteAsync(result);
+                if (!request.Path.ToString().Contains("soap") && request.Method == HttpMethods.Post && request.ContentLength > 0)
+                {
+                    var response = context.Response;
+                    response.ContentType = "application/json";
+                    var responseModel = new ApiResponse();
+                    responseModel.Hwd = requestHwd;
+                    responseModel.Indicator = requestIndicator;
+                    responseModel.SerializeData = ResponseSerializeDataGenerator.Fail(requestSerializeData);
+
+                    responseModel.Display = error.Message;
+
+                    var result = JsonConvert.SerializeObject(responseModel);
+                    await response.WriteAsync(result);
+                }
+
             }
         }
     }

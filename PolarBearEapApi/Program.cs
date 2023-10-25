@@ -6,6 +6,8 @@ using PolarBearEapApi.ApplicationCore.Services;
 using PolarBearEapApi.PublicApi.Middlewares;
 using PolarBearEapApi.Infra;
 using PolarBearEapApi.Infra.Services;
+using SoapCore;
+using PolarBearEapApi.PublicApi.Soap;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +63,13 @@ try
 
     builder.Host.UseSerilog();
 
+    //soap
+    builder.Services.AddSoapCore();
+    builder.Services.AddScoped<IWebService, WebService>();
+    builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+    //
+
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
@@ -75,11 +84,17 @@ try
     app.UseMiddleware<LoggerMiddleware>();
     app.UseMiddleware<ErrorHandlerMiddleware>();
     app.UseMiddleware<TokenMiddleware>();
-    
+
+    //soap
+    app.UseRouting();
 
     app.UseAuthorization();
 
     app.MapControllers();
+
+    app.UseEndpoints(endpoints => {
+        endpoints.UseSoapEndpoint<IWebService>("/soap/IWebService", new SoapEncoderOptions(), SoapSerializer.DataContractSerializer);
+    });
 
     app.Run();
 

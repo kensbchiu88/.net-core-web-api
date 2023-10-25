@@ -56,6 +56,7 @@ try
     builder.Services.AddScoped<IMesCommand, UploadInfosCommand>();
     builder.Services.AddScoped<IMesCommand, LoginCommand>();
     builder.Services.AddScoped<IMesCommand, BindCommand>();
+    builder.Services.AddScoped<IMesCommand, GetSnBySmtSnCommand>();
 
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
 

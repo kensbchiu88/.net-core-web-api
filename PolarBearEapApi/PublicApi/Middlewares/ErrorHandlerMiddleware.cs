@@ -58,29 +58,6 @@ namespace PolarBearEapApi.PublicApi.Middlewares
 
                 responseModel.Display = error.Message;
 
-
-                /*
-                switch (error)
-                {
-                    case EapJsonParseException e:
-                        responseModel.Display = ErrorCodeEnum.ParseJsonError.ToString();
-                        break;
-                    case TokenExpireException e1:
-                        responseModel.Display = ErrorCodeEnum.TokenExpired.ToString();
-                        break;
-                    case InvalidTokenException e2:
-                        responseModel.Display = ErrorCodeEnum.InvalidToken.ToString();
-                        break;
-                    case InvalidTokenFormatException e3:
-                        responseModel.Display = ErrorCodeEnum.InvalidTokenFormat.ToString();
-                        break;
-                    default:
-                        // unhandled error
-                        responseModel.Display = error.Message;
-                        break;
-                }
-                */
-
                 _logger.LogError(LogMessageGenerator.GetErrorMessage(requestSerializeData, error.StackTrace ?? ""));
                 _logger.LogError(LogMessageGenerator.GetErrorMessage(requestSerializeData, error.Message));
 

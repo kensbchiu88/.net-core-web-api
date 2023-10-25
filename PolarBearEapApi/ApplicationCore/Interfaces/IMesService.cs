@@ -10,5 +10,6 @@
         string ADD_BOM_DATA(string pLineName, string pSectionCode, string pStationCode, string pSN, string pComponentLot);
         string UNIT_PROCESS_COMMIT(string pLineName, string pSectionCode, string pStationCode, string pSN);
         string UNIT_PROCESS_COMMIT(string pLineName, string pSectionCode, string pStationCode, string pSN, string pResult, string pList_of_failing_tests, string pFailure_Message);
+        string GET_SN_BY_SMTSN(string pSMTSN);
     }
 }

@@ -12,17 +12,18 @@
 
         public async Task Invoke(HttpContext context)
         {
+            var guid = Guid.NewGuid();
             var request = context.Request;
 
             request.EnableBuffering();
 
             using (var requestReader = new StreamReader(request.Body, leaveOpen: true))
             {
-                var body = await requestReader.ReadToEndAsync();
+                var requestBody = await requestReader.ReadToEndAsync();
                 // 重要, 才能允許回捲 (request.Body.Seek(0, SeekOrigin.Begin))
                 request.Body.Seek(0, SeekOrigin.Begin);
 
-                _logger.LogInformation("Api Request :" + body);
+                _logger.LogInformation($"Api Request({guid.ToString()}): {requestBody}");
             }
 
 
@@ -40,7 +41,7 @@
                 var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync();
 
                 // 记录响应内容，这里可以根据需要进行日志记录或其他处理
-                _logger.LogInformation($"Api Response: {responseBody}");
+                _logger.LogInformation($"Api Response({guid.ToString()}): {responseBody}");
 
                 // 将响应内容写回原始响应流
                 responseBodyStream.Seek(0, SeekOrigin.Begin);

@@ -1,8 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 using PolarBearEapApi.ApplicationCore.Constants;
+using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.ApplicationCore.Services;
+using PolarBearEapApi.Infra.Services;
 using PolarBearEapApi.PublicApi.Models;
 
 namespace PolarBearEapApiTests
@@ -56,7 +59,7 @@ namespace PolarBearEapApiTests
         /** 
          * 測試MES回傳Exception
          * Given: MES丟出Exception
-         * Then: 回傳 Result:"NG", ErrorMessage = CallMesServiceException
+         * Then: throw EapException and Message contains CallMesServiceException
          */
         [Fact]
         public void TestMesThrowException()
@@ -68,10 +71,8 @@ namespace PolarBearEapApiTests
 
             var command = new GetSnBySnFixtureCommand(mockLogger.Object, mockMesService.Object);
 
-            MesCommandResponse response = command.Execute(MockMesCommandRequest());
-            Assert.NotNull(response);
-            Assert.Equal(ErrorCodeEnum.CallMesServiceException.ToString(), response.ErrorMessage);
-            Assert.Equal("{\"Result\":\"NG\"}", response.OpResponseInfo);
+            var caughtException = Assert.Throws<EapException>(() => command.Execute(MockMesCommandRequest()));
+            Assert.Contains(ErrorCodeEnum.CallMesServiceException.ToString(), caughtException.Message);
         }
 
         private static MesCommandRequest MockMesCommandRequest()

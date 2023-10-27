@@ -54,8 +54,11 @@ namespace PolarBearEapApiTests
 
             MesCommandResponse response = command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
-            Assert.Equal(MES_RETURN_DISPLAY, response.ErrorMessage);
-            Assert.Equal("{\"Result\":\"NG\"}", response.OpResponseInfo);
+            //Assert.Equal(MES_RETURN_DISPLAY, response.ErrorMessage);
+            //Assert.Equal("{\"Result\":\"NG\"}", response.OpResponseInfo);
+            //因暫時取消檢查職能
+            Assert.Null(response.ErrorMessage);
+            Assert.Equal("{\"Result\":\"OK\"}", response.OpResponseInfo);
         }
 
         /** 
@@ -77,8 +80,9 @@ namespace PolarBearEapApiTests
 
             MesCommandResponse response = command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
-            Assert.Equal(ErrorCodeEnum.CallMesServiceException.ToString(), response.ErrorMessage);
-            Assert.Equal("{\"Result\":\"NG\"}", response.OpResponseInfo);
+            //暫時取消檢查職能
+            //Assert.Equal(ErrorCodeEnum.CallMesServiceException.ToString(), response.ErrorMessage);
+            //Assert.Equal("{\"Result\":\"NG\"}", response.OpResponseInfo);
         }
 
         private static MesCommandRequest MockMesCommandRequest()

@@ -100,6 +100,9 @@ namespace IntegrationTest
          *       2.OPResponseInfo.Result = "NG",
          *       3.Display=TokenExpired
         */
+        
+        //Deprecate. 在設定檔中已取消TokenExpired
+        /*
         [Fact]
         public async Task TestTokenExpired()
         {
@@ -138,6 +141,7 @@ namespace IntegrationTest
             }
 
         }
+        */
 
         
         private static string FakeEmptyHwdApiRequest()

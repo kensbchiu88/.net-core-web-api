@@ -51,6 +51,7 @@
             {
                 // 恢复原始响应流
                 context.Response.Body = originalBody;
+                responseBodyStream.Dispose();
             }
         }
     }

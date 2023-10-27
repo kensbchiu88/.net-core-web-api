@@ -25,7 +25,7 @@ namespace PolarBearEapApi.ApplicationCore.Extensions
         public static string WithOpResponseInfoJson(string serializeData, string returnMessage)
         {
             //為了讓Request與Response盡量相同，使用string.Replace方式取代OPResponseInfo
-            if (serializeData.Contains("OPResponseInfo"))
+            if (serializeData.Contains("\"OPResponseInfo\":{}"))
                 return serializeData.Replace("\"OPResponseInfo\":{}", "\"OPResponseInfo\":" + returnMessage);
 
             //如果Request沒有帶OPResponseInfo資訊，使用string.Replace()會讓Response也沒有OPResponseInfo，需重新組合Json

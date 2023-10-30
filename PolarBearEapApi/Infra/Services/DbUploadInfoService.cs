@@ -1,4 +1,5 @@
-﻿using PolarBearEapApi.ApplicationCore.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using PolarBearEapApi.ApplicationCore.Entities;
 using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.Infra;
 
@@ -12,17 +13,17 @@ namespace PolarBearEapApi.Infra.Services
             _uploadInfoDbContext = uploadInfoDbContext;
         }
 
-        public UploadInfoEntity Insert(UploadInfoEntity entity)
+        public async Task<UploadInfoEntity> Insert(UploadInfoEntity entity)
         {
             _uploadInfoDbContext.UploadInfoEnties.Add(entity);
-            _uploadInfoDbContext.SaveChanges();
+            await _uploadInfoDbContext.SaveChangesAsync();
             return entity;
         }
 
-        public UploadInfoEntity? GetOne(string lineCode, string sectionCode, int stationCode, string sn)
+        public async Task<UploadInfoEntity?> GetOne(string lineCode, string sectionCode, int stationCode, string sn)
         {
-            var uploadInfos = _uploadInfoDbContext.UploadInfoEnties
-                    .Where(e => e.LineCode.ToUpper().Equals(lineCode) && e.SectionCode.ToUpper().Equals(sectionCode) && e.StationCode == stationCode && e.Sn.ToUpper().Equals(sn));
+            var uploadInfos = await _uploadInfoDbContext.UploadInfoEnties
+                    .Where(e => e.LineCode.ToUpper().Equals(lineCode) && e.SectionCode.ToUpper().Equals(sectionCode) && e.StationCode == stationCode && e.Sn.ToUpper().Equals(sn)).ToListAsync();
 
             if (uploadInfos.Count() > 0)
             {

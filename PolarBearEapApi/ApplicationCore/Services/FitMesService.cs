@@ -12,44 +12,52 @@ namespace PolarBearEapApi.ApplicationCore.Services
             _equipmentService = equipmentService;
         }
 
-        string IMesService.ADD_BOM_DATA(string pLineName, string pSectionCode, string pStationCode, string pSN, string pComponentLot)
+        async Task<string> IMesService.ADD_BOM_DATA(string pLineName, string pSectionCode, string pStationCode, string pSN, string pComponentLot)
         {
-            return _equipmentService.ADD_BOM_DATA(pLineName, pSectionCode, pStationCode, pSN, pComponentLot);
+            var result = await Task.Run( () => _equipmentService.ADD_BOM_DATA(pLineName, pSectionCode, pStationCode, pSN, pComponentLot));
+            return result;
         }
 
-        string IMesService.CHECK_OP_PASSWORD(string pUserID, string pPassword)
+        async Task<string> IMesService.CHECK_OP_PASSWORD(string pUserID, string pPassword)
         {
-            return _equipmentService.CHECK_OP_PASSWORD(pUserID, pPassword);
+            var result = await Task.Run(() => _equipmentService.CHECK_OP_PASSWORD(pUserID, pPassword));
+            return result;
         }
 
-        string IMesService.CHECK_SECTION_PERMISSION(string pOpeartorID, string pSectionCode, string pStationCode)
+        async Task<string> IMesService.CHECK_SECTION_PERMISSION(string pOpeartorID, string pSectionCode, string pStationCode)
         {
-            return _equipmentService.CHECK_SECTION_PERMISSION(pOpeartorID, pSectionCode, pStationCode);
+            var result = await Task.Run(() => _equipmentService.CHECK_SECTION_PERMISSION(pOpeartorID, pSectionCode, pStationCode));
+            return result;
         }
 
-        string IMesService.GET_SN_BY_SN_FIXTURE(string pCarrierNo)
+        async Task<string> IMesService.GET_SN_BY_SN_FIXTURE(string pCarrierNo)
         {
-            return _equipmentService.GET_SN_BY_SN_FIXTURE(pCarrierNo);
+            var result = await Task.Run(() => _equipmentService.GET_SN_BY_SN_FIXTURE(pCarrierNo));
+            return result;
         }
 
-        string IMesService.UNIT_PROCESS_CHECK(string pSN, string pSectionCode, string pStationCode)
+        async Task<string> IMesService.UNIT_PROCESS_CHECK(string pSN, string pSectionCode, string pStationCode)
         {
-            return _equipmentService.UNIT_PROCESS_CHECK(pSN, pSectionCode, pStationCode);
+            var result = await Task.Run(() => _equipmentService.UNIT_PROCESS_CHECK(pSN, pSectionCode, pStationCode));
+            return result;
         }
 
-        string IMesService.UNIT_PROCESS_COMMIT(string pLineName, string pSectionCode, string pStationCode, string pSN)
+        async Task<string> IMesService.UNIT_PROCESS_COMMIT(string pLineName, string pSectionCode, string pStationCode, string pSN)
         {
-            return _equipmentService.UNIT_PROCESS_COMMIT(pLineName, pSectionCode, pStationCode, pSN);
+            var result = await Task.Run(() => _equipmentService.UNIT_PROCESS_COMMIT(pLineName, pSectionCode, pStationCode, pSN));
+            return result;
         }
 
-        string IMesService.UNIT_PROCESS_COMMIT(string pLineName, string pSectionCode, string pStationCode, string pSN, string pResult, string pList_of_failing_tests, string pFailure_Message)
+        async Task<string> IMesService.UNIT_PROCESS_COMMIT(string pLineName, string pSectionCode, string pStationCode, string pSN, string pResult, string pList_of_failing_tests, string pFailure_Message)
         {
-            return _equipmentService.UNIT_PROCESS_COMMIT(pLineName, pSectionCode, pStationCode, pSN, pResult, pList_of_failing_tests, pFailure_Message);
+            var result = await Task.Run(() => _equipmentService.UNIT_PROCESS_COMMIT(pLineName, pSectionCode, pStationCode, pSN, pResult, pList_of_failing_tests, pFailure_Message));
+            return result;
         }
 
-        string IMesService.GET_SN_BY_SMTSN(string pSMTSN)
+        async Task<string> IMesService.GET_SN_BY_SMTSN(string pSMTSN)
         {
-            return _equipmentService.GET_SN_BY_SMTSN(pSMTSN);
+            var result = await Task.Run(() => _equipmentService.GET_SN_BY_SMTSN(pSMTSN));
+            return result;
         }
     }
 }

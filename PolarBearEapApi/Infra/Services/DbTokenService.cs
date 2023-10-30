@@ -24,7 +24,7 @@ namespace PolarBearEapApi.Infra.Services
         }
 
         //throw InvalidOperationException, TokenExpireException
-        public void Validate(string id)
+        public async Task Validate(string id)
         {
             ValidateTokenFormat(id);
 
@@ -32,7 +32,7 @@ namespace PolarBearEapApi.Infra.Services
 
             Guid tokenId = new Guid(id);
 
-            var tokens = _context.EapTokenEntities.Where(e => e.Id == tokenId);
+            var tokens = await _context.EapTokenEntities.Where(e => e.Id == tokenId).ToListAsync() ;
 
             if (tokens.Any())
             {
@@ -47,7 +47,7 @@ namespace PolarBearEapApi.Infra.Services
             }
         }
 
-        public string Create(string username)
+        public async Task<string> Create(string username)
         {
             //insert db
             Guid id = Guid.NewGuid();
@@ -57,17 +57,17 @@ namespace PolarBearEapApi.Infra.Services
             entity.username = username;
             entity.LoginTime = DateTime.Now;
             _context.EapTokenEntities.Add(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return id.ToString();
         }
 
-        public TokenInfo GetTokenInfo(string id)
+        public async Task<TokenInfo> GetTokenInfo(string id)
         {
             ValidateTokenFormat(id);
 
             Guid tokenId = new Guid(id);
 
-            var tokens = _context.EapTokenEntities.Where(e => e.Id == tokenId);
+            var tokens = await _context.EapTokenEntities.Where(e => e.Id == tokenId).ToListAsync();
 
             if (tokens.Any())
             {
@@ -79,13 +79,13 @@ namespace PolarBearEapApi.Infra.Services
             }
         }
 
-        public void BindMachine(string id, string lineCode, string sectionCode, string stationCode, string serverVersion)
+        public async Task BindMachine(string id, string lineCode, string sectionCode, string stationCode, string serverVersion)
         {
             ValidateTokenFormat(id);
 
             Guid tokenId = new Guid(id);
 
-            var tokens = _context.EapTokenEntities.Where(e => e.Id == tokenId);
+            var tokens = await _context.EapTokenEntities.Where(e => e.Id == tokenId).ToListAsync();
 
             if (tokens.Any())
             {
@@ -124,7 +124,7 @@ namespace PolarBearEapApi.Infra.Services
             return expiredHours;
         }
 
-        private void ValidateTokenFormat(string id)
+        private static void ValidateTokenFormat(string id)
         {
             if (string.IsNullOrEmpty(id))
                 throw new EapException(ErrorCodeEnum.InvalidTokenFormat, "Token is empty");

@@ -5,11 +5,6 @@ using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.ApplicationCore.Services;
 using PolarBearEapApi.PublicApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PolarBearEapApiUnitTests.Services
 {
@@ -24,16 +19,16 @@ namespace PolarBearEapApiUnitTests.Services
          * Then: 回傳 "{\"SN\":\"H2C336500020VC6RX\"}", ErrorMessage = null
          */
         [Fact]
-        public void TestSuccess()
+        public async Task TestSuccess()
         {
             var mockMesService = new Mock<IMesService>();
 
             mockMesService.Setup(service => service.GET_SN_BY_SMTSN(It.IsAny<string>()))
-                .Returns("{\"Result\":\"OK\",\"ResultCoded\":\"" + SN + "\",\"MessageCode\":null,\"Display\":null,\"BindInfo\":null}");
+                .ReturnsAsync("{\"Result\":\"OK\",\"ResultCoded\":\"" + SN + "\",\"MessageCode\":null,\"Display\":null,\"BindInfo\":null}");
 
             var command = new GetSnBySmtSnCommand(null, mockMesService.Object);
 
-            MesCommandResponse response = command.Execute(MockMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
             Assert.Null(response.ErrorMessage);
             Assert.Equal("{\"SN\":\"" + SN + "\"}", response.OpResponseInfo);
@@ -45,16 +40,16 @@ namespace PolarBearEapApiUnitTests.Services
          * Then: 回傳 "{\"SN\":\"\"}", ErrorMessage = MES回傳的Display欄位
          */
         [Fact]
-        public void TestFail()
+        public async Task TestFail()
         {
             var mockMesService = new Mock<IMesService>();
 
             mockMesService.Setup(service => service.GET_SN_BY_SMTSN(It.IsAny<string>()))
-                .Returns("{\"Result\":\"NG\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":\"" + MES_RETURN_DISPLAY + "\",\"BindInfo\":null}");
+                .ReturnsAsync("{\"Result\":\"NG\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":\"" + MES_RETURN_DISPLAY + "\",\"BindInfo\":null}");
 
             var command = new GetSnBySmtSnCommand(null, mockMesService.Object);
 
-            MesCommandResponse response = command.Execute(MockMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
             Assert.Equal(MES_RETURN_DISPLAY, response.ErrorMessage);
             Assert.Equal("{\"SN\":\"\"}", response.OpResponseInfo);
@@ -66,7 +61,7 @@ namespace PolarBearEapApiUnitTests.Services
          * Then: throw EapException且message contains CallMesServiceException
          */
         [Fact]
-        public void TestMesThrowException()
+        public async Task TestMesThrowException()
         {
             var mockLogger = new Mock<ILogger<GetSnBySmtSnCommand>>();
             var mockMesService = new Mock<IMesService>();
@@ -75,7 +70,7 @@ namespace PolarBearEapApiUnitTests.Services
 
             var command = new GetSnBySmtSnCommand(mockLogger.Object, mockMesService.Object);
 
-            var caughtException = Assert.Throws<EapException>(() => command.Execute(MockMesCommandRequest()));
+            var caughtException = await Assert.ThrowsAsync<EapException>(() => command.Execute(MockMesCommandRequest()));
             Assert.Contains(ErrorCodeEnum.CallMesServiceException.ToString(), caughtException.Message);
         }
 
@@ -85,7 +80,7 @@ namespace PolarBearEapApiUnitTests.Services
          * Then: throw EapException且message contains CallMesServiceException
          */
         [Fact]
-        public void TestNoRefValue()
+        public async Task TestNoRefValue()
         {
             var mockLogger = new Mock<ILogger<GetSnBySmtSnCommand>>();
             var mockMesService = new Mock<IMesService>();
@@ -94,7 +89,7 @@ namespace PolarBearEapApiUnitTests.Services
 
             var command = new GetSnBySmtSnCommand(mockLogger.Object, mockMesService.Object);
 
-            var caughtException = Assert.Throws<EapException>(() => command.Execute(MockMesCommandRequestWithoutRefValue()));
+            var caughtException = await Assert.ThrowsAsync<EapException>(() => command.Execute(MockMesCommandRequestWithoutRefValue()));
             Assert.Contains(ErrorCodeEnum.JsonFieldRequire.ToString(), caughtException.Message);
             Assert.Contains("OPRequestInfo.REF_VALUE is required", caughtException.Message);
 

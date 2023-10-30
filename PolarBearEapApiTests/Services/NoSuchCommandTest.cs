@@ -15,9 +15,9 @@ namespace PolarBearEapApiTests
         }
 
         [Fact]
-        public void Test()
+        public async Task Test()
         {
-            MesCommandResponse response = _command.Execute(new MesCommandRequest());
+            MesCommandResponse response = await _command.Execute(new MesCommandRequest());
             Assert.NotNull(response);
             Assert.Equal(ErrorCodeEnum.NoSuchCommand.ToString(), response.ErrorMessage);
             Assert.Equal("{\"Result\":\"NG\"}", response.OpResponseInfo);

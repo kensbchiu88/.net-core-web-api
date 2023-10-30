@@ -21,7 +21,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             _equipmentService = equipmentService;
         }
 
-        public MesCommandResponse Execute(MesCommandRequest input)
+        public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
 
             string? lineCode = JsonUtil.GetParameter(input.SerializeData, "LineCode");
@@ -32,7 +32,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
 
             try
             {
-                string mesReturn = _equipmentService.ADD_BOM_DATA(lineCode, sectionCode, stationCode, sn, rawSn);
+                string mesReturn = await _equipmentService.ADD_BOM_DATA(lineCode, sectionCode, stationCode, sn, rawSn);
                 //return new MesCommandResponse(mesReturn, "{\"Result\":\"OK\",\"ResultCoded\":\"DEFAULT\"}");
                 return new MesCommandResponse(mesReturn);
             }

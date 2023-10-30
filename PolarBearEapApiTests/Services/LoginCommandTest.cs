@@ -24,17 +24,17 @@ namespace PolarBearEapApiTests
          * Then: 回傳 token ("{\"Hwd\":\"EE2DDC7D-5EF5-4B4E-A66F-961823865A57\"}"), ErrorMessage = null
          */
         [Fact]
-        public void TestLoginSuccess()
+        public async Task TestLoginSuccess()
         {
             var mockTokenService = new Mock<ITokenService>();
             var mockMesService = new Mock<IMesService>();
 
             // 設定模擬行為
-            mockMesService.Setup(service => service.CHECK_OP_PASSWORD(It.IsAny<string>(), It.IsAny<string>())).Returns("{\"Result\":\"OK\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":null,\"BindInfo\":null}");
-            mockTokenService.Setup(service => service.Create(It.IsAny<string>())).Returns(fakeGuid);
+            mockMesService.Setup(service => service.CHECK_OP_PASSWORD(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("{\"Result\":\"OK\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":null,\"BindInfo\":null}");
+            mockTokenService.Setup(service => service.Create(It.IsAny<string>())).ReturnsAsync(fakeGuid);
             var command = new LoginCommand(mockTokenService.Object, null, mockMesService.Object);
 
-            MesCommandResponse response = command.Execute(MockMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
             Assert.Null(response.ErrorMessage);
             Assert.Equal("{\"Hwd\":\"" + fakeGuid + "\"}", response.OpResponseInfo);
@@ -46,10 +46,10 @@ namespace PolarBearEapApiTests
          * Then: throw JsonFieldRequireException
          */
         [Fact]
-        public void TestInputWithoutUsername() 
+        public async Task TestInputWithoutUsername() 
         {
             var command = new LoginCommand(null, null, null);
-            var caughtException = Assert.Throws<EapException>(() => command.Execute(MockMesCommandRequestWithoutUsername()));
+            var caughtException = await Assert.ThrowsAsync<EapException>(() => command.Execute(MockMesCommandRequestWithoutUsername()));
             Assert.Contains("JsonFieldRequire", caughtException.Message);
         }
 
@@ -59,10 +59,10 @@ namespace PolarBearEapApiTests
          * Then: throw JsonFieldRequireException
          */
         [Fact]
-        public void TestInputWithoutPassword()
+        public async Task TestInputWithoutPassword()
         {
             var command = new LoginCommand(null, null, null);
-            var caughtException = Assert.Throws<EapException>(() => command.Execute(MockMesCommandRequestWithoutPassword()));
+            var caughtException = await Assert.ThrowsAsync<EapException>(() => command.Execute(MockMesCommandRequestWithoutPassword()));
             Assert.Contains("JsonFieldRequire", caughtException.Message);
         }
 
@@ -72,14 +72,14 @@ namespace PolarBearEapApiTests
          * Then: 回傳 Hwd:"", ErrorMessage = LoginFail
          */
         [Fact]
-        public void TestLoginFail()
+        public async Task TestLoginFail()
         {
             var mockMesService = new Mock<IMesService>();
             // 設定模擬行為
-            mockMesService.Setup(service => service.CHECK_OP_PASSWORD(It.IsAny<string>(), It.IsAny<string>())).Returns("{\"Result\":\"NG\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":\"ID002:The login account and password are incorrect.\",\"BindInfo\":null}");
+            mockMesService.Setup(service => service.CHECK_OP_PASSWORD(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("{\"Result\":\"NG\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":\"ID002:The login account and password are incorrect.\",\"BindInfo\":null}");
             var command = new LoginCommand(null, null, mockMesService.Object);
 
-            MesCommandResponse response = command.Execute(MockMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
             Assert.Equal(ErrorCodeEnum.LoginFail.ToString(), response.ErrorMessage);
             Assert.Equal("{\"Hwd\":\"\"}", response.OpResponseInfo);
@@ -91,7 +91,7 @@ namespace PolarBearEapApiTests
          * Then: 回傳 Result:"NG", ErrorMessage = CallMesServiceException
          */
         [Fact]
-        public void TestMesThrowException()
+        public async Task TestMesThrowException()
         {
             var mockLogger = new Mock<ILogger<LoginCommand>>();
             var mockMesService = new Mock<IMesService>();
@@ -99,7 +99,7 @@ namespace PolarBearEapApiTests
             mockMesService.Setup(service => service.CHECK_OP_PASSWORD(It.IsAny<string>(), It.IsAny<string>())).Throws<Exception>();
             var command = new LoginCommand(null, mockLogger.Object, mockMesService.Object);
 
-            MesCommandResponse response = command.Execute(MockMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
             Assert.Equal(ErrorCodeEnum.CallMesServiceException.ToString(), response.ErrorMessage);
             Assert.Equal("{\"Result\":\"NG\"}", response.OpResponseInfo);
@@ -111,17 +111,17 @@ namespace PolarBearEapApiTests
          * Then: 回傳 Hwd:"", ErrorMessage = SaveTokenFail
          */
         [Fact]
-        public void TestTokenThrowException()
+        public async Task TestTokenThrowException()
         {
             var mockLogger = new Mock<ILogger<LoginCommand>>();
             var mockTokenService = new Mock<ITokenService>();
             var mockMesService = new Mock<IMesService>();
 
-            mockMesService.Setup(service => service.CHECK_OP_PASSWORD(It.IsAny<string>(), It.IsAny<string>())).Returns("{\"Result\":\"OK\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":null,\"BindInfo\":null}");
+            mockMesService.Setup(service => service.CHECK_OP_PASSWORD(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("{\"Result\":\"OK\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":null,\"BindInfo\":null}");
             mockTokenService.Setup(service => service.Create(It.IsAny<string>())).Throws<Exception>();
             var command = new LoginCommand(mockTokenService.Object, mockLogger.Object, mockMesService.Object);
 
-            MesCommandResponse response = command.Execute(MockMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
             Assert.Equal(ErrorCodeEnum.SaveTokenFail.ToString(), response.ErrorMessage);
             Assert.Equal("{\"Hwd\":\"\"}", response.OpResponseInfo);

@@ -19,7 +19,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             _logger = logger;
             _equipmentService = equipmentService;
         }
-        public MesCommandResponse Execute(MesCommandRequest input)
+        public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
             string? lineCode = JsonUtil.GetParameter(input.SerializeData, "LineCode");
             string? sectionCode = JsonUtil.GetParameter(input.SerializeData, "SectionCode");
@@ -34,12 +34,12 @@ namespace PolarBearEapApi.ApplicationCore.Services
                 {
                     string? errorcode = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.list_of_failing_tests");
                     string? errorMessage = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.failure_message");
-                    string mesReturn = _equipmentService.UNIT_PROCESS_COMMIT(lineCode, sectionCode, stationCode, sn, _TEST_FAIL, errorcode, errorMessage);
+                    string mesReturn = await _equipmentService.UNIT_PROCESS_COMMIT(lineCode, sectionCode, stationCode, sn, _TEST_FAIL, errorcode, errorMessage);
                     response = new MesCommandResponse(mesReturn);
                 }
                 else
                 {
-                    string mesReturn = _equipmentService.UNIT_PROCESS_COMMIT(lineCode, sectionCode, stationCode, sn);
+                    string mesReturn = await _equipmentService.UNIT_PROCESS_COMMIT(lineCode, sectionCode, stationCode, sn);
                     response = new MesCommandResponse(mesReturn);
                 }
                 return response;

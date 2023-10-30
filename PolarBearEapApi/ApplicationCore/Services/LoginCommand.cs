@@ -21,7 +21,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             _equipmentService = equipmentService;
         }
 
-        public MesCommandResponse Execute(MesCommandRequest input)
+        public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
             ValidateInput(input.SerializeData);
 
@@ -35,7 +35,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             //驗證帳密
             try
             {
-                mesReturn = _equipmentService.CHECK_OP_PASSWORD(username, password);
+                mesReturn = await _equipmentService.CHECK_OP_PASSWORD(username, password);
             }
             catch (Exception ex)
             {
@@ -54,7 +54,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             //產生token
             try
             {
-                string id = _tokenService.Create(username);
+                string id = await _tokenService.Create(username);
                 return Success(id);
             }
             catch (Exception ex)

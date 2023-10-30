@@ -23,16 +23,16 @@ namespace PolarBearEapApiTests
          * Then: 回傳 "{\"Result\":\"OK\"}", ErrorMessage = null
          */
         [Fact]
-        public void TestSuccess()
+        public async Task TestSuccess()
         {
             var mockMesService = new Mock<IMesService>();
 
             mockMesService.Setup(service => service.UNIT_PROCESS_COMMIT(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns("{\"Result\":\"OK\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":null,\"BindInfo\":null}");
+                .ReturnsAsync("{\"Result\":\"OK\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":null,\"BindInfo\":null}");
 
             var command = new UnitProcessCommitCommand(null!, mockMesService.Object);
 
-            MesCommandResponse response = command.Execute(MockMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
             Assert.Null(response.ErrorMessage);
             Assert.Equal("{\"Result\":\"OK\"}", response.OpResponseInfo);
@@ -44,16 +44,16 @@ namespace PolarBearEapApiTests
          * Then: 回傳 "{\"Result\":\"NG\"}", ErrorMessage = MES回傳的Display欄位
          */
         [Fact]
-        public void TestFail()
+        public async Task TestFail()
         {
             var mockMesService = new Mock<IMesService>();
 
             mockMesService.Setup(service => service.UNIT_PROCESS_COMMIT(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns("{\"Result\":\"NG\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":\"" + MES_RETURN_DISPLAY + "\",\"BindInfo\":null}");
+                .ReturnsAsync("{\"Result\":\"NG\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":\"" + MES_RETURN_DISPLAY + "\",\"BindInfo\":null}");
 
             var command = new UnitProcessCommitCommand(null!, mockMesService.Object);
 
-            MesCommandResponse response = command.Execute(MockMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
             Assert.Equal(MES_RETURN_DISPLAY, response.ErrorMessage);
             Assert.Equal("{\"Result\":\"NG\"}", response.OpResponseInfo);
@@ -65,7 +65,7 @@ namespace PolarBearEapApiTests
          * Then: 回傳 Result:"NG", ErrorMessage = CallMesServiceException
          */
         [Fact]
-        public void TestMesThrowException()
+        public async Task TestMesThrowException()
         {
             var mockLogger = new Mock<ILogger<UnitProcessCommitCommand>>();
             var mockMesService = new Mock<IMesService>();
@@ -74,7 +74,7 @@ namespace PolarBearEapApiTests
 
             var command = new UnitProcessCommitCommand(mockLogger.Object, mockMesService.Object);
 
-            MesCommandResponse response = command.Execute(MockMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
             Assert.Equal(ErrorCodeEnum.CallMesServiceException.ToString(), response.ErrorMessage);
             Assert.Equal("{\"Result\":\"NG\"}", response.OpResponseInfo);
@@ -87,16 +87,16 @@ namespace PolarBearEapApiTests
          * Then: 回傳 "{\"Result\":\"OK\"}", ErrorMessage = null
          */
         [Fact]
-        public void TestFailureCommitSuccess()
+        public async Task TestFailureCommitSuccess()
         {
             var mockMesService = new Mock<IMesService>();
 
             mockMesService.Setup(service => service.UNIT_PROCESS_COMMIT(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), "FAIL", It.IsAny<string>(), It.IsAny<string>()))
-                .Returns("{\"Result\":\"OK\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":null,\"BindInfo\":null}");
+                .ReturnsAsync("{\"Result\":\"OK\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":null,\"BindInfo\":null}");
 
             var command = new UnitProcessCommitCommand(null, mockMesService.Object);
 
-            MesCommandResponse response = command.Execute(MockFailureCommitMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockFailureCommitMesCommandRequest());
             Assert.NotNull(response);
             Assert.Null(response.ErrorMessage);
             Assert.Equal("{\"Result\":\"OK\"}", response.OpResponseInfo);
@@ -108,16 +108,16 @@ namespace PolarBearEapApiTests
          * Then: 回傳 "{\"Result\":\"NG\"}", ErrorMessage = MES回傳的Display欄位
          */
         [Fact]
-        public void TesttFailureCommitSFail()
+        public async Task TesttFailureCommitSFail()
         {
             var mockMesService = new Mock<IMesService>();
 
             mockMesService.Setup(service => service.UNIT_PROCESS_COMMIT(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), "FAIL", It.IsAny<string>(), It.IsAny<string>()))
-                .Returns("{\"Result\":\"NG\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":\"" + MES_RETURN_DISPLAY + "\",\"BindInfo\":null}");
+                .ReturnsAsync("{\"Result\":\"NG\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":\"" + MES_RETURN_DISPLAY + "\",\"BindInfo\":null}");
 
             var command = new UnitProcessCommitCommand(null, mockMesService.Object);
 
-            MesCommandResponse response = command.Execute(MockFailureCommitMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockFailureCommitMesCommandRequest());
             Assert.NotNull(response);
             Assert.Equal(MES_RETURN_DISPLAY, response.ErrorMessage);
             Assert.Equal("{\"Result\":\"NG\"}", response.OpResponseInfo);
@@ -129,7 +129,7 @@ namespace PolarBearEapApiTests
          * Then: 回傳 Result:"NG", ErrorMessage = CallMesServiceException
          */
         [Fact]
-        public void TestFailureCommitMesThrowException()
+        public async Task TestFailureCommitMesThrowException()
         {
             var mockLogger = new Mock<ILogger<UnitProcessCommitCommand>>();
             var mockMesService = new Mock<IMesService>();
@@ -138,7 +138,7 @@ namespace PolarBearEapApiTests
 
             var command = new UnitProcessCommitCommand(mockLogger.Object, mockMesService.Object);
 
-            MesCommandResponse response = command.Execute(MockFailureCommitMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockFailureCommitMesCommandRequest());
             Assert.NotNull(response);
             Assert.Equal(ErrorCodeEnum.CallMesServiceException.ToString(), response.ErrorMessage);
             Assert.Equal("{\"Result\":\"NG\"}", response.OpResponseInfo);

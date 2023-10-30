@@ -19,7 +19,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             _equipmentService = equipmentService;
         }
 
-        public MesCommandResponse Execute(MesCommandRequest input)
+        public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
             string? sectionCode = JsonUtil.GetParameter(input.SerializeData, "SectionCode");
             string? stationCode = JsonUtil.GetParameter(input.SerializeData, "StationCode");
@@ -27,7 +27,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
 
             try
             {
-                string mesReturn = _equipmentService.UNIT_PROCESS_CHECK(sn, sectionCode, stationCode);
+                string mesReturn = await _equipmentService.UNIT_PROCESS_CHECK(sn, sectionCode, stationCode);
                 return new MesCommandResponse(mesReturn);
             }
             catch (Exception ex)

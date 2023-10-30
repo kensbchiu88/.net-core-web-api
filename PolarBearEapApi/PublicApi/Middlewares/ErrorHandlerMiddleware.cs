@@ -52,11 +52,25 @@ namespace PolarBearEapApi.PublicApi.Middlewares
                 var response = context.Response;
                 response.ContentType = "application/json";
                 var responseModel = new ApiResponse();
+
                 responseModel.Hwd = requestHwd;
                 responseModel.Indicator = requestIndicator;
-                responseModel.SerializeData = ResponseSerializeDataGenerator.Fail(requestSerializeData);
-
-                responseModel.Display = error.Message;
+                switch (error) 
+                {
+                    case JsonException:
+                        responseModel.SerializeData = ResponseSerializeDataGenerator.GenerateEmptySerializeData();
+                        responseModel.Display = ErrorCodeEnum.ParseJsonError.ToString() + ": " +  error.Message;
+                        break;
+                    case EapException:
+                        responseModel.SerializeData = ResponseSerializeDataGenerator.Fail(requestSerializeData);
+                        responseModel.Display = error.Message;
+                        break;
+                    default:
+                        responseModel.SerializeData = requestSerializeData;
+                        responseModel.Display = error.Message;
+                        break;
+                }
+                
 
                 _logger.LogError(LogMessageGenerator.GetErrorMessage(requestSerializeData, error.StackTrace ?? ""));
                 _logger.LogError(LogMessageGenerator.GetErrorMessage(requestSerializeData, error.Message));

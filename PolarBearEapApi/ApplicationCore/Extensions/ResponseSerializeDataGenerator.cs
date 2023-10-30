@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using static FIT.MES.Service.CommonEnum;
 
 namespace PolarBearEapApi.ApplicationCore.Extensions
 {
@@ -25,7 +26,7 @@ namespace PolarBearEapApi.ApplicationCore.Extensions
         public static string WithOpResponseInfoJson(string serializeData, string returnMessage)
         {
             //為了讓Request與Response盡量相同，使用string.Replace方式取代OPResponseInfo
-            if (serializeData.Contains("OPResponseInfo"))
+            if (serializeData.Contains("\"OPResponseInfo\":{}"))
                 return serializeData.Replace("\"OPResponseInfo\":{}", "\"OPResponseInfo\":" + returnMessage);
 
             //如果Request沒有帶OPResponseInfo資訊，使用string.Replace()會讓Response也沒有OPResponseInfo，需重新組合Json
@@ -39,6 +40,10 @@ namespace PolarBearEapApi.ApplicationCore.Extensions
             return GenerateSerializeData(lineCode, sectionCode, stationCode, opCategory, opRequestInfo, newOpResponseInfo);
         }
 
+        /**
+         *  發生預期中的錯誤時，產生SerializeData欄位值。
+         *  會針對不同的OPCategory產出不同的OPRequestInfo。例如:GET_SN_BY_SN_FIXTURE:{"SN"=""} , GET_INPUT_DATA:{"Data", "{}"}
+         */
         public static string Fail(string serializeData) 
         {
             string lineCode = JsonUtil.GetParameter(serializeData, "LineCode");
@@ -50,6 +55,11 @@ namespace PolarBearEapApi.ApplicationCore.Extensions
 
             var newOpResponseInfo = GetFailOpResponseInfo(opCategory, opResponseInfo);
             return GenerateSerializeData(lineCode, sectionCode, stationCode, opCategory, opRequestInfo, newOpResponseInfo);
+        }
+
+        public static string GenerateEmptySerializeData()
+        {
+            return GenerateSerializeData("", "", null, "", "{}", "{}");
         }
 
         private static string GenerateSerializeData(string lineCode, string sectionCode, int? stationCode, string opCategory, string opRequestInfo, string opResponseInfo)

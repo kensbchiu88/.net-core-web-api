@@ -4,7 +4,7 @@ namespace PolarBearEapApi.ApplicationCore.Interfaces
 {
     public interface IUploadInfoService
     {
-        UploadInfoEntity Insert(UploadInfoEntity entity);
-        UploadInfoEntity? GetOne(string lineCode, string sectionCode, int stationCode, string sn);
+        Task<UploadInfoEntity> Insert(UploadInfoEntity entity);
+        Task<UploadInfoEntity?> GetOne(string lineCode, string sectionCode, int stationCode, string sn);
     }
 }

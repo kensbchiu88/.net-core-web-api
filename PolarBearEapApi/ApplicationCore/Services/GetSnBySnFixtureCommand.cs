@@ -20,14 +20,14 @@ namespace PolarBearEapApi.ApplicationCore.Services
             _equipmentService = equipmentService;
         }
 
-        public MesCommandResponse Execute(MesCommandRequest input)
+        public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
 
             string? refValue = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.REF_VALUE");
 
             try
             {
-                string mesReturn = _equipmentService.GET_SN_BY_SN_FIXTURE(refValue);
+                string mesReturn = await _equipmentService.GET_SN_BY_SN_FIXTURE(refValue);
                 return GetResponse(mesReturn);
             }
             catch (Exception ex)

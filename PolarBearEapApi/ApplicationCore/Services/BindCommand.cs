@@ -21,7 +21,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             _equipmentService = equipmentService;
         }
 
-        public MesCommandResponse Execute(MesCommandRequest input)
+        public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
             string? lineCode = JsonUtil.GetParameter(input.SerializeData, "LineCode");
             string? sectionCode = JsonUtil.GetParameter(input.SerializeData, "SectionCode");
@@ -29,7 +29,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             string? serverVersion = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.ServerVersion");
 
             //Todo : call mes 檢查職能
-            TokenInfo tokenInfo = _tokenService.GetTokenInfo(input.Hwd);
+            TokenInfo tokenInfo = await _tokenService.GetTokenInfo(input.Hwd);
 
             /*
             string? mesReturn;
@@ -51,7 +51,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             */
 
             //Bind
-            _tokenService.BindMachine(input.Hwd, lineCode, sectionCode, stationCode, serverVersion);
+            await _tokenService.BindMachine(input.Hwd, lineCode, sectionCode, stationCode, serverVersion);
 
             return MesCommandResponse.Ok();
         }

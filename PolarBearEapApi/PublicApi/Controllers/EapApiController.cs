@@ -19,7 +19,7 @@ namespace PolarBearEapApi.PublicApi.Controllers
         }
 
         [HttpPost]
-        public ApiResponse Api([FromBody] ApiRequest data)
+        public async Task<ApiResponse> Api([FromBody] ApiRequest data)
         {
             var commandName = JsonUtil.GetParameter(data.SerializeData, "OPCategory");
             MesCommandRequest serviceInput = new MesCommandRequest
@@ -30,7 +30,7 @@ namespace PolarBearEapApi.PublicApi.Controllers
 
             //excute
             var command = _mesCommandFactory.Get(commandName ?? string.Empty);
-            MesCommandResponse serviceReturn = command.Execute(serviceInput);
+            MesCommandResponse serviceReturn = await command.Execute(serviceInput);
 
             //construct response
             ApiResponse response = new ApiResponse

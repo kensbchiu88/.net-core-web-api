@@ -37,18 +37,18 @@ namespace PolarBearEapApiUnitTests.PublicApi.Controllers
          *       4. Display 與fake MesCommandResponse相同
          */
         [Fact]
-        public void TestApi()
+        public async Task TestApi()
         {
             var mockCommandFactoryService = new Mock<IMesCommandFactory<IMesCommand>>();
             var mockCommand = new Mock<IMesCommand>();
 
 
             mockCommandFactoryService.Setup(service => service.Get(It.IsAny<string>())).Returns(mockCommand.Object);
-            mockCommand.Setup(service => service.Execute(It.IsAny<MesCommandRequest>())).Returns(FakeMesCommandResponse());
+            mockCommand.Setup(service => service.Execute(It.IsAny<MesCommandRequest>())).ReturnsAsync(FakeMesCommandResponse());
 
             var controller = new EapApiController(null, mockCommandFactoryService.Object);
 
-            ApiResponse response = controller.Api(FakeApiRequest());
+            ApiResponse response = await controller.Api(FakeApiRequest());
             Assert.NotNull(response);
             Assert.Equal(HWD, response.Hwd);
             Assert.Equal(INDICATOR, response.Indicator);

@@ -21,16 +21,16 @@ namespace PolarBearEapApiTests
          * Then: 回傳 "{\"SN\":\"H2C336500020VC6RX\"}", ErrorMessage = null
          */
         [Fact]
-        public void TestSuccess() 
+        public async Task TestSuccess() 
         {
             var mockMesService = new Mock<IMesService>();
 
             mockMesService.Setup(service => service.GET_SN_BY_SN_FIXTURE(It.IsAny<string>()))
-                .Returns("{\"Result\":\"OK\",\"ResultCoded\":\"" + SN + "\",\"MessageCode\":null,\"Display\":null,\"BindInfo\":null}");
+                .ReturnsAsync("{\"Result\":\"OK\",\"ResultCoded\":\"" + SN + "\",\"MessageCode\":null,\"Display\":null,\"BindInfo\":null}");
 
             var command = new GetSnBySnFixtureCommand(null, mockMesService.Object);
 
-            MesCommandResponse response = command.Execute(MockMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
             Assert.Null(response.ErrorMessage);
             Assert.Equal("{\"SN\":\"" + SN + "\"}", response.OpResponseInfo);
@@ -41,16 +41,16 @@ namespace PolarBearEapApiTests
          * Given: Mes回傳NG
          * Then: 回傳 "{\"SN\":\"\"}", ErrorMessage = MES回傳的Display欄位
          */
-        [Fact] public void TestFail() 
+        [Fact] public async Task TestFail() 
         {
             var mockMesService = new Mock<IMesService>();
 
             mockMesService.Setup(service => service.GET_SN_BY_SN_FIXTURE(It.IsAny<string>()))
-                .Returns("{\"Result\":\"NG\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":\"" + MES_RETURN_DISPLAY + "\",\"BindInfo\":null}");
+                .ReturnsAsync("{\"Result\":\"NG\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":\"" + MES_RETURN_DISPLAY + "\",\"BindInfo\":null}");
 
             var command = new GetSnBySnFixtureCommand(null, mockMesService.Object);
 
-            MesCommandResponse response = command.Execute(MockMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
             Assert.Equal(MES_RETURN_DISPLAY, response.ErrorMessage);
             Assert.Equal("{\"SN\":\"\"}", response.OpResponseInfo);
@@ -62,7 +62,7 @@ namespace PolarBearEapApiTests
          * Then: throw EapException and Message contains CallMesServiceException
          */
         [Fact]
-        public void TestMesThrowException()
+        public async Task TestMesThrowException()
         {
             var mockLogger = new Mock<ILogger<GetSnBySnFixtureCommand>>();
             var mockMesService = new Mock<IMesService>();
@@ -71,7 +71,7 @@ namespace PolarBearEapApiTests
 
             var command = new GetSnBySnFixtureCommand(mockLogger.Object, mockMesService.Object);
 
-            var caughtException = Assert.Throws<EapException>(() => command.Execute(MockMesCommandRequest()));
+            var caughtException = await Assert.ThrowsAsync<EapException>(() => command.Execute(MockMesCommandRequest()));
             Assert.Contains(ErrorCodeEnum.CallMesServiceException.ToString(), caughtException.Message);
         }
 

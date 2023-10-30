@@ -42,7 +42,7 @@ namespace PolarBearEapApi.PublicApi.Middlewares
                         {
                             if (validateList.Contains(requestOpCategory.ToUpper()))
                             {
-                                tokenService.Validate(requestModel.Hwd);
+                                await tokenService.Validate(requestModel.Hwd);
                             }
                         }
                     }

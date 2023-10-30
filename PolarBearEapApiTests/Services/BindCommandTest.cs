@@ -17,19 +17,19 @@ namespace PolarBearEapApiTests
         * Then: 回傳 "{\"SN\":\"H2C336500020VC6RX\"}", ErrorMessage = null
         */
         [Fact]
-        public void TestSuccess()
+        public async Task TestSuccess()
         {
             var mockTokenService = new Mock<ITokenService>();
             var mockMesService = new Mock<IMesService>();
 
             mockMesService.Setup(service => service.CHECK_SECTION_PERMISSION(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns("{\"Result\":\"OK\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":null,\"BindInfo\":null}");
-            mockTokenService.Setup(service => service.GetTokenInfo(It.IsAny<string>())).Returns(MockTokenInfo);
+                .ReturnsAsync ("{\"Result\":\"OK\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":null,\"BindInfo\":null}");
+            mockTokenService.Setup(service => service.GetTokenInfo(It.IsAny<string>())).ReturnsAsync(MockTokenInfo);
             mockTokenService.Setup(service => service.BindMachine(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Verifiable();
 
             var command = new BindCommand(mockTokenService.Object, null, mockMesService.Object);
 
-            MesCommandResponse response = command.Execute(MockMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
             Assert.Null(response.ErrorMessage);
             Assert.Equal("{\"Result\":\"OK\"}", response.OpResponseInfo);
@@ -41,18 +41,18 @@ namespace PolarBearEapApiTests
          * Then: 回傳 "{\"Result\":\"NG\"}", ErrorMessage = MES回傳的Display欄位
          */
         [Fact]
-        public void TestFail()
+        public async Task TestFail()
         {
             var mockTokenService = new Mock<ITokenService>();
             var mockMesService = new Mock<IMesService>();
 
             mockMesService.Setup(service => service.CHECK_SECTION_PERMISSION(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns("{\"Result\":\"NG\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":\"" + MES_RETURN_DISPLAY + "\",\"BindInfo\":null}");
-            mockTokenService.Setup(service => service.GetTokenInfo(It.IsAny<string>())).Returns(MockTokenInfo);
+                .ReturnsAsync("{\"Result\":\"NG\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":\"" + MES_RETURN_DISPLAY + "\",\"BindInfo\":null}");
+            mockTokenService.Setup(service => service.GetTokenInfo(It.IsAny<string>())).ReturnsAsync(MockTokenInfo);
 
             var command = new BindCommand(mockTokenService.Object, null, mockMesService.Object);
 
-            MesCommandResponse response = command.Execute(MockMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
             //Assert.Equal(MES_RETURN_DISPLAY, response.ErrorMessage);
             //Assert.Equal("{\"Result\":\"NG\"}", response.OpResponseInfo);
@@ -67,18 +67,18 @@ namespace PolarBearEapApiTests
          * Then: 回傳 Result:"NG", ErrorMessage = CallMesServiceException
          */
         [Fact]
-        public void TestMesThrowException()
+        public async Task TestMesThrowException()
         {
             var mockTokenService = new Mock<ITokenService>();
             var mockLogger = new Mock<ILogger<BindCommand>>();
             var mockMesService = new Mock<IMesService>();
 
             mockMesService.Setup(service => service.CHECK_SECTION_PERMISSION(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Throws<Exception>();
-            mockTokenService.Setup(service => service.GetTokenInfo(It.IsAny<string>())).Returns(MockTokenInfo);
+            mockTokenService.Setup(service => service.GetTokenInfo(It.IsAny<string>())).ReturnsAsync(MockTokenInfo);
 
             var command = new BindCommand(mockTokenService.Object, mockLogger.Object, mockMesService.Object);
 
-            MesCommandResponse response = command.Execute(MockMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
             //暫時取消檢查職能
             //Assert.Equal(ErrorCodeEnum.CallMesServiceException.ToString(), response.ErrorMessage);

@@ -20,7 +20,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             _equipmentService = equipmentService;
         }
 
-        public MesCommandResponse Execute(MesCommandRequest input)
+        public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
             string? refValue = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.REF_VALUE");
             if(string.IsNullOrEmpty(refValue)) 
@@ -30,7 +30,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
 
             try
             {
-                string mesReturn = _equipmentService.GET_SN_BY_SMTSN(refValue!);
+                string mesReturn = await _equipmentService.GET_SN_BY_SMTSN(refValue!);
                 return GetResponse(mesReturn);
             }
             catch (Exception ex)

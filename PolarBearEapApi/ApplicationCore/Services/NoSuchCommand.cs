@@ -8,9 +8,9 @@ namespace PolarBearEapApi.ApplicationCore.Services
     public class NoSuchCommand : IMesCommand
     {
         string IMesCommand.CommandName { get; } = "NO_SUCH_COMMAND";
-        MesCommandResponse IMesCommand.Execute(MesCommandRequest input)
+        async Task<MesCommandResponse> IMesCommand.Execute(MesCommandRequest input)
         {
-            return GetResponse("");
+            return await Task.Run( () => GetResponse(""));
         }
 
         private MesCommandResponse GetResponse(string mesReturnString)

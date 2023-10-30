@@ -19,7 +19,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             _uploadInfoService = uploadInfoService;
             _logger = logger;
         }
-        public MesCommandResponse Execute(MesCommandRequest input)
+        public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
             ValidateInput(input);
          
@@ -41,7 +41,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
                     OpRequestInfo = opRequestInfo,
                     UploadTime = DateTime.Now
                 };
-                _uploadInfoService.Insert(entity);
+                await _uploadInfoService.Insert(entity);
 
                 return Success();
             }

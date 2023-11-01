@@ -68,7 +68,6 @@ try
     builder.Services.AddSingleton<IEmailService, EmailService>();
 
     //Filter
-    //builder.Services.AddScoped<SimpleFormatExceptionFilter>();
     builder.Services.AddScoped<SimpleResponseRewriteActionFilter>(); 
 
     builder.Host.UseSerilog();

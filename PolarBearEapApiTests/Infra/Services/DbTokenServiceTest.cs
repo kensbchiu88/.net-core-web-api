@@ -14,7 +14,7 @@ namespace PolarBearEapApiUnitTests.Infra.Services
     public class DbTokenServiceTest
     {
         private readonly EapTokenDbContext _context;
-        private readonly Mock<ILogger<DbTokenService>> _logger;
+        private readonly Mock<ILogger<DbTokenRepository>> _logger;
         private readonly Mock<IConfigCacheService> _cacheService;
 
         private const string TOKEN_EXPIRED_HOURS = "4";
@@ -30,7 +30,7 @@ namespace PolarBearEapApiUnitTests.Infra.Services
         {            
             var options = new DbContextOptionsBuilder<EapTokenDbContext>().UseInMemoryDatabase(databaseName: "Token Unit Test").Options;
             _context = new EapTokenDbContext(options);
-            _logger = new Mock<ILogger<DbTokenService>>();
+            _logger = new Mock<ILogger<DbTokenRepository>>();
             _cacheService = new Mock<IConfigCacheService>();
         }
 
@@ -42,7 +42,7 @@ namespace PolarBearEapApiUnitTests.Infra.Services
         [Fact]
         public async Task TestValidateEmptyToken()
         {
-            var service = new DbTokenService(_context, null, null);
+            var service = new DbTokenRepository(_context, null, null);
             var caughtException = await Assert.ThrowsAsync<EapException>(() => service.Validate(""));
             Assert.Contains("InvalidToken", caughtException.Message);
         }
@@ -55,7 +55,7 @@ namespace PolarBearEapApiUnitTests.Infra.Services
         [Fact]
         public async Task TestValidateNullToken()
         {
-            var service = new DbTokenService(_context, null, null);
+            var service = new DbTokenRepository(_context, null, null);
             string? id = null;
             var caughtException = await Assert.ThrowsAsync<EapException>(() => service.Validate(id!));
             Assert.Contains("InvalidToken", caughtException.Message);
@@ -69,7 +69,7 @@ namespace PolarBearEapApiUnitTests.Infra.Services
         [Fact]
         public async Task TestValidateWrongFormatToken()
         {
-            var service = new DbTokenService(_context, null, null);
+            var service = new DbTokenRepository(_context, null, null);
             var caughtException = await Assert.ThrowsAsync<EapException>(() => service.Validate("Hello"));
             Assert.Contains(ErrorCodeEnum.InvalidTokenFormat.ToString(), caughtException.Message);
         }
@@ -83,7 +83,7 @@ namespace PolarBearEapApiUnitTests.Infra.Services
         public async Task TestValidateInvalidToken()
         {
             _cacheService.Setup(service => service.GetValue(It.IsAny<string>())).Returns(TOKEN_EXPIRED_HOURS);
-            var service = new DbTokenService(_context, _logger.Object, _cacheService.Object);
+            var service = new DbTokenRepository(_context, _logger.Object, _cacheService.Object);
             var caughtException = await Assert.ThrowsAsync<EapException>(() => service.Validate(FAKE_TOKEN_ID));
             Assert.Contains(ErrorCodeEnum.InvalidToken.ToString(), caughtException.Message);
         }
@@ -102,7 +102,7 @@ namespace PolarBearEapApiUnitTests.Infra.Services
             await _context.SaveChangesAsync();
 
             _cacheService.Setup(service => service.GetValue(It.IsAny<string>())).Returns(TOKEN_EXPIRED_HOURS);
-            var service = new DbTokenService(_context, _logger.Object, _cacheService.Object);
+            var service = new DbTokenRepository(_context, _logger.Object, _cacheService.Object);
             var caughtException = await Assert.ThrowsAsync<EapException>(() => service.Validate(entity.Id.ToString()));
             Assert.Contains(ErrorCodeEnum.TokenExpired.ToString(), caughtException.Message);
         }
@@ -121,7 +121,7 @@ namespace PolarBearEapApiUnitTests.Infra.Services
             await _context.SaveChangesAsync();
 
             _cacheService.Setup(service => service.GetValue(It.IsAny<string>())).Returns(TOKEN_EXPIRED_HOURS);
-            var service = new DbTokenService(_context, _logger.Object, _cacheService.Object);
+            var service = new DbTokenRepository(_context, _logger.Object, _cacheService.Object);
             var exception = await Record.ExceptionAsync(() => service.Validate(entity.Id.ToString()));
             Assert.Null(exception);
         }
@@ -134,7 +134,7 @@ namespace PolarBearEapApiUnitTests.Infra.Services
         [Fact]
         public async Task TestCreateToken()
         {
-            var service = new DbTokenService(_context, null, null);
+            var service = new DbTokenRepository(_context, null, null);
             var id = await service.Create(USERNAME);
 
             //驗證DB中的資料
@@ -160,7 +160,7 @@ namespace PolarBearEapApiUnitTests.Infra.Services
         public async Task TestGetTokenInfoWithInvalidTokenId()
         {
             //_cacheService.Setup(service => service.GetValue(It.IsAny<string>())).Returns(TOKEN_EXPIRED_HOURS);
-            var service = new DbTokenService(_context, null, null);
+            var service = new DbTokenRepository(_context, null, null);
             var caughtException = await Assert.ThrowsAsync<EapException>(() => service.GetTokenInfo(FAKE_TOKEN_ID));
             Assert.Contains(ErrorCodeEnum.InvalidToken.ToString(), caughtException.Message);
         }
@@ -178,7 +178,7 @@ namespace PolarBearEapApiUnitTests.Infra.Services
             _context.EapTokenEntities.Add(entity);
             await _context.SaveChangesAsync();
 
-            var service = new DbTokenService(_context, null, null);
+            var service = new DbTokenRepository(_context, null, null);
             var token = await service.GetTokenInfo(entity.Id.ToString());
 
             Assert.NotNull(token);
@@ -202,7 +202,7 @@ namespace PolarBearEapApiUnitTests.Infra.Services
             _context.EapTokenEntities.Add(entity);
             await _context.SaveChangesAsync();
 
-            var service = new DbTokenService(_context, null, null);
+            var service = new DbTokenRepository(_context, null, null);
             var exception = await Record.ExceptionAsync(() => service.BindMachine(entity.Id.ToString(), LINE_CODE, SECTION_CODE, STATION_CODE, SERVER_VERSION));
 
             Assert.Null(exception);
@@ -230,7 +230,7 @@ namespace PolarBearEapApiUnitTests.Infra.Services
         [Fact]
         public async Task TestBindMachineWithInvalidToken()
         {
-            var service = new DbTokenService(_context, null, null);
+            var service = new DbTokenRepository(_context, null, null);
             var caughtException = await Assert.ThrowsAsync<EapException>(() => service.BindMachine(FAKE_TOKEN_ID, LINE_CODE, SECTION_CODE, STATION_CODE, SERVER_VERSION));
             Assert.Contains(ErrorCodeEnum.InvalidToken.ToString(), caughtException.Message);
         }

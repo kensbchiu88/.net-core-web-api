@@ -19,7 +19,7 @@ namespace PolarBearEapApiTests
         [Fact]
         public async Task TestSuccess()
         {
-            var mockTokenService = new Mock<ITokenService>();
+            var mockTokenService = new Mock<ITokenRepository>();
             var mockMesService = new Mock<IMesService>();
 
             mockMesService.Setup(service => service.CHECK_SECTION_PERMISSION(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
@@ -43,7 +43,7 @@ namespace PolarBearEapApiTests
         [Fact]
         public async Task TestFail()
         {
-            var mockTokenService = new Mock<ITokenService>();
+            var mockTokenService = new Mock<ITokenRepository>();
             var mockMesService = new Mock<IMesService>();
 
             mockMesService.Setup(service => service.CHECK_SECTION_PERMISSION(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
@@ -69,7 +69,7 @@ namespace PolarBearEapApiTests
         [Fact]
         public async Task TestMesThrowException()
         {
-            var mockTokenService = new Mock<ITokenService>();
+            var mockTokenService = new Mock<ITokenRepository>();
             var mockLogger = new Mock<ILogger<BindCommand>>();
             var mockMesService = new Mock<IMesService>();
 

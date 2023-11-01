@@ -51,31 +51,45 @@ namespace PolarBearEapApi.PublicApi.Middlewares
             {
                 var response = context.Response;
                 response.ContentType = "application/json";
-                var responseModel = new ApiResponse();
-
-                responseModel.Hwd = requestHwd;
-                responseModel.Indicator = requestIndicator;
-                switch (error) 
+                string result = string.Empty;
+                //SerializeData不為空，Response是ApiResponse格式
+                if (!string.IsNullOrEmpty(requestSerializeData))
                 {
-                    case JsonException:
-                        responseModel.SerializeData = ResponseSerializeDataGenerator.GenerateEmptySerializeData();
-                        responseModel.Display = ErrorCodeEnum.ParseJsonError.ToString() + ": " +  error.Message;
-                        break;
-                    case EapException:
-                        responseModel.SerializeData = ResponseSerializeDataGenerator.Fail(requestSerializeData);
-                        responseModel.Display = error.Message;
-                        break;
-                    default:
-                        responseModel.SerializeData = requestSerializeData;
-                        responseModel.Display = error.Message;
-                        break;
+                    var responseModel = new ApiResponse();
+
+                    responseModel.Hwd = requestHwd;
+                    responseModel.Indicator = requestIndicator;
+                    switch (error)
+                    {
+                        case JsonException:
+                            responseModel.SerializeData = ResponseSerializeDataGenerator.GenerateEmptySerializeData();
+                            responseModel.Display = ErrorCodeEnum.ParseJsonError.ToString() + ": " + error.Message;
+                            break;
+                        case EapException:
+                            responseModel.SerializeData = ResponseSerializeDataGenerator.Fail(requestSerializeData);
+                            responseModel.Display = error.Message;
+                            break;
+                        default:
+                            responseModel.SerializeData = requestSerializeData;
+                            responseModel.Display = error.Message;
+                            break;
+                    }
+                    _logger.LogError(LogMessageGenerator.GetErrorMessage(requestSerializeData, error.ToString()));
+
+                    result = JsonConvert.SerializeObject(responseModel);
                 }
-                
+                else //反之Response是SimpleResponse格式
+                {
+                    var responseModel = new SimpleResponse<object> 
+                    { 
+                        Result = "NG",
+                        Message = error.Message
+                    };
 
-                _logger.LogError(LogMessageGenerator.GetErrorMessage(requestSerializeData, error.StackTrace ?? ""));
-                _logger.LogError(LogMessageGenerator.GetErrorMessage(requestSerializeData, error.Message));
-
-                var result = JsonConvert.SerializeObject(responseModel);
+                    _logger.LogError(error.ToString());
+                    result = JsonConvert.SerializeObject(responseModel);
+                }
+               
                 await response.WriteAsync(result);
             }
         }

@@ -2,7 +2,7 @@
 
 namespace PolarBearEapApi.ApplicationCore.Interfaces
 {
-    public interface ITokenService
+    public interface ITokenRepository
     {
         Task Validate(string id);
         Task<string> Create(string username);

@@ -5,10 +5,10 @@ using PolarBearEapApi.Infra;
 
 namespace PolarBearEapApi.Infra.Services
 {
-    public class DbUploadInfoService : IUploadInfoService
+    public class DbUploadInfoRepository : IUploadInfoRepository
     {
         private readonly UploadInfoDbContext _uploadInfoDbContext;
-        public DbUploadInfoService(UploadInfoDbContext uploadInfoDbContext)
+        public DbUploadInfoRepository(UploadInfoDbContext uploadInfoDbContext)
         {
             _uploadInfoDbContext = uploadInfoDbContext;
         }

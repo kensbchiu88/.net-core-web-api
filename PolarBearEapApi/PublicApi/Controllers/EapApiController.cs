@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
+using PolarBearEapApi.PublicApi.Filters;
 using PolarBearEapApi.PublicApi.Models;
+using System.Diagnostics;
 
 namespace PolarBearEapApi.PublicApi.Controllers
 {
@@ -11,11 +13,13 @@ namespace PolarBearEapApi.PublicApi.Controllers
     {
         private readonly ILogger<EapApiController> _logger;
         private readonly IMesCommandFactory<IMesCommand> _mesCommandFactory;
+        private readonly ILearnFileAlterWarningService _learnFileAlterWarningService;
 
-        public EapApiController(ILogger<EapApiController> logger, IMesCommandFactory<IMesCommand> mesCommandFactory)
+        public EapApiController(ILogger<EapApiController> logger, IMesCommandFactory<IMesCommand> mesCommandFactory, ILearnFileAlterWarningService learnFileAlterWarningService)
         {
             _logger = logger;
             _mesCommandFactory = mesCommandFactory;
+            _learnFileAlterWarningService = learnFileAlterWarningService;
         }
 
         [HttpPost]
@@ -45,6 +49,19 @@ namespace PolarBearEapApi.PublicApi.Controllers
             }
 
             return response;
+        }
+
+        
+        [Route("SendLearnFileAlterWarning")]        
+        [HttpPost]
+        [ServiceFilter(typeof(SimpleResponseRewriteActionFilter))]
+        public async Task SendLearnFileAlterWarning([FromBody] SendLearnFileAlterWarningRequest data)
+        {
+            
+            await _learnFileAlterWarningService.Send(data.FilePath, data.AlterTime, data.Equipment);
+            //throw new NotImplementedException();
+
+            //return new SendLearnFileAlterWarningResponse { Result = "OK" };
         }
     }
 }

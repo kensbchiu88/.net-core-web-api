@@ -32,7 +32,6 @@
             var responseBodyStream = new MemoryStream();
             context.Response.Body = responseBodyStream;
 
-
             try
             {
                 await _next(context);

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using PolarBearEapApi.ApplicationCore.Interfaces;
 
 namespace PolarBearEapApi.PublicApi.Controllers
 {
@@ -8,8 +9,8 @@ namespace PolarBearEapApi.PublicApi.Controllers
     {
         private static readonly string[] Summaries = new[]
         {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
+            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+        };
 
         private readonly ILogger<TestController> _logger;
 

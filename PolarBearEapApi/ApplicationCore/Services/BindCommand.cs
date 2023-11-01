@@ -10,11 +10,11 @@ namespace PolarBearEapApi.ApplicationCore.Services
     {
         public string CommandName { get; } = "BIND";
 
-        private readonly ITokenService _tokenService;
+        private readonly ITokenRepository _tokenService;
         private readonly ILogger<BindCommand> _logger;
         private readonly IMesService _equipmentService;
 
-        public BindCommand(ITokenService context, ILogger<BindCommand> logger, IMesService equipmentService)
+        public BindCommand(ITokenRepository context, ILogger<BindCommand> logger, IMesService equipmentService)
         {
             _tokenService = context;
             _logger = logger;

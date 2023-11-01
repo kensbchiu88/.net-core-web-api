@@ -32,7 +32,7 @@ namespace PolarBearEapApiTests
         [Fact]
         public async Task TestSuccess()
         {
-            var mockUploadInfoService = new Mock<IUploadInfoService>();
+            var mockUploadInfoService = new Mock<IUploadInfoRepository>();
 
             mockUploadInfoService.Setup(service => service.GetOne(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync(MockUploadInfoEntity());
@@ -58,7 +58,7 @@ namespace PolarBearEapApiTests
         public async Task TestNoDataFound()
         {
             var mockLogger = new Mock<ILogger<GetInputDataCommand>>();
-            var mockUploadInfoService = new Mock<IUploadInfoService>();
+            var mockUploadInfoService = new Mock<IUploadInfoRepository>();
 
             mockUploadInfoService.Setup(service => service.GetOne(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync((string lineCode, string sectionCode, int stationCode, string sn) => null);
@@ -80,7 +80,7 @@ namespace PolarBearEapApiTests
         public async Task TestQueryDbException()
         {
             var mockLogger = new Mock<ILogger<GetInputDataCommand>>();
-            var mockUploadInfoService = new Mock<IUploadInfoService>();
+            var mockUploadInfoService = new Mock<IUploadInfoRepository>();
 
             mockUploadInfoService.Setup(service => service.GetOne(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>())).Throws<Exception>();
 

@@ -26,7 +26,7 @@ namespace PolarBearEapApiTests
         [Fact]
         public async Task TestLoginSuccess()
         {
-            var mockTokenService = new Mock<ITokenService>();
+            var mockTokenService = new Mock<ITokenRepository>();
             var mockMesService = new Mock<IMesService>();
 
             // 設定模擬行為
@@ -114,7 +114,7 @@ namespace PolarBearEapApiTests
         public async Task TestTokenThrowException()
         {
             var mockLogger = new Mock<ILogger<LoginCommand>>();
-            var mockTokenService = new Mock<ITokenService>();
+            var mockTokenService = new Mock<ITokenRepository>();
             var mockMesService = new Mock<IMesService>();
 
             mockMesService.Setup(service => service.CHECK_OP_PASSWORD(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("{\"Result\":\"OK\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":null,\"BindInfo\":null}");

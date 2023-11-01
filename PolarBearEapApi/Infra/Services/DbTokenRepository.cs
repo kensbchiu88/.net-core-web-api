@@ -9,14 +9,14 @@ using PolarBearEapApi.ApplicationCore.Constants;
 
 namespace PolarBearEapApi.Infra.Services
 {
-    public class DbTokenService : ITokenService
+    public class DbTokenRepository : ITokenRepository
     {
         private readonly EapTokenDbContext _context;
-        private readonly ILogger<DbTokenService> _logger;
+        private readonly ILogger<DbTokenRepository> _logger;
         private readonly IConfigCacheService _cacheService;
         private const int _DEFAULT_EXPIRED_HOURS = -4;
 
-        public DbTokenService(EapTokenDbContext context, ILogger<DbTokenService> logger, IConfigCacheService cacheService)
+        public DbTokenRepository(EapTokenDbContext context, ILogger<DbTokenRepository> logger, IConfigCacheService cacheService)
         {
             _context = context;
             _logger = logger;

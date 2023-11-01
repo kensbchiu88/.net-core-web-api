@@ -34,7 +34,7 @@ namespace PolarBearEapApiTests
         public async Task TestSuccess() 
         {
             var mockLogger = new Mock<ILogger<UploadInfosCommand>>();
-            var mockUploadInfoService = new Mock<IUploadInfoService>();
+            var mockUploadInfoService = new Mock<IUploadInfoRepository>();
             mockUploadInfoService.Setup(service => service.Insert(It.IsAny<UploadInfoEntity>()))
                 .ReturnsAsync(MockUploadInfoEntity);
 
@@ -56,7 +56,7 @@ namespace PolarBearEapApiTests
         public async Task TestFail()
         {
             var mockLogger = new Mock<ILogger<UploadInfosCommand>>();
-            var mockUploadInfoService = new Mock<IUploadInfoService>();
+            var mockUploadInfoService = new Mock<IUploadInfoRepository>();
 
             mockUploadInfoService.Setup(service => service.Insert(It.IsAny<UploadInfoEntity>())).Throws<Exception>();
 

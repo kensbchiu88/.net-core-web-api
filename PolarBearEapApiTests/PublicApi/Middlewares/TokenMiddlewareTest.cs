@@ -36,7 +36,7 @@ namespace PolarBearEapApiUnitTests.PublicApi.Middlewares
             // Arrange
             var mockLogger = new Mock<ILogger<TokenMiddleware>>();
             var context = FakeHttpContext(BIND_REQUEST_BODY);
-            var mockTokenService = new Mock<ITokenService>();
+            var mockTokenService = new Mock<ITokenRepository>();
             mockTokenService.Setup(service => service.Validate(It.IsAny<string>())).Throws(new EapException(ErrorCodeEnum.InvalidToken));
 
             var requestDelegate = new RequestDelegate((HttpContext httpContext) =>
@@ -66,7 +66,7 @@ namespace PolarBearEapApiUnitTests.PublicApi.Middlewares
             // Arrange
             var mockLogger = new Mock<ILogger<TokenMiddleware>>();
             var context = FakeHttpContext(UNIT_PROCESS_CHEDK_REQUEST_BODY);
-            var mockTokenService = new Mock<ITokenService>();
+            var mockTokenService = new Mock<ITokenRepository>();
             mockTokenService.Setup(service => service.Validate(It.IsAny<string>())).Throws(new EapException(ErrorCodeEnum.InvalidToken));
 
             var requestDelegate = new RequestDelegate((HttpContext httpContext) =>
@@ -97,7 +97,7 @@ namespace PolarBearEapApiUnitTests.PublicApi.Middlewares
             // Arrange
             var mockLogger = new Mock<ILogger<TokenMiddleware>>();
             var context = FakeHttpContext(GET_SN_BY_SN_FIXTURE_REQUEST_BODY);
-            var mockTokenService = new Mock<ITokenService>();
+            var mockTokenService = new Mock<ITokenRepository>();
             mockTokenService.Setup(service => service.Validate(It.IsAny<string>())).Throws(new EapException(ErrorCodeEnum.InvalidToken));
 
             var requestDelegate = new RequestDelegate((HttpContext httpContext) =>
@@ -127,7 +127,7 @@ namespace PolarBearEapApiUnitTests.PublicApi.Middlewares
             // Arrange
             var mockLogger = new Mock<ILogger<TokenMiddleware>>();
             var context = FakeHttpContext(GET_INPUT_DATA_REQUEST_BODY);
-            var mockTokenService = new Mock<ITokenService>();
+            var mockTokenService = new Mock<ITokenRepository>();
             mockTokenService.Setup(service => service.Validate(It.IsAny<string>())).Throws(new EapException(ErrorCodeEnum.InvalidToken));
 
             var requestDelegate = new RequestDelegate((HttpContext httpContext) =>

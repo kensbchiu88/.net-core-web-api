@@ -10,11 +10,11 @@ namespace PolarBearEapApi.ApplicationCore.Services
     {
         public string CommandName { get; } = "LOGIN";
 
-        private readonly ITokenService _tokenService;
+        private readonly ITokenRepository _tokenService;
         private readonly ILogger<LoginCommand> _logger;
         private readonly IMesService _equipmentService;
 
-        public LoginCommand(ITokenService tokenService, ILogger<LoginCommand> logger, IMesService equipmentService)
+        public LoginCommand(ITokenRepository tokenService, ILogger<LoginCommand> logger, IMesService equipmentService)
         {
             _tokenService = tokenService;
             _logger = logger;

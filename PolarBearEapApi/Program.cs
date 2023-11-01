@@ -6,6 +6,8 @@ using PolarBearEapApi.ApplicationCore.Services;
 using PolarBearEapApi.PublicApi.Middlewares;
 using PolarBearEapApi.Infra;
 using PolarBearEapApi.Infra.Services;
+using Microsoft.AspNetCore.Diagnostics;
+using PolarBearEapApi.PublicApi.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +32,7 @@ try
     // Add services to the container.
 
     builder.Services.AddControllers();
+
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
@@ -38,12 +41,14 @@ try
     //add context 
     builder.Services.AddDbContext<UploadInfoDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
     builder.Services.AddDbContext<EapTokenDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection"))) ;
+    builder.Services.AddDbContext<LearnFileAlterWarningDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
 
     //add adaptor
-    builder.Services.AddScoped<ITokenService, DbTokenService>();
-    builder.Services.AddScoped<IUploadInfoService, DbUploadInfoService>();
+    builder.Services.AddScoped<ITokenRepository, DbTokenRepository>();
+    builder.Services.AddScoped<IUploadInfoRepository, DbUploadInfoRepository>();
     builder.Services.AddScoped<IMesService, FitMesService>();
     builder.Services.AddScoped<EquipmentService>();
+    builder.Services.AddScoped<ILearnFileAlterWarningRepository, DbLearnFileAlterWarningRepository>();
 
     //add application service
     builder.Services.AddScoped<IMesCommandFactory<IMesCommand>, MesCommandFactory<IMesCommand>>();
@@ -57,8 +62,13 @@ try
     builder.Services.AddScoped<IMesCommand, LoginCommand>();
     builder.Services.AddScoped<IMesCommand, BindCommand>();
     builder.Services.AddScoped<IMesCommand, GetSnBySmtSnCommand>();
+    builder.Services.AddScoped<ILearnFileAlterWarningService, LearnFileAlterWarningService>();
 
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
+    builder.Services.AddSingleton<IEmailService, EmailService>();
+
+    //Filter
+    builder.Services.AddScoped<SimpleResponseRewriteActionFilter>(); 
 
     builder.Host.UseSerilog();
 
@@ -76,7 +86,6 @@ try
     app.UseMiddleware<LoggerMiddleware>();
     app.UseMiddleware<ErrorHandlerMiddleware>();
     app.UseMiddleware<TokenMiddleware>();
-    
 
     app.UseAuthorization();
 

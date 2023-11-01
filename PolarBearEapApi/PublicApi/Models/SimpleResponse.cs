@@ -1,0 +1,19 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+
+namespace PolarBearEapApi.PublicApi.Models
+{
+    public class SimpleResponse<T>
+    {
+        [JsonPropertyName("Result")]
+
+        public string Result { get; set; }
+        [JsonPropertyName("Data")]
+        [Required]
+        public T? Data { get; set; }
+
+        [JsonPropertyName("Message")]
+        [Required]
+        public string? Message { get; set; }
+    }
+}

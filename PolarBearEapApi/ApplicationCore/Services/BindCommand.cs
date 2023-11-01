@@ -10,11 +10,11 @@ namespace PolarBearEapApi.ApplicationCore.Services
     {
         public string CommandName { get; } = "BIND";
 
-        private readonly ITokenService _tokenService;
+        private readonly ITokenRepository _tokenService;
         private readonly ILogger<BindCommand> _logger;
         private readonly IMesService _equipmentService;
 
-        public BindCommand(ITokenService context, ILogger<BindCommand> logger, IMesService equipmentService)
+        public BindCommand(ITokenRepository context, ILogger<BindCommand> logger, IMesService equipmentService)
         {
             _tokenService = context;
             _logger = logger;
@@ -28,14 +28,12 @@ namespace PolarBearEapApi.ApplicationCore.Services
             string? stationCode = JsonUtil.GetParameter(input.SerializeData, "StationCode");
             string? serverVersion = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.ServerVersion");
 
-            //Todo : call mes 檢查職能
             TokenInfo tokenInfo = await _tokenService.GetTokenInfo(input.Hwd);
 
-            /*
             string? mesReturn;
             try
             {
-                mesReturn = _equipmentService.CHECK_SECTION_PERMISSION(tokenInfo.username, sectionCode, stationCode);
+                mesReturn = await _equipmentService.CHECK_SECTION_PERMISSION(tokenInfo.username, sectionCode, stationCode);
             }
             catch (Exception ex)
             {
@@ -48,8 +46,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             {
                 return new MesCommandResponse(mesReturn);
             }
-            */
-
+            
             //Bind
             await _tokenService.BindMachine(input.Hwd, lineCode, sectionCode, stationCode, serverVersion);
 

@@ -8,11 +8,11 @@ namespace PolarBearEapApi.ApplicationCore.Services
     public class GetInputDataCommand : IMesCommand
     {
         private readonly ILogger<GetInputDataCommand> _logger;
-        private readonly IUploadInfoService _uploadInfoService;
+        private readonly IUploadInfoRepository _uploadInfoService;
 
         string IMesCommand.CommandName { get; } = "GET_INPUT_DATA";
 
-        public GetInputDataCommand(ILogger<GetInputDataCommand> logger, IUploadInfoService uploadInfoService)
+        public GetInputDataCommand(ILogger<GetInputDataCommand> logger, IUploadInfoRepository uploadInfoService)
         {
             _logger = logger;
             _uploadInfoService = uploadInfoService;

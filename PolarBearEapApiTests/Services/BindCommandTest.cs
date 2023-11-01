@@ -19,7 +19,7 @@ namespace PolarBearEapApiTests
         [Fact]
         public async Task TestSuccess()
         {
-            var mockTokenService = new Mock<ITokenService>();
+            var mockTokenService = new Mock<ITokenRepository>();
             var mockMesService = new Mock<IMesService>();
 
             mockMesService.Setup(service => service.CHECK_SECTION_PERMISSION(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
@@ -43,7 +43,7 @@ namespace PolarBearEapApiTests
         [Fact]
         public async Task TestFail()
         {
-            var mockTokenService = new Mock<ITokenService>();
+            var mockTokenService = new Mock<ITokenRepository>();
             var mockMesService = new Mock<IMesService>();
 
             mockMesService.Setup(service => service.CHECK_SECTION_PERMISSION(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
@@ -54,11 +54,8 @@ namespace PolarBearEapApiTests
 
             MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
-            //Assert.Equal(MES_RETURN_DISPLAY, response.ErrorMessage);
-            //Assert.Equal("{\"Result\":\"NG\"}", response.OpResponseInfo);
-            //因暫時取消檢查職能
-            Assert.Null(response.ErrorMessage);
-            Assert.Equal("{\"Result\":\"OK\"}", response.OpResponseInfo);
+            Assert.Equal(MES_RETURN_DISPLAY, response.ErrorMessage);
+            Assert.Equal("{\"Result\":\"NG\"}", response.OpResponseInfo);
         }
 
         /** 
@@ -69,7 +66,7 @@ namespace PolarBearEapApiTests
         [Fact]
         public async Task TestMesThrowException()
         {
-            var mockTokenService = new Mock<ITokenService>();
+            var mockTokenService = new Mock<ITokenRepository>();
             var mockLogger = new Mock<ILogger<BindCommand>>();
             var mockMesService = new Mock<IMesService>();
 
@@ -80,9 +77,8 @@ namespace PolarBearEapApiTests
 
             MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
-            //暫時取消檢查職能
-            //Assert.Equal(ErrorCodeEnum.CallMesServiceException.ToString(), response.ErrorMessage);
-            //Assert.Equal("{\"Result\":\"NG\"}", response.OpResponseInfo);
+            Assert.Equal(ErrorCodeEnum.CallMesServiceException.ToString(), response.ErrorMessage);
+            Assert.Equal("{\"Result\":\"NG\"}", response.OpResponseInfo);
         }
 
         private static MesCommandRequest MockMesCommandRequest()

@@ -23,6 +23,10 @@ namespace PolarBearEapApi.ApplicationCore.Entities
         public DateTime LoginTime { get; set; }
         [Column("bind_time")]
         public DateTime? BindTime { get; set; }
+        [Column("card_time")]
+        public DateTime? CardTime { get; set; }
+        [Column("is_invalid")]
+        public bool? IsInvalid { get; set; }
 
         public static TokenInfo ConvertToTokenInfo(EapTokenEntity source)
         {

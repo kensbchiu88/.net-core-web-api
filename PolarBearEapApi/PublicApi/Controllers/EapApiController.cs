@@ -56,12 +56,8 @@ namespace PolarBearEapApi.PublicApi.Controllers
         [HttpPost]
         [ServiceFilter(typeof(SimpleResponseRewriteActionFilter))]
         public async Task SendLearnFileAlterWarning([FromBody] SendLearnFileAlterWarningRequest data)
-        {
-            
+        {            
             await _learnFileAlterWarningService.Send(data.FilePath, data.AlterTime, data.Equipment);
-            //throw new NotImplementedException();
-
-            //return new SendLearnFileAlterWarningResponse { Result = "OK" };
         }
     }
 }

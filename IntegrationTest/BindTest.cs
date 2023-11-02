@@ -15,7 +15,7 @@ namespace IntegrationTest
     public  class BindTest
     {
         private HttpClient _httpClient;
-        private const int TokenExpireHours = 4;
+        private const int TokenExpireHours = 12;
         private const string HWD = "36bd2cd3-3c94-4d53-a494-79eab5d34e9f";
         private const string INDICATOR = "ADD_RECORD";
         private const string LINE_CODE = "E08-1FT-01";
@@ -99,10 +99,7 @@ namespace IntegrationTest
          * Then: 1.Hwd與request中的Hwd相同, 
          *       2.OPResponseInfo.Result = "NG",
          *       3.Display=TokenExpired
-        */
-        
-        //Deprecate. 在設定檔中已取消TokenExpired
-        /*
+        */        
         [Fact]
         public async Task TestTokenExpired()
         {
@@ -141,9 +138,98 @@ namespace IntegrationTest
             }
 
         }
+        /** 
+         * 測試手動失效token
+         * Given: 正確的json request, 但token.is_invalid = 1
+         * Then: 1.Hwd與request中的Hwd相同, 
+         *       2.OPResponseInfo.Result = "NG",
+         *       3.Display=InvalidToken
         */
+        [Fact]
+        public async Task TestValidateTokenWithIsInvalidTrue()
+        {
+            //新增測試資料到DB中
+            Guid guid = Guid.NewGuid();
+            var options = new DbContextOptionsBuilder<EapTokenDbContext>().UseInMemoryDatabase(databaseName: "InMemoryEmployeeTest").Options;
+            using (var context = new EapTokenDbContext(options))
+            {
+                context.EapTokenEntities.Add(FakeEapTokenEntityWithIsInvalidTrue(guid));
+                await context.SaveChangesAsync();
+            }
 
-        
+            var requestModel = new ApiRequest() { };
+            var endPoint = "/api/v1/EapApi";
+            var requestBody = FakeApiResponse(guid.ToString());
+            var content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(endPoint, content);
+
+            var result = await response.Content.ReadAsStringAsync();
+            Assert.True(!string.IsNullOrEmpty(result));
+            Assert.Equal(guid.ToString(), JsonUtil.GetCaseSensitiveParameter(result, "Hwd"));
+            Assert.Equal("NG", JsonUtil.GetParameter(JsonUtil.GetParameter(result, "SerializeData"), "OPResponseInfo.Result"));
+            Assert.Contains(ErrorCodeEnum.InvalidToken.ToString(), JsonUtil.GetCaseSensitiveParameter(result, "Display"));
+
+            //移除DB中測試資料，避免影響其他測試
+            using (var context = new EapTokenDbContext(options))
+            {
+                var entities = context.EapTokenEntities.ToList();
+                var entityToDelete = context.EapTokenEntities.FirstOrDefault(e => e.Id == guid);
+
+                if (entityToDelete != null)
+                {
+                    context.EapTokenEntities.Remove(entityToDelete);
+                    await context.SaveChangesAsync();
+                }
+            }
+
+        }
+
+        /** 
+         * 測試卡鐘資料失效token
+         * Given: 正確的json request, 但token.card_time有值
+         * Then: 1.Hwd與request中的Hwd相同, 
+         *       2.OPResponseInfo.Result = "NG",
+         *       3.Display=TokenExpired
+        */
+        [Fact]
+        public async Task TestValidateTokenWithCardTimeNotNull()
+        {
+            //新增測試資料到DB中
+            Guid guid = Guid.NewGuid();
+            var options = new DbContextOptionsBuilder<EapTokenDbContext>().UseInMemoryDatabase(databaseName: "InMemoryEmployeeTest").Options;
+            using (var context = new EapTokenDbContext(options))
+            {
+                context.EapTokenEntities.Add(FakeEapTokenEntityWithCardTimeNotNull(guid));
+                await context.SaveChangesAsync();
+            }
+
+            var requestModel = new ApiRequest() { };
+            var endPoint = "/api/v1/EapApi";
+            var requestBody = FakeApiResponse(guid.ToString());
+            var content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(endPoint, content);
+
+            var result = await response.Content.ReadAsStringAsync();
+            Assert.True(!string.IsNullOrEmpty(result));
+            Assert.Equal(guid.ToString(), JsonUtil.GetCaseSensitiveParameter(result, "Hwd"));
+            Assert.Equal("NG", JsonUtil.GetParameter(JsonUtil.GetParameter(result, "SerializeData"), "OPResponseInfo.Result"));
+            Assert.Contains(ErrorCodeEnum.TokenExpired.ToString(), JsonUtil.GetCaseSensitiveParameter(result, "Display"));
+
+            //移除DB中測試資料，避免影響其他測試
+            using (var context = new EapTokenDbContext(options))
+            {
+                var entities = context.EapTokenEntities.ToList();
+                var entityToDelete = context.EapTokenEntities.FirstOrDefault(e => e.Id == guid);
+
+                if (entityToDelete != null)
+                {
+                    context.EapTokenEntities.Remove(entityToDelete);
+                    await context.SaveChangesAsync();
+                }
+            }
+
+        }
+
         private static string FakeEmptyHwdApiRequest()
         {
             JObject opRequestInfo = new JObject();
@@ -214,6 +300,26 @@ namespace IntegrationTest
             entity.Id = guid;
             entity.username = "username";
             entity.LoginTime = DateTime.Now.AddHours(0 - tokenExpiredHours);
+            return entity;
+        }
+
+        private static EapTokenEntity FakeEapTokenEntityWithIsInvalidTrue(Guid guid)
+        {
+            EapTokenEntity entity = new EapTokenEntity();
+            entity.Id = guid;
+            entity.username = "username";
+            entity.LoginTime = DateTime.Now;
+            entity.IsInvalid = true;
+            return entity;
+        }
+
+        private static EapTokenEntity FakeEapTokenEntityWithCardTimeNotNull(Guid guid)
+        {
+            EapTokenEntity entity = new EapTokenEntity();
+            entity.Id = guid;
+            entity.username = "username";
+            entity.LoginTime = DateTime.Now;
+            entity.CardTime = DateTime.Now;
             return entity;
         }
     }

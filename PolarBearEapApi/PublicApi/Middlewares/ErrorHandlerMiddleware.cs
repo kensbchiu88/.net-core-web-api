@@ -52,8 +52,8 @@ namespace PolarBearEapApi.PublicApi.Middlewares
                 var response = context.Response;
                 response.ContentType = "application/json";
                 string result = string.Empty;
-                //SerializeData不為空，Response是ApiResponse格式
-                if (!string.IsNullOrEmpty(requestSerializeData))
+                //SerializeData不為空，Response是ApiResponse格式, 若是JsonException, 也以ApiResponse格式呈現
+                if (!string.IsNullOrEmpty(requestSerializeData) || error is JsonException)
                 {
                     var responseModel = new ApiResponse();
 

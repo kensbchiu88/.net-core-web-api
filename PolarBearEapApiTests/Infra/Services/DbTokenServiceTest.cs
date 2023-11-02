@@ -17,7 +17,7 @@ namespace PolarBearEapApiUnitTests.Infra.Services
         private readonly Mock<ILogger<DbTokenRepository>> _logger;
         private readonly Mock<IConfigCacheService> _cacheService;
 
-        private const string TOKEN_EXPIRED_HOURS = "4";
+        private const string TOKEN_EXPIRED_HOURS = "12";
         private const string USERNAME = "username";
         private const string LINE_CODE = "LINE_CODE";
         private const string SECTION_CODE = "SECTION_CODE";
@@ -127,6 +127,44 @@ namespace PolarBearEapApiUnitTests.Infra.Services
         }
 
         /** 
+         * 測試Validate is_ivalid = true 的Token
+         * Given: 在DB中新增一筆未過期的token資料且is_invalid = 1
+         * Then: throw InvalidToken Exception
+         */
+        [Fact]
+        public async Task TestValidateValidTokenWithIsInvalidTrue()
+        {
+            //在DB中新增測試資料
+            var entity = FakeEapTokenEntityAndIsInvalidTrue();
+            _context.EapTokenEntities.Add(entity);
+            await _context.SaveChangesAsync();
+
+            _cacheService.Setup(service => service.GetValue(It.IsAny<string>())).Returns(TOKEN_EXPIRED_HOURS);
+            var service = new DbTokenRepository(_context, _logger.Object, _cacheService.Object);
+            var exception = await Record.ExceptionAsync(() => service.Validate(entity.Id.ToString()));
+            Assert.Contains(ErrorCodeEnum.InvalidToken.ToString(), exception.Message);
+        }
+
+        /** 
+         * 測試Validate card_time有資料 的Token
+         * Given: 在DB中新增一筆未過期的token資料且card_time有資料
+         * Then: throw TokenExpire Exception
+         */
+        [Fact]
+        public async Task TestValidateValidTokenWithCardTimeNotNull()
+        {
+            //在DB中新增測試資料
+            var entity = FakeEapTokenEntityAndCardTimeNotNull();
+            _context.EapTokenEntities.Add(entity);
+            await _context.SaveChangesAsync();
+
+            _cacheService.Setup(service => service.GetValue(It.IsAny<string>())).Returns(TOKEN_EXPIRED_HOURS);
+            var service = new DbTokenRepository(_context, _logger.Object, _cacheService.Object);
+            var exception = await Record.ExceptionAsync(() => service.Validate(entity.Id.ToString()));
+            Assert.Contains(ErrorCodeEnum.TokenExpired.ToString(), exception.Message);
+        }
+
+        /** 
          * 測試Create token
          * Given: username
          * Then: DB中存在該Guid的資料，且username與input相同
@@ -154,7 +192,7 @@ namespace PolarBearEapApiUnitTests.Infra.Services
         /** 
          * 測試嘗試抓取不存在的token
          * Given: 不存在的token id
-         * Then: 丟出InvalidTokenException
+         * Then: 丟出InvalidToken Exception
          */
         [Fact]
         public async Task TestGetTokenInfoWithInvalidTokenId()
@@ -252,6 +290,28 @@ namespace PolarBearEapApiUnitTests.Infra.Services
             entity.Id = Guid.NewGuid();
             entity.username = USERNAME;
             entity.LoginTime = DateTime.Now;
+
+            return entity;
+        }
+
+        private static EapTokenEntity FakeEapTokenEntityAndIsInvalidTrue()
+        {
+            EapTokenEntity entity = new EapTokenEntity();
+            entity.Id = Guid.NewGuid();
+            entity.username = USERNAME;
+            entity.LoginTime = DateTime.Now;
+            entity.IsInvalid = true;
+
+            return entity;
+        }
+
+        private static EapTokenEntity FakeEapTokenEntityAndCardTimeNotNull()
+        {
+            EapTokenEntity entity = new EapTokenEntity();
+            entity.Id = Guid.NewGuid();
+            entity.username = USERNAME;
+            entity.LoginTime = DateTime.Now;
+            entity.CardTime = DateTime.Now;
 
             return entity;
         }

@@ -36,9 +36,18 @@ namespace PolarBearEapApi.Infra.Services
 
             if (tokens.Any())
             {
-                if (expiredHours > 0 && tokens.First().LoginTime.CompareTo(DateTime.Now.AddHours(0 - expiredHours)) < 0)
+                var token = tokens.First();
+                if (expiredHours > 0 && token.LoginTime.CompareTo(DateTime.Now.AddHours(0 - expiredHours)) < 0)
                 {
                     throw new EapException(ErrorCodeEnum.TokenExpired);
+                }
+                else if (token.CardTime != null)
+                {
+                    throw new EapException(ErrorCodeEnum.TokenExpired);
+                }
+                else if(token.IsInvalid == true) 
+                {
+                    throw new EapException(ErrorCodeEnum.InvalidToken);
                 }
             }
             else

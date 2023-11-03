@@ -14,7 +14,7 @@ namespace PolarBearEapApiTests
         /** 
         * 測試執行成功
         * Given: Mes回傳OK
-        * Then: 回傳 "{\"SN\":\"H2C336500020VC6RX\"}", ErrorMessage = null
+        * Then: 回傳 "{\"Result\":\"OK\"}", ErrorMessage = null
         */
         [Fact]
         public async Task TestSuccess()

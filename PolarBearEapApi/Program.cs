@@ -63,6 +63,7 @@ try
     builder.Services.AddScoped<IMesCommand, BindCommand>();
     builder.Services.AddScoped<IMesCommand, GetSnBySmtSnCommand>();
     builder.Services.AddScoped<ILearnFileAlterWarningService, LearnFileAlterWarningService>();
+    builder.Services.AddScoped<IMesCommand, BindSnFixtureSnCommand>();
 
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
     builder.Services.AddSingleton<IEmailService, EmailService>();

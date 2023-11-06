@@ -66,7 +66,14 @@ namespace PolarBearEapApi.PublicApi.Middlewares
                             responseModel.Display = ErrorCodeEnum.ParseJsonError.ToString() + ": " + error.Message;
                             break;
                         case EapException:
-                            responseModel.SerializeData = ResponseSerializeDataGenerator.Fail(requestSerializeData);
+                            try
+                            {
+                                responseModel.SerializeData = ResponseSerializeDataGenerator.Fail(requestSerializeData);
+                            }
+                            catch 
+                            {
+                                responseModel.SerializeData = requestSerializeData;
+                            }                            
                             responseModel.Display = error.Message;
                             break;
                         default:

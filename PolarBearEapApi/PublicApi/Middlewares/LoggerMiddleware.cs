@@ -31,16 +31,15 @@
             var originalBody = context.Response.Body;
             var responseBodyStream = new MemoryStream();
             context.Response.Body = responseBodyStream;
+            string responseBody = string.Empty;
+
 
             try
             {
                 await _next(context);
 
                 responseBodyStream.Seek(0, SeekOrigin.Begin);
-                var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync();
-
-                // 记录响应内容，这里可以根据需要进行日志记录或其他处理
-                _logger.LogInformation($"Api Response({guid.ToString()}): {responseBody}");
+                responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync();
 
                 // 将响应内容写回原始响应流
                 responseBodyStream.Seek(0, SeekOrigin.Begin);
@@ -48,6 +47,9 @@
             }
             finally
             {
+                // 记录响应内容，这里可以根据需要进行日志记录或其他处理
+                _logger.LogInformation($"Api Response({guid.ToString()}): {responseBody}");
+
                 // 恢复原始响应流
                 context.Response.Body = originalBody;
                 responseBodyStream.Dispose();

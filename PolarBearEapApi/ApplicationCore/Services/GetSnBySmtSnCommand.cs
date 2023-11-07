@@ -22,12 +22,9 @@ namespace PolarBearEapApi.ApplicationCore.Services
 
         public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
-            string? refValue = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.REF_VALUE");
-            if(string.IsNullOrEmpty(refValue)) 
-            {
-                throw new EapException(ErrorCodeEnum.JsonFieldRequire, "OPRequestInfo.REF_VALUE is required");
-            }
+            ValidateInput(input.SerializeData);
 
+            string? refValue = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.REF_VALUE");            
             try
             {
                 string mesReturn = await _equipmentService.GET_SN_BY_SMTSN(refValue!);
@@ -64,12 +61,14 @@ namespace PolarBearEapApi.ApplicationCore.Services
             return response;
         }
 
-        private static MesCommandResponse FailResponse(ErrorCodeEnum errorCodeEnum)
+        private static void ValidateInput(string serializedData)
         {
-            var response = new MesCommandResponse();
-            response.OpResponseInfo = "{\"SN\":\"\"}";
-            response.ErrorMessage = errorCodeEnum.ToString();
-            return response;
+            string? refValue = JsonUtil.GetParameter(serializedData, "OPRequestInfo.REF_VALUE");
+
+            if (string.IsNullOrEmpty(refValue))
+            {
+                throw new EapException(ErrorCodeEnum.JsonFieldRequire, "OPRequestInfo.REF_VALUE is required");
+            }
         }
     }
 }

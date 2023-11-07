@@ -74,11 +74,53 @@ namespace PolarBearEapApiUnitTests.Services
             Assert.Contains(ErrorCodeEnum.CallMesServiceException.ToString(), caughtException.Message);
         }
 
+        /** 
+         * 測試input沒有SN資訊
+         * Given: 沒有SN資訊的input
+         * Then: throw EapException and Message contains JsonFieldRequire
+         */
+        [Fact]
+        public async Task TestInputWithoutSN()
+        {
+            var command = new BindSnFixtureSnCommand(null);
+            var caughtException = await Assert.ThrowsAsync<EapException>(() => command.Execute(MockMesCommandRequestWithoutSN()));
+            Assert.Contains("JsonFieldRequire", caughtException.Message);
+        }
+
+        /** 
+         * 測試input沒有FIXTURE_SN資訊
+         * Given: 沒有FIXTURE_SN資訊的input
+         * Then: throw EapException and Message contains JsonFieldRequire
+         */
+        [Fact]
+        public async Task TestInputWithoutFIXTURE_SN()
+        {
+            var command = new BindSnFixtureSnCommand(null);
+            var caughtException = await Assert.ThrowsAsync<EapException>(() => command.Execute(MockMesCommandRequestWithoutFixtureSn()));
+            Assert.Contains("JsonFieldRequire", caughtException.Message);
+        }
+
         private static MesCommandRequest MockMesCommandRequest()
         {
             MesCommandRequest request = new MesCommandRequest();
             request.Hwd = "EE2DDC7D-5EF5-4B4E-A66F-961823865A57";
             request.SerializeData = "{\"LineCode\":\"E09-1FT-01A\",\"SectionCode\":\"VT_SEC_0\",\"StationCode\":300900,\"OPCategory\":\"BIND_SN_FIXTURESN\",\"OPRequestInfo\":{\"SN\":\"PPPZH002JQH3\",\"FIXTURE_SN\":\"PPPZH002JQH3001\"},\"OPResponseInfo\":{}}";
+            return request;
+        }
+
+        private static MesCommandRequest MockMesCommandRequestWithoutSN()
+        {
+            MesCommandRequest request = new MesCommandRequest();
+            request.Hwd = "EE2DDC7D-5EF5-4B4E-A66F-961823865A57";
+            request.SerializeData = "{\"LineCode\":\"E09-1FT-01A\",\"SectionCode\":\"VT_SEC_0\",\"StationCode\":300900,\"OPCategory\":\"BIND_SN_FIXTURESN\",\"OPRequestInfo\":{\"SN\":\"\",\"FIXTURE_SN\":\"PPPZH002JQH3001\"},\"OPResponseInfo\":{}}";
+            return request;
+        }
+
+        private static MesCommandRequest MockMesCommandRequestWithoutFixtureSn()
+        {
+            MesCommandRequest request = new MesCommandRequest();
+            request.Hwd = "EE2DDC7D-5EF5-4B4E-A66F-961823865A57";
+            request.SerializeData = "{\"LineCode\":\"E09-1FT-01A\",\"SectionCode\":\"VT_SEC_0\",\"StationCode\":300900,\"OPCategory\":\"BIND_SN_FIXTURESN\",\"OPRequestInfo\":{\"SN\":\"PPPZH002JQH3\"},\"OPResponseInfo\":{}}";
             return request;
         }
     }

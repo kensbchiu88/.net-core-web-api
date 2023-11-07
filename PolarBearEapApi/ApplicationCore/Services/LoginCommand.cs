@@ -31,7 +31,6 @@ namespace PolarBearEapApi.ApplicationCore.Services
             //string fitMesResult = "NG";
 
             string? mesReturn;
-            FITMesResponse? fitMesResponse;
             //驗證帳密
             try
             {
@@ -89,12 +88,12 @@ namespace PolarBearEapApi.ApplicationCore.Services
 
             if (string.IsNullOrEmpty(username))
             {
-                throw new EapException(ErrorCodeEnum.JsonFieldRequire, "user field is required");
+                throw new EapException(ErrorCodeEnum.JsonFieldRequire, "OPRequestInfo.user is required");
             }
 
             if (string.IsNullOrEmpty(password))
             {
-                throw new EapException(ErrorCodeEnum.JsonFieldRequire, "pwd field is required");
+                throw new EapException(ErrorCodeEnum.JsonFieldRequire, "OPRequestInfo.pwd is required");
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.PublicApi.Filters;
@@ -47,7 +48,8 @@ namespace PolarBearEapApi.PublicApi.Controllers
             {
                 response.Display = serviceReturn.ErrorMessage;
             }
-
+            var responseString = JsonConvert.SerializeObject(response);
+            _logger.LogInformation($"Response:{responseString}");
             return response;
         }
 

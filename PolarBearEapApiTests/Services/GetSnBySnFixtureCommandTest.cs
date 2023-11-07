@@ -1,11 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Moq;
 using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.ApplicationCore.Services;
-using PolarBearEapApi.Infra.Services;
 using PolarBearEapApi.PublicApi.Models;
 
 namespace PolarBearEapApiTests
@@ -79,7 +77,7 @@ namespace PolarBearEapApiTests
         {
             MesCommandRequest request = new MesCommandRequest();
             request.Hwd = "EE2DDC7D-5EF5-4B4E-A66F-961823865A57";
-            request.SerializeData = "{\"Hwd\": \"36bd2cd3-3c94-4d53-a494-79eab5d34e9f\",\"Indicator\": \"QUERY_RECORD\",\"SerializeData\": \"{\\\"LineCode\\\":\\\"E08-1FT-01\\\",\\\"SectionCode\\\":\\\"T04A-STATION81\\\",\\\"StationCode\\\":72607,\\\"OPCategory\\\":\\\"GET_SN_BY_SN_FIXTURE\\\",\\\"OPRequestInfo\\\":{\\\"REF_VALUE\\\":\\\"UC030-0001-0001\\\",\\\"REF_TYPE\\\":\\\"SN_FIXTURE\\\"},\\\"OPResponseInfo\\\":{}}\"}";
+            request.SerializeData = "{\"LineCode\":\"E08-1FT-01\",\"SectionCode\":\"T04A-STATION81\",\"StationCode\":72607,\"OPCategory\":\"GET_SN_BY_SN_FIXTURE\",\"OPRequestInfo\":{\"REF_VALUE\":\"UC030-0001-0001\",\"REF_TYPE\":\"SN_FIXTURE\"},\"OPResponseInfo\":{}}";
             return request;
         }
     }

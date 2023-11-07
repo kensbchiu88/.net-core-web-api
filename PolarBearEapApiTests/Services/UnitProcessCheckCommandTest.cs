@@ -78,7 +78,7 @@ namespace PolarBearEapApiTests
         {
             MesCommandRequest request = new MesCommandRequest();
             request.Hwd = "EE2DDC7D-5EF5-4B4E-A66F-961823865A57";
-            request.SerializeData = "{\"Hwd\": \"36bd2cd3-3c94-4d53-a494-79eab5d34e9f\",\"Indicator\": \"ADD_RECORD\",\"SerializeData\": \"{\\\"LineCode\\\":\\\"E08-1FT-01\\\",\\\"SectionCode\\\":\\\"TE060\\\",\\\"StationCode\\\":72607,\\\"OPCategory\\\":\\\"UNIT_PROCESS_COMMIT\\\",\\\"OPRequestInfo\\\":{\\\"SN\\\":\\\"H2C336500010VC6RX\\\"},\\\"OPResponseInfo\\\":{}}\"}";
+            request.SerializeData = "{\"LineCode\":\"E08-1FT-01\",\"SectionCode\":\"TE060\",\"StationCode\":72607,\"OPCategory\":\"UNIT_PROCESS_COMMIT\",\"OPRequestInfo\":{\"SN\":\"H2C336500010VC6RX\"},\"OPResponseInfo\":{}}";
             return request;
         }
     }

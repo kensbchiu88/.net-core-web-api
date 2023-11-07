@@ -43,7 +43,7 @@ namespace PolarBearEapApiTests
         /** 
          * 測試input沒有帳號資訊
          * Given: 沒有帳號資訊的input
-         * Then: throw JsonFieldRequireException
+         * Then: throw EapException and Message contains JsonFieldRequire
          */
         [Fact]
         public async Task TestInputWithoutUsername() 
@@ -56,7 +56,7 @@ namespace PolarBearEapApiTests
         /** 
          * 測試input沒有密碼資訊
          * Given: 沒有密碼資訊的input
-         * Then: throw JsonFieldRequireException
+         * Then: throw EapException and Message contains JsonFieldRequire
          */
         [Fact]
         public async Task TestInputWithoutPassword()

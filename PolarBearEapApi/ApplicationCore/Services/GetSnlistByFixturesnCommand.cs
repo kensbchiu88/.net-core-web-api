@@ -7,27 +7,24 @@ using PolarBearEapApi.PublicApi.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
-    public class GetSnBySmtSnCommand : IMesCommand
+    public class GetSnlistByFixturesnCommand : IMesCommand
     {
-        public string CommandName { get; } = "GET_SN_BY_SMTSN";
+        public string CommandName { get; } = "GET_SNLIST_BY_FIXTURESN";
 
-        private readonly ILogger<GetSnBySmtSnCommand> _logger;
         private readonly IMesService _equipmentService;
 
-        public GetSnBySmtSnCommand(ILogger<GetSnBySmtSnCommand> logger, IMesService equipmentService)
+        public GetSnlistByFixturesnCommand(IMesService equipmentService)
         {
-            _logger = logger;
             _equipmentService = equipmentService;
         }
 
         public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
-            ValidateInput(input.SerializeData);
+            string? refValue = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.REF_VALUE");
 
-            string? refValue = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.REF_VALUE");            
             try
             {
-                string mesReturn = await _equipmentService.GET_SN_BY_SMTSN(refValue!);
+                string mesReturn = await _equipmentService.GET_SNLIST_BY_FIXTURESN(refValue);
                 return GetResponse(mesReturn);
             }
             catch (Exception ex)
@@ -59,16 +56,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             }
 
             return response;
-        }
 
-        private static void ValidateInput(string serializedData)
-        {
-            string? refValue = JsonUtil.GetParameter(serializedData, "OPRequestInfo.REF_VALUE");
-
-            if (string.IsNullOrEmpty(refValue))
-            {
-                throw new EapException(ErrorCodeEnum.JsonFieldRequire, "OPRequestInfo.REF_VALUE is required");
-            }
         }
     }
 }

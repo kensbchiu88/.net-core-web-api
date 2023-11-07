@@ -12,5 +12,6 @@
         Task<string> UNIT_PROCESS_COMMIT(string pLineName, string pSectionCode, string pStationCode, string pSN, string pResult, string pList_of_failing_tests, string pFailure_Message);
         Task<string> GET_SN_BY_SMTSN(string pSMTSN);
         Task<string> BIND_FIXTURE_BY_SN_FIXTURE(string pLineName, string pSectionCode, string pStationCode, string pCarrierNo, string pBindCarrierNo);
+        Task<string> GET_SNLIST_BY_FIXTURESN(string pCarrierNo);
     }
 }

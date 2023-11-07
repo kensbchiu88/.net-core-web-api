@@ -5,12 +5,17 @@ using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.ApplicationCore.Services;
 using PolarBearEapApi.PublicApi.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace PolarBearEapApiTests
+namespace PolarBearEapApiUnitTests.Services
 {
-    public class GetSnBySnFixtureCommandTest
+    public class GetSnlistByFixturesnCommandTest
     {
-        private const string SN = "H2C336500020VC6RX";
+        private const string SN = "sn1;sn2";
         private const string MES_RETURN_DISPLAY = "AUTO001:MES station is not defined";
 
         /** 
@@ -19,14 +24,14 @@ namespace PolarBearEapApiTests
          * Then: 回傳 "{\"SN\":\"H2C336500020VC6RX\"}", ErrorMessage = null
          */
         [Fact]
-        public async Task TestSuccess() 
+        public async Task TestSuccess()
         {
             var mockMesService = new Mock<IMesService>();
 
-            mockMesService.Setup(service => service.GET_SN_BY_SN_FIXTURE(It.IsAny<string>()))
+            mockMesService.Setup(service => service.GET_SNLIST_BY_FIXTURESN(It.IsAny<string>()))
                 .ReturnsAsync("{\"Result\":\"OK\",\"ResultCoded\":\"" + SN + "\",\"MessageCode\":null,\"Display\":null,\"BindInfo\":null}");
 
-            var command = new GetSnBySnFixtureCommand(null, mockMesService.Object);
+            var command = new GetSnlistByFixturesnCommand(mockMesService.Object);
 
             MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
@@ -39,14 +44,15 @@ namespace PolarBearEapApiTests
          * Given: Mes回傳NG
          * Then: 回傳 "{\"SN\":\"\"}", ErrorMessage = MES回傳的Display欄位
          */
-        [Fact] public async Task TestFail() 
+        [Fact]
+        public async Task TestFail()
         {
             var mockMesService = new Mock<IMesService>();
 
-            mockMesService.Setup(service => service.GET_SN_BY_SN_FIXTURE(It.IsAny<string>()))
+            mockMesService.Setup(service => service.GET_SNLIST_BY_FIXTURESN(It.IsAny<string>()))
                 .ReturnsAsync("{\"Result\":\"NG\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":\"" + MES_RETURN_DISPLAY + "\",\"BindInfo\":null}");
 
-            var command = new GetSnBySnFixtureCommand(null, mockMesService.Object);
+            var command = new GetSnlistByFixturesnCommand(mockMesService.Object);
 
             MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
@@ -65,9 +71,9 @@ namespace PolarBearEapApiTests
             var mockLogger = new Mock<ILogger<GetSnBySnFixtureCommand>>();
             var mockMesService = new Mock<IMesService>();
 
-            mockMesService.Setup(service => service.GET_SN_BY_SN_FIXTURE(It.IsAny<string>())).Throws<Exception>();
+            mockMesService.Setup(service => service.GET_SNLIST_BY_FIXTURESN(It.IsAny<string>())).Throws<Exception>();
 
-            var command = new GetSnBySnFixtureCommand(mockLogger.Object, mockMesService.Object);
+            var command = new GetSnlistByFixturesnCommand(mockMesService.Object);
 
             var caughtException = await Assert.ThrowsAsync<EapException>(() => command.Execute(MockMesCommandRequest()));
             Assert.Contains(ErrorCodeEnum.CallMesServiceException.ToString(), caughtException.Message);
@@ -77,7 +83,7 @@ namespace PolarBearEapApiTests
         {
             MesCommandRequest request = new MesCommandRequest();
             request.Hwd = "EE2DDC7D-5EF5-4B4E-A66F-961823865A57";
-            request.SerializeData = "{\"LineCode\":\"E08-1FT-01\",\"SectionCode\":\"T04A-STATION81\",\"StationCode\":72607,\"OPCategory\":\"GET_SN_BY_SN_FIXTURE\",\"OPRequestInfo\":{\"REF_VALUE\":\"UC030-0001-0001\",\"REF_TYPE\":\"SN_FIXTURE\"},\"OPResponseInfo\":{}}";
+            request.SerializeData = "{\"LineCode\":\"E08-1FT-01\",\"SectionCode\":\"T04A-STATION432\",\"StationCode\":72617,\"OPCategory\":\"GET_SNLIST_BY_FIXTURESN\",\"OPRequestInfo\":{\"REF_VALUE\":\"OlytoBE2206081668\",\"REF_TYPE\":\"SN_FIXTURE\"},\"OPResponseInfo\":{}}";
             return request;
         }
     }

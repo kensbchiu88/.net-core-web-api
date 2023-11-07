@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Microsoft.Extensions.Logging;
+using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PolarBearEapApi.ApplicationCore.Extensions;
@@ -41,11 +42,12 @@ namespace PolarBearEapApiUnitTests.PublicApi.Controllers
         {
             var mockCommandFactoryService = new Mock<IMesCommandFactory<IMesCommand>>();
             var mockCommand = new Mock<IMesCommand>();
+            var mockLogger = new Mock<ILogger<EapApiController>>();
 
             mockCommandFactoryService.Setup(service => service.Get(It.IsAny<string>())).Returns(mockCommand.Object);
             mockCommand.Setup(service => service.Execute(It.IsAny<MesCommandRequest>())).ReturnsAsync(FakeMesCommandResponse());
 
-            var controller = new EapApiController(null, mockCommandFactoryService.Object, null);
+            var controller = new EapApiController(mockLogger.Object, mockCommandFactoryService.Object, null);
 
             ApiResponse response = await controller.Api(FakeApiRequest());
             Assert.NotNull(response);

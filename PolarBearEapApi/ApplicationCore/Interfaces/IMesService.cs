@@ -1,4 +1,7 @@
-﻿namespace PolarBearEapApi.ApplicationCore.Interfaces
+﻿using Azure;
+using static FIT.MES.Service.CommonEnum;
+
+namespace PolarBearEapApi.ApplicationCore.Interfaces
 {
     /** 因Unit Test需要Mock Service，故將MES提供的Service再包一層，方便Moq Mock */
     public interface IMesService
@@ -13,5 +16,6 @@
         Task<string> GET_SN_BY_SMTSN(string pSMTSN);
         Task<string> BIND_FIXTURE_BY_SN_FIXTURE(string pLineName, string pSectionCode, string pStationCode, string pCarrierNo, string pBindCarrierNo);
         Task<string> GET_SNLIST_BY_FIXTURESN(string pCarrierNo);
+        Task<string> SN_LINK_WO(string pLineName, string pSectionCode, string pStationCode, string pWorkOrderNo, string pSN, string pOperator);
     }
 }

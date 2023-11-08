@@ -45,6 +45,10 @@
                 responseBodyStream.Seek(0, SeekOrigin.Begin);
                 await responseBodyStream.CopyToAsync(originalBody);
             }
+            catch(Exception e)
+            {
+                _logger.LogError(e.ToString());
+            }
             finally
             {
                 // 记录响应内容，这里可以根据需要进行日志记录或其他处理

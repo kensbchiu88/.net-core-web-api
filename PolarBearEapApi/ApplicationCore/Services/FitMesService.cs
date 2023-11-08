@@ -70,5 +70,11 @@ namespace PolarBearEapApi.ApplicationCore.Services
             var result = await Task.Run(() => _equipmentService.GET_SNLIST_BY_FIXTURESN(pCarrierNo));
             return result;
         }
+
+        public async Task<string> SN_LINK_WO(string pLineName, string pSectionCode, string pStationCode, string pWorkOrderNo, string pSN, string pOperator)
+        {
+            var result = await Task.Run(() => _equipmentService.SN_LINK_WO(pLineName, pSectionCode, pStationCode, pWorkOrderNo, pSN, pOperator));
+            return result;
+        }
     }
 }

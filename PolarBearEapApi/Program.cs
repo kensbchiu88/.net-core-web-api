@@ -66,6 +66,7 @@ try
     builder.Services.AddScoped<IMesCommand, BindSnFixtureSnCommand>();
     builder.Services.AddScoped<IMesCommand, GetSnlistByFixturesnCommand>();
     builder.Services.AddScoped<IMesCommand, SnLinkWoCommand>();
+    builder.Services.AddScoped<IMesCommand, GenerateSnByWoCommand>();
 
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
     builder.Services.AddSingleton<IEmailService, EmailService>();

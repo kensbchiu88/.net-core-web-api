@@ -86,6 +86,12 @@ namespace PolarBearEapApi.ApplicationCore.Extensions
                     break;
                 case "GET_SN_BY_SMTSN":
                     opResponseInfoObj.Add("SN", "");
+                    break;                    
+                case "GET_SNLIST_BY_FIXTURESN":
+                    opResponseInfoObj.Add("SN", "");
+                    break;
+                case "GENERATE_SN_BY_WO":
+                    opResponseInfoObj.Add("SN", "");
                     break;
                 default:
                     opResponseInfoObj.Add("Result", "NG");

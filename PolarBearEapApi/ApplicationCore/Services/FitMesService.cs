@@ -14,7 +14,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
 
         public async Task<string> ADD_BOM_DATA(string pLineName, string pSectionCode, string pStationCode, string pSN, string pComponentLot)
         {
-            var result = await Task.Run( () => _equipmentService.ADD_BOM_DATA(pLineName, pSectionCode, pStationCode, pSN, pComponentLot));
+            var result = await Task.Run(() => _equipmentService.ADD_BOM_DATA(pLineName, pSectionCode, pStationCode, pSN, pComponentLot));
             return result;
         }
 
@@ -74,6 +74,12 @@ namespace PolarBearEapApi.ApplicationCore.Services
         public async Task<string> SN_LINK_WO(string pLineName, string pSectionCode, string pStationCode, string pWorkOrderNo, string pSN, string pOperator)
         {
             var result = await Task.Run(() => _equipmentService.SN_LINK_WO(pLineName, pSectionCode, pStationCode, pWorkOrderNo, pSN, pOperator));
+            return result;
+        }
+
+        public async Task<string> GENERATE_SN_BY_WO(string pLineName, string pSectionCode, string pStationCode, string pWorkOrderNo, string pOperator)
+        {
+            var result = await Task.Run(() => _equipmentService.GENERATE_SN_BY_WO(pLineName, pSectionCode, pStationCode, pWorkOrderNo, pOperator));
             return result;
         }
     }

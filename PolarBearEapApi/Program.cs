@@ -42,6 +42,7 @@ try
     builder.Services.AddDbContext<UploadInfoDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
     builder.Services.AddDbContext<EapTokenDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection"))) ;
     builder.Services.AddDbContext<LearnFileAlterWarningDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
+    builder.Services.AddDbContext<StoreProcedureDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MesDatabaseConnection")));
 
     //add adaptor
     builder.Services.AddScoped<ITokenRepository, DbTokenRepository>();
@@ -66,6 +67,7 @@ try
     builder.Services.AddScoped<IMesCommand, BindSnFixtureSnCommand>();
     builder.Services.AddScoped<IMesCommand, GetSnlistByFixturesnCommand>();
     builder.Services.AddScoped<IMesCommand, SnLinkWoCommand>();
+    builder.Services.AddScoped<IMesCommand, GetInvalidtimeBySnCommand>();
 
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
     builder.Services.AddSingleton<IEmailService, EmailService>();

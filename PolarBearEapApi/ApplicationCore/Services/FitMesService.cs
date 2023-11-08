@@ -1,15 +1,23 @@
-﻿using FIT.MES.Service;
+﻿using Azure;
+using FIT.MES.GlueRuleLibrary;
+using FIT.MES.Service;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PolarBearEapApi.ApplicationCore.Interfaces;
+using PolarBearEapApi.Infra;
+using PolarBearEapApi.PublicApi.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
     public class FitMesService : IMesService
     {
         private readonly EquipmentService _equipmentService;
+        private readonly StoreProcedureDbContext _storeProcedureDbContext;
 
-        public FitMesService(EquipmentService equipmentService)
+        public FitMesService(EquipmentService equipmentService, StoreProcedureDbContext storeProcedureDbContext)
         {
             _equipmentService = equipmentService;
+            _storeProcedureDbContext = storeProcedureDbContext;
         }
 
         public async Task<string> ADD_BOM_DATA(string pLineName, string pSectionCode, string pStationCode, string pSN, string pComponentLot)
@@ -74,6 +82,23 @@ namespace PolarBearEapApi.ApplicationCore.Services
         public async Task<string> SN_LINK_WO(string pLineName, string pSectionCode, string pStationCode, string pWorkOrderNo, string pSN, string pOperator)
         {
             var result = await Task.Run(() => _equipmentService.SN_LINK_WO(pLineName, pSectionCode, pStationCode, pWorkOrderNo, pSN, pOperator));
+            return result;
+        }
+
+        public async Task<string> GET_INVALIDTIME_BY_SN(string pSn, string pOperator)
+        {
+            //List<string> mesReturn = await Task.Run(() => GuleRuleUtils.CheckMaterialQty(pSn, pOperator)); 
+
+            //var a = _storeProcedureDbContext.GetMyEntitiesFromStoredProcedure("STATION29", "290001");
+
+            FITMesResponse response = new FITMesResponse 
+            { 
+                Result = "OK",
+                ResultCode = DateTime.Now.AddDays(30).ToString("yyyy-MM-dd HH:mm:ss")
+            };
+
+            var result = JsonConvert.SerializeObject(response);
+
             return result;
         }
     }

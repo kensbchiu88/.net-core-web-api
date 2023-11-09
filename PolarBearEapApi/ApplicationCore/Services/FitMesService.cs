@@ -100,24 +100,32 @@ namespace PolarBearEapApi.ApplicationCore.Services
             {
                 response.Result = "NG";
                 response.Display = "MES station is not defined";
-
             }
             else
             {
-                List<string> mesReturn = await Task.Run(() => GuleRuleUtils.CheckMaterialQty(pSn, mesOperationName));
+                string mesReturn = await Task.Run(() => GuleRuleUtils.CheckGule(pSn, mesOperationName));
+                var mesReturnList = mesReturn.Split(',').ToList();
 
-
-                if (mesReturn.Count > 0)
-                {
-                    response.Result = "OK";
-                    //response.ResultCode = mesReturn.First();
-                    response.ResultCode = DateTime.Now.AddDays(30).ToString("yyyy-MM-dd HH:mm:ss");
-                }
-                else
+                
+                if (mesReturnList.Count == 0)
                 {
                     response.Result = "NG";
                     response.Display = "No Data Found";
                 }
+                else
+                {
+                    if ("OK".Equals(mesReturnList[0], StringComparison.OrdinalIgnoreCase))
+                    {
+                        response.Result = "OK";
+                        response.ResultCode = mesReturnList[1];
+                    }
+                    else
+                    {
+                        response.Result = "NG";
+                        response.Display = mesReturnList[2];
+                    }
+                }
+                
             }
 
             var result = JsonConvert.SerializeObject(response);

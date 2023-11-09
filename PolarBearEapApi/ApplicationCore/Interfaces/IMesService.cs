@@ -17,6 +17,7 @@ namespace PolarBearEapApi.ApplicationCore.Interfaces
         Task<string> BIND_FIXTURE_BY_SN_FIXTURE(string pLineName, string pSectionCode, string pStationCode, string pCarrierNo, string pBindCarrierNo);
         Task<string> GET_SNLIST_BY_FIXTURESN(string pCarrierNo);
         Task<string> SN_LINK_WO(string pLineName, string pSectionCode, string pStationCode, string pWorkOrderNo, string pSN, string pOperator);
-        Task<string> GET_INVALIDTIME_BY_SN(string pSn, string pOperator);
+        Task<string> GET_INVALIDTIME_BY_SN(string pSn, string pSectionCode, string pStationCode);
+        Task<string> UNBIND_SN_FIXTURESN(string pSn);
     }
 }

@@ -14,6 +14,7 @@
         TokenExpired,
         LoginFail,
         InvalidTokenFormat,
-        JsonFieldRequire
+        JsonFieldRequire,
+        InvalidStoredProcedureReturn,
     }
 }

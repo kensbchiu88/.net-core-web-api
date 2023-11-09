@@ -12,12 +12,12 @@ namespace PolarBearEapApi.ApplicationCore.Services
     public class FitMesService : IMesService
     {
         private readonly EquipmentService _equipmentService;
-        private readonly StoreProcedureDbContext _storeProcedureDbContext;
+        private readonly IStoredProcedureResultRepository _storeProcedureResultRepository;
 
-        public FitMesService(EquipmentService equipmentService, StoreProcedureDbContext storeProcedureDbContext)
+        public FitMesService(EquipmentService equipmentService, IStoredProcedureResultRepository storeProcedureResultRepository)
         {
             _equipmentService = equipmentService;
-            _storeProcedureDbContext = storeProcedureDbContext;
+            _storeProcedureResultRepository = storeProcedureResultRepository;
         }
 
         public async Task<string> ADD_BOM_DATA(string pLineName, string pSectionCode, string pStationCode, string pSN, string pComponentLot)
@@ -85,20 +85,42 @@ namespace PolarBearEapApi.ApplicationCore.Services
             return result;
         }
 
-        public async Task<string> GET_INVALIDTIME_BY_SN(string pSn, string pOperator)
+        public async Task<string> GET_INVALIDTIME_BY_SN(string pSn, string pSectionCode, string pStationCode)
         {
-            //List<string> mesReturn = await Task.Run(() => GuleRuleUtils.CheckMaterialQty(pSn, pOperator)); 
+            FITMesResponse response = new FITMesResponse();
+            var mesOperationName = await _storeProcedureResultRepository.GetMesOperation(pSectionCode, pStationCode);
+            if (string.IsNullOrEmpty(mesOperationName))
+            {
+                response.Result = "NG";
+                response.Display = "MES station is not defined";
 
-            //var a = _storeProcedureDbContext.GetMyEntitiesFromStoredProcedure("STATION29", "290001");
+            }
+            else
+            {
+                List<string> mesReturn = await Task.Run(() => GuleRuleUtils.CheckMaterialQty(pSn, mesOperationName));
 
-            FITMesResponse response = new FITMesResponse 
-            { 
-                Result = "OK",
-                ResultCode = DateTime.Now.AddDays(30).ToString("yyyy-MM-dd HH:mm:ss")
-            };
+
+                if (mesReturn.Count > 0)
+                {
+                    response.Result = "OK";
+                    //response.ResultCode = mesReturn.First();
+                    response.ResultCode = DateTime.Now.AddDays(30).ToString("yyyy-MM-dd HH:mm:ss");
+                }
+                else
+                {
+                    response.Result = "NG";
+                    response.Display = "No Data Found";
+                }
+            }
 
             var result = JsonConvert.SerializeObject(response);
 
+            return result;
+        }
+
+        public async Task<string> UNBIND_SN_FIXTURESN(string sn)
+        { 
+            var result = await _storeProcedureResultRepository.UnbindSnFixtureSn(sn);
             return result;
         }
     }

@@ -23,14 +23,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="DBAccess">
+      <HintPath>dll\DBAccess.dll</HintPath>
+    </Reference>
     <Reference Include="Entity">
       <HintPath>dll\Entity.dll</HintPath>
     </Reference>
-    <Reference Include="FIT_MES_EQPMService">
-      <HintPath>dll\FIT_MES_EQPMService.dll</HintPath>
-    </Reference>
     <Reference Include="GlueRule">
       <HintPath>dll\GlueRule.dll</HintPath>
+    </Reference>
+    <Reference Include="MESService">
+      <HintPath>dll\MESService.dll</HintPath>
+    </Reference>
+    <Reference Include="Model">
+      <HintPath>dll\Model.dll</HintPath>
     </Reference>
   </ItemGroup>
 

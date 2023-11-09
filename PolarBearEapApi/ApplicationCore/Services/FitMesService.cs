@@ -1,20 +1,28 @@
-﻿using FIT.MES.Service;
+﻿using Azure;
+using FIT.MES.GlueRuleLibrary;
+using FIT.MES.Service;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PolarBearEapApi.ApplicationCore.Interfaces;
+using PolarBearEapApi.Infra;
+using PolarBearEapApi.PublicApi.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
     public class FitMesService : IMesService
     {
         private readonly EquipmentService _equipmentService;
+        private readonly IStoredProcedureResultRepository _storeProcedureResultRepository;
 
-        public FitMesService(EquipmentService equipmentService)
+        public FitMesService(EquipmentService equipmentService, IStoredProcedureResultRepository storeProcedureResultRepository)
         {
             _equipmentService = equipmentService;
+            _storeProcedureResultRepository = storeProcedureResultRepository;
         }
 
         public async Task<string> ADD_BOM_DATA(string pLineName, string pSectionCode, string pStationCode, string pSN, string pComponentLot)
         {
-            var result = await Task.Run( () => _equipmentService.ADD_BOM_DATA(pLineName, pSectionCode, pStationCode, pSN, pComponentLot));
+            var result = await Task.Run(() => _equipmentService.ADD_BOM_DATA(pLineName, pSectionCode, pStationCode, pSN, pComponentLot));
             return result;
         }
 
@@ -74,6 +82,52 @@ namespace PolarBearEapApi.ApplicationCore.Services
         public async Task<string> SN_LINK_WO(string pLineName, string pSectionCode, string pStationCode, string pWorkOrderNo, string pSN, string pOperator)
         {
             var result = await Task.Run(() => _equipmentService.SN_LINK_WO(pLineName, pSectionCode, pStationCode, pWorkOrderNo, pSN, pOperator));
+            return result;
+        }
+
+        public async Task<string> GENERATE_SN_BY_WO(string pLineName, string pSectionCode, string pStationCode, string pWorkOrderNo, string pOperator)
+        {
+            var result = await Task.Run(() => _equipmentService.GENERATE_SN_BY_WO(pLineName, pSectionCode, pStationCode, pWorkOrderNo, pOperator));
+            return result;
+        }
+
+
+        public async Task<string> GET_INVALIDTIME_BY_SN(string pSn, string pSectionCode, string pStationCode)
+        {
+            FITMesResponse response = new FITMesResponse();
+            var mesOperationName = await _storeProcedureResultRepository.GetMesOperation(pSectionCode, pStationCode);
+            if (string.IsNullOrEmpty(mesOperationName))
+            {
+                response.Result = "NG";
+                response.Display = "MES station is not defined";
+
+            }
+            else
+            {
+                List<string> mesReturn = await Task.Run(() => GuleRuleUtils.CheckMaterialQty(pSn, mesOperationName));
+
+
+                if (mesReturn.Count > 0)
+                {
+                    response.Result = "OK";
+                    //response.ResultCode = mesReturn.First();
+                    response.ResultCode = DateTime.Now.AddDays(30).ToString("yyyy-MM-dd HH:mm:ss");
+                }
+                else
+                {
+                    response.Result = "NG";
+                    response.Display = "No Data Found";
+                }
+            }
+
+            var result = JsonConvert.SerializeObject(response);
+
+            return result;
+        }
+
+        public async Task<string> UNBIND_SN_FIXTURESN(string sn)
+        { 
+            var result = await _storeProcedureResultRepository.UnbindSnFixtureSn(sn);
             return result;
         }
     }

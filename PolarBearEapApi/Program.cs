@@ -50,6 +50,8 @@ try
     builder.Services.AddScoped<IMesService, FitMesService>();
     builder.Services.AddScoped<EquipmentService>();
     builder.Services.AddScoped<ILearnFileAlterWarningRepository, DbLearnFileAlterWarningRepository>();
+    builder.Services.AddScoped<IStoredProcedureResultRepository, SqlServerStoredProcedureResultRepository>();
+
 
     //add application service
     builder.Services.AddScoped<IMesCommandFactory<IMesCommand>, MesCommandFactory<IMesCommand>>();
@@ -69,6 +71,7 @@ try
     builder.Services.AddScoped<IMesCommand, SnLinkWoCommand>();
     builder.Services.AddScoped<IMesCommand, GenerateSnByWoCommand>();
     builder.Services.AddScoped<IMesCommand, GetInvalidtimeBySnCommand>();
+    builder.Services.AddScoped<IMesCommand, UnbindSnFixturesnCommand>();
 
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
     builder.Services.AddSingleton<IEmailService, EmailService>();

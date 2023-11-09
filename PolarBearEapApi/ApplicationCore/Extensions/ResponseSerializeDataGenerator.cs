@@ -93,6 +93,9 @@ namespace PolarBearEapApi.ApplicationCore.Extensions
                 case "GENERATE_SN_BY_WO":
                     opResponseInfoObj.Add("SN", "");
                     break;
+                case "GET_INVALIDTIME_BY_SN":
+                    opResponseInfoObj.Add("invalid_time", "");
+                    break;
                 default:
                     opResponseInfoObj.Add("Result", "NG");
                     break;

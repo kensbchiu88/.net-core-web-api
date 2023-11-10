@@ -79,6 +79,8 @@ try
     builder.Services.AddScoped<IMesCommand, GetCountryandqtyByWo>();
     builder.Services.AddScoped<IMesCommand, GetControlTimeStartCommand>();
     builder.Services.AddScoped<IMesCommand, GetCountryPnDataCommand>();
+    builder.Services.AddScoped<IMesCommand, TrackingChangeSectionCommand>();
+    builder.Services.AddScoped<IMesCommand, GetFgLabeCommandl>();
 
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
     builder.Services.AddSingleton<IEmailService, EmailService>();

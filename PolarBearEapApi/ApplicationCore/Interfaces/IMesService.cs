@@ -20,5 +20,7 @@ namespace PolarBearEapApi.ApplicationCore.Interfaces
         Task<string> GENERATE_SN_BY_WO(string pLineName, string pSectionCode, string pStationCode, string pWorkOrderNo, string pOperator);
         Task<string> GET_INVALIDTIME_BY_SN(string pSn, string pSectionCode, string pStationCode);
         Task<string> UNBIND_SN_FIXTURESN(string pSn);
+        Task<string> HOLD_SNLIST_COMMIT(string pSn);
+        Task<string> GET_SN_BY_RAWSN(string pSn);
     }
 }

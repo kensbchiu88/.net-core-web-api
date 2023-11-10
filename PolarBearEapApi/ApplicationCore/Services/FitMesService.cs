@@ -133,9 +133,21 @@ namespace PolarBearEapApi.ApplicationCore.Services
             return result;
         }
 
-        public async Task<string> UNBIND_SN_FIXTURESN(string sn)
+        public async Task<string> UNBIND_SN_FIXTURESN(string pSn)
         { 
-            var result = await _storeProcedureResultRepository.UnbindSnFixtureSn(sn);
+            var result = await _storeProcedureResultRepository.UnbindSnFixtureSn(pSn);
+            return result;
+        }
+
+        public async Task<string> GET_SN_BY_RAWSN(string pSn)
+        {
+            var result = await _storeProcedureResultRepository.GetSnByRawsn(pSn);
+            return result;
+        }
+        
+        public async Task<string> HOLD_SNLIST_COMMIT(string sn)
+        {
+            var result = await _storeProcedureResultRepository.HoldSnlistCommit(sn);
             return result;
         }
     }

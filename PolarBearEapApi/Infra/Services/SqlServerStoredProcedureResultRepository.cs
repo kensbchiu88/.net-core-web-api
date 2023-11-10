@@ -2,11 +2,7 @@
 using PolarBearEapApi.ApplicationCore.Entities;
 using PolarBearEapApi.PublicApi.Models;
 using Microsoft.EntityFrameworkCore;
-using PolarBearEapApi.ApplicationCore.Constants;
-using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using static FIT.MES.Service.CommonEnum;
-using Azure;
 using Newtonsoft.Json;
 
 namespace PolarBearEapApi.Infra.Services
@@ -42,7 +38,6 @@ namespace PolarBearEapApi.Infra.Services
             return result;
         }
 
-        
         public async Task<string> UnbindSnFixtureSn(string sn)
         {
             var snParam = new SqlParameter("@SN", sn);
@@ -68,6 +63,58 @@ namespace PolarBearEapApi.Infra.Services
 
             return JsonConvert.SerializeObject(fitResponse);             
         }
-        
+
+        public async Task<string> HoldSnlistCommit(string sn)
+        {
+            var snParam = new SqlParameter("@SN", sn);
+
+            List<StoredProcedureResultEntity> porcedureResult;
+
+            porcedureResult = await _context.StoredProcedureResultEntities.FromSql($"dbo.sp_AUTO_HOLD_SNLIST_COMMIT {snParam}").ToListAsync();
+
+            FITMesResponse fitResponse;
+
+            if (!porcedureResult.Any())
+            {
+                fitResponse = new FITMesResponse
+                {
+                    Result = "NG",
+                    Display = "No Data Return"
+                };
+            }
+            else
+            {
+                fitResponse = FITMesResponse.ConvertFromStoredProcedureResult(porcedureResult.First().Result);
+            }
+
+            return JsonConvert.SerializeObject(fitResponse);
+        }
+
+
+        public async Task<string> GetSnByRawsn(string sn)
+        {
+            var snParam = new SqlParameter("@SN", sn);
+
+            List<StoredProcedureResultEntity> porcedureResult;
+
+            porcedureResult = await _context.StoredProcedureResultEntities.FromSql($"sp_AUTO_GET_SN_BY_RAWSN {snParam}").ToListAsync();
+
+            FITMesResponse fitResponse;
+
+            if (!porcedureResult.Any())
+            {
+                fitResponse = new FITMesResponse
+                {
+                    Result = "NG",
+                    Display = "No Data Return"
+                };
+            }
+            else
+            {
+                fitResponse = FITMesResponse.ConvertFromStoredProcedureResult(porcedureResult.First().Result);
+            }
+
+            return JsonConvert.SerializeObject(fitResponse);
+        }
     }
 }

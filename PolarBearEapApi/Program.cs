@@ -72,6 +72,8 @@ try
     builder.Services.AddScoped<IMesCommand, GenerateSnByWoCommand>();
     builder.Services.AddScoped<IMesCommand, GetInvalidtimeBySnCommand>();
     builder.Services.AddScoped<IMesCommand, UnbindSnFixturesnCommand>();
+    builder.Services.AddScoped<IMesCommand, HoldSnlistCommitCommand>();
+    builder.Services.AddScoped<IMesCommand, GetSnByRawsnCommand>();
 
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
     builder.Services.AddSingleton<IEmailService, EmailService>();

@@ -29,7 +29,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
 
             try
             {
-                string mesReturn = await _equipmentService.UNBIND_SN_FIXTURESN(sn!);
+                string mesReturn = await _equipmentService.UNBIND_SN_FIXTURESN(fixtureSn!);
                 return new MesCommandResponse(mesReturn);
             }
             catch (Exception ex)

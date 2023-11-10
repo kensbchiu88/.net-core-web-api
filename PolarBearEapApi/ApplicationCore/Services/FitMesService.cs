@@ -144,5 +144,11 @@ namespace PolarBearEapApi.ApplicationCore.Services
             var result = await _storeProcedureResultRepository.GetSnByRawsn(pSn);
             return result;
         }
+        
+        public async Task<string> HOLD_SNLIST_COMMIT(string sn)
+        {
+            var result = await _storeProcedureResultRepository.HoldSnlistCommit(sn);
+            return result;
+        }
     }
 }

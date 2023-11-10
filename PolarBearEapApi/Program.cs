@@ -82,6 +82,8 @@ try
     builder.Services.AddScoped<IMesCommand, TrackingChangeSectionCommand>();
     builder.Services.AddScoped<IMesCommand, GetFgLabeCommandl>();
 
+    builder.Services.AddScoped<IMesCommand, SpliteSnCommit>();
+
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
     builder.Services.AddSingleton<IEmailService, EmailService>();
 

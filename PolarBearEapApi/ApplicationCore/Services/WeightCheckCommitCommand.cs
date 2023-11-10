@@ -1,21 +1,17 @@
-﻿using PolarBearEapApi.ApplicationCore.Constants;
+﻿using FIT.MES.Service;
+using PolarBearEapApi.ApplicationCore.Constants;
+using PolarBearEapApi.ApplicationCore.Entities;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
+using PolarBearEapApi.Infra.Services;
 using PolarBearEapApi.PublicApi.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
-    public class UnbindSnFixturesnCommand : IMesCommand
+    public class WeightCheckCommitCommand : IMesCommand
     {
-        public string CommandName { get; } = "UNBIND_SN_FIXTURESN";
-
-        private readonly IMesService _equipmentService;
-
-        public UnbindSnFixturesnCommand(IMesService equipmentService) 
-        {
-            _equipmentService = equipmentService;
-        }
+        public string CommandName { get; } = "WEIGHT_CHECK_COMMIT";
 
         public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
@@ -25,17 +21,27 @@ namespace PolarBearEapApi.ApplicationCore.Services
             string? sectionCode = JsonUtil.GetParameter(input.SerializeData, "SectionCode");
             string? stationCode = JsonUtil.GetParameter(input.SerializeData, "StationCode");
             string? sn = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.SN");
-            string? fixtureSn = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.FIXTURE_SN");
+            string? packType = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.PACK_TYPE");
+            string? weight = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.WEIGHT");
 
+            /*
             try
             {
-                string mesReturn = await _equipmentService.UNBIND_SN_FIXTURESN(fixtureSn!);
+                string mesReturn = await _equipmentService.WEIGHT_CHECK_COMMIT(lineCode!, sectionCode!, stationCode!, wo!, sn!, token.username!);
                 return new MesCommandResponse(mesReturn);
             }
             catch (Exception ex)
             {
                 throw new EapException(ErrorCodeEnum.CallMesServiceException, ex);
             }
+            */
+            MesCommandResponse response = new MesCommandResponse
+            {
+                OpResponseInfo = "{\"Result\":\"NG\"}",
+                ErrorMessage = "MES not ready"
+            };
+
+            return response;
         }
 
         private static void ValidateInput(string serializedData)
@@ -46,7 +52,8 @@ namespace PolarBearEapApi.ApplicationCore.Services
             string? sectionCode = JsonUtil.GetParameter(serializedData, "SectionCode");
             string? stationCode = JsonUtil.GetParameter(serializedData, "StationCode");
             string? sn = JsonUtil.GetParameter(serializedData, "OPRequestInfo.SN");
-            string? fixtureSn = JsonUtil.GetParameter(serializedData, "OPRequestInfo.FIXTURE_SN");
+            string? packType = JsonUtil.GetParameter(serializedData, "OPRequestInfo.PACK_TYPE");
+            string? weight = JsonUtil.GetParameter(serializedData, "OPRequestInfo.WEIGHT");
 
             if (string.IsNullOrEmpty(lineCode))
                 requiredFields.Add("LineCode");
@@ -56,8 +63,10 @@ namespace PolarBearEapApi.ApplicationCore.Services
                 requiredFields.Add("StationCode");
             if (string.IsNullOrEmpty(sn))
                 requiredFields.Add("OPRequestInfo.SN");
-            if (string.IsNullOrEmpty(fixtureSn))
-                requiredFields.Add("OPRequestInfo.FIXTURE_SN");
+            if (string.IsNullOrEmpty(packType))
+                requiredFields.Add("OPRequestInfo.PACK_TYPE");
+            if (string.IsNullOrEmpty(weight))
+                requiredFields.Add("OPRequestInfo.WEIGHT");
 
             if (requiredFields.Count > 0)
                 throw new EapException(ErrorCodeEnum.JsonFieldRequire, "Json Fields Required: " + string.Join(",", requiredFields));

@@ -6,16 +6,9 @@ using PolarBearEapApi.PublicApi.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
-    public class UnbindSnFixturesnCommand : IMesCommand
+    public class TrackingChangeSectionCommand : IMesCommand
     {
-        public string CommandName { get; } = "UNBIND_SN_FIXTURESN";
-
-        private readonly IMesService _equipmentService;
-
-        public UnbindSnFixturesnCommand(IMesService equipmentService) 
-        {
-            _equipmentService = equipmentService;
-        }
+        public string CommandName { get; } = "TRACTING_CHANGE_SECTION";
 
         public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
@@ -25,17 +18,26 @@ namespace PolarBearEapApi.ApplicationCore.Services
             string? sectionCode = JsonUtil.GetParameter(input.SerializeData, "SectionCode");
             string? stationCode = JsonUtil.GetParameter(input.SerializeData, "StationCode");
             string? sn = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.SN");
-            string? fixtureSn = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.FIXTURE_SN");
+            string? type = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.Type");
 
+            /*
             try
             {
-                string mesReturn = await _equipmentService.UNBIND_SN_FIXTURESN(fixtureSn!);
+                string mesReturn = await _equipmentService.GET_CONTROL_TIME_START(lineCode!, sectionCode!, stationCode!, wo!, sn!, token.username!);
                 return new MesCommandResponse(mesReturn);
             }
             catch (Exception ex)
             {
                 throw new EapException(ErrorCodeEnum.CallMesServiceException, ex);
             }
+            */
+            MesCommandResponse response = new MesCommandResponse
+            {
+                OpResponseInfo = "{\"Result\":\"NG\"}",
+                ErrorMessage = "MES not ready"
+            };
+
+            return response;
         }
 
         private static void ValidateInput(string serializedData)
@@ -46,7 +48,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             string? sectionCode = JsonUtil.GetParameter(serializedData, "SectionCode");
             string? stationCode = JsonUtil.GetParameter(serializedData, "StationCode");
             string? sn = JsonUtil.GetParameter(serializedData, "OPRequestInfo.SN");
-            string? fixtureSn = JsonUtil.GetParameter(serializedData, "OPRequestInfo.FIXTURE_SN");
+            string? type = JsonUtil.GetParameter(serializedData, "OPRequestInfo.Type");
 
             if (string.IsNullOrEmpty(lineCode))
                 requiredFields.Add("LineCode");
@@ -56,8 +58,8 @@ namespace PolarBearEapApi.ApplicationCore.Services
                 requiredFields.Add("StationCode");
             if (string.IsNullOrEmpty(sn))
                 requiredFields.Add("OPRequestInfo.SN");
-            if (string.IsNullOrEmpty(fixtureSn))
-                requiredFields.Add("OPRequestInfo.FIXTURE_SN");
+            if (string.IsNullOrEmpty(type))
+                requiredFields.Add("OPRequestInfo.Type");
 
             if (requiredFields.Count > 0)
                 throw new EapException(ErrorCodeEnum.JsonFieldRequire, "Json Fields Required: " + string.Join(",", requiredFields));

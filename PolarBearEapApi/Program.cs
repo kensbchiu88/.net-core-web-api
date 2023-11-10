@@ -75,6 +75,11 @@ try
     builder.Services.AddScoped<IMesCommand, HoldSnlistCommitCommand>();
     builder.Services.AddScoped<IMesCommand, GetSnByRawsnCommand>();
 
+    builder.Services.AddScoped<IMesCommand, WeightCheckCommitCommand>();
+    builder.Services.AddScoped<IMesCommand, GetCountryandqtyByWo>();
+    builder.Services.AddScoped<IMesCommand, GetControlTimeStartCommand>();
+    builder.Services.AddScoped<IMesCommand, GetCountryPnDataCommand>();
+
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
     builder.Services.AddSingleton<IEmailService, EmailService>();
 

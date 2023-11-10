@@ -7,5 +7,6 @@ namespace PolarBearEapApi.ApplicationCore.Interfaces
         Task<string> GetMesOperation(string sectionCode, string stationCode);
 
         Task<string> UnbindSnFixtureSn(string sn);
+        Task<string> HoldSnlistCommit(string sn);
     }
 }

@@ -1,5 +1,4 @@
-﻿using FIT.MES.Service;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Exceptions;
@@ -13,6 +12,13 @@ namespace PolarBearEapApi.ApplicationCore.Services
     {
         public string CommandName { get; } = "HOLD_SNLIST_COMMIT";
 
+        private readonly IMesService _equipmentService;
+
+        public HoldSnlistCommitCommand(IMesService equipmentService)
+        {
+            _equipmentService = equipmentService;
+        }
+
         public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
             ValidateInput(input.SerializeData);
@@ -24,20 +30,43 @@ namespace PolarBearEapApi.ApplicationCore.Services
             string? snListString = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.SN_LIST");
 
             var snList = JsonConvert.DeserializeObject<List<SnListModel>>(snListString);
-
-            /*
+            MesCommandResponse response = new MesCommandResponse();
+            bool isAllOk = true;
+            List<string> failSn = new List<string>();
+            List<string> failMessage = new List<string>();
             try
             {
-                string mesReturn = await _equipmentService.UNBIND_SN_FIXTURESN(sn!);
-                return new MesCommandResponse(mesReturn);
+                foreach (var model in snList)
+                {
+                    if (!string.IsNullOrEmpty(model.Sn))
+                    {
+                        string mesReturn = await _equipmentService.HOLD_SNLIST_COMMIT(model.Sn!);
+                        if(!FITMesResponse.IsResultOk(mesReturn)) 
+                        {
+                            isAllOk = false;
+                            var fitMesResponse = JsonConvert.DeserializeObject<FITMesResponse>(mesReturn);
+                            failSn.Add(model.Sn!);
+                            failMessage.Add(fitMesResponse.Display);
+                        }
+                    }                    
+                }                               
             }
             catch (Exception ex)
             {
                 throw new EapException(ErrorCodeEnum.CallMesServiceException, ex);
             }
-            */
 
-            return new MesCommandResponse { OpResponseInfo = "{\"Result\":\"OK\"}"};
+            if (isAllOk)
+            {
+                response.OpResponseInfo = "{\"Result\":\"OK\"}";
+            }
+            else
+            {
+                response.OpResponseInfo = "{\"Result\":\"NG\"}";
+                response.ErrorMessage = "fail sn:" + String.Join(";", failSn) + ", messages:" + String.Join(";", failMessage);
+            }
+
+            return response;
         }
 
         private static void ValidateInput(string serializedData)
@@ -47,7 +76,6 @@ namespace PolarBearEapApi.ApplicationCore.Services
             string? lineCode = JsonUtil.GetParameter(serializedData, "LineCode");
             string? sectionCode = JsonUtil.GetParameter(serializedData, "SectionCode");
             string? stationCode = JsonUtil.GetParameter(serializedData, "StationCode");
-            string? reason = JsonUtil.GetParameter(serializedData, "OPRequestInfo.HOLD_REASON");
             string? snList = JsonUtil.GetParameter(serializedData, "OPRequestInfo.SN_LIST");
 
             if (string.IsNullOrEmpty(lineCode))
@@ -56,8 +84,6 @@ namespace PolarBearEapApi.ApplicationCore.Services
                 requiredFields.Add("SectionCode");
             if (string.IsNullOrEmpty(stationCode))
                 requiredFields.Add("StationCode");
-            if (string.IsNullOrEmpty(reason))
-                requiredFields.Add("OPRequestInfo.HOLD_REASON");
             if (string.IsNullOrEmpty(snList))
                 requiredFields.Add("OPRequestInfo.SN_LIST");
 
@@ -68,7 +94,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
         private class SnListModel
         {
             [JsonProperty("SN", NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
-            private string? Sn { get; set; }
+            public string? Sn { get; set; }
         }
     }
 }

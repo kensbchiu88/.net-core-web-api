@@ -73,19 +73,19 @@ namespace PolarBearEapApi.ApplicationCore.Services
             return response;
         }
 
-        /** Fail. return {\"Data\":\"{}\"} */
+        /** Fail. return {\"Data\":\"\"} */
         private MesCommandResponse Fail(ErrorCodeEnum errorCodeEnum)
         {
             MesCommandResponse response = new MesCommandResponse();
             response.ErrorMessage = errorCodeEnum.ToString();
-            response.OpResponseInfo = "{\"Data\":\"{}\"}";
+            response.OpResponseInfo = "{\"Data\":\"\"}";
             return response;
         }
 
         private MesCommandResponse NoDataFound()
         {
             MesCommandResponse response = new MesCommandResponse();
-            response.OpResponseInfo = "{\"Data\":\"{}\"}";
+            response.OpResponseInfo = "{\"Data\":\"\"}";
             response.ErrorMessage = ErrorCodeEnum.NoDataFound.ToString();
             return response;
         }

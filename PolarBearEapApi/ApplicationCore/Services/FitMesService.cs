@@ -150,5 +150,10 @@ namespace PolarBearEapApi.ApplicationCore.Services
             var result = await _storeProcedureResultRepository.HoldSnlistCommit(sn);
             return result;
         }
+        public async Task<string> SPLITE_SN_COMMIT(string pLineName, string pSectionCode, string pStationCode, string pWorkOrderNo, string pPartentSN, string pChildSNList, string pCarrierNo, string pOperator)
+        {
+            var result = await Task.Run(() => _equipmentService.SPLITE_SN_COMMIT(pLineName, pSectionCode, pStationCode, pWorkOrderNo, pPartentSN, pChildSNList, pCarrierNo, pOperator));
+            return result;
+        }
     }
 }

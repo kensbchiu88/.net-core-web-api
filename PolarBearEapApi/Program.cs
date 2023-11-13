@@ -43,6 +43,7 @@ try
     builder.Services.AddDbContext<EapTokenDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection"))) ;
     builder.Services.AddDbContext<LearnFileAlterWarningDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
     builder.Services.AddDbContext<StoreProcedureDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MesDatabaseConnection")));
+    builder.Services.AddDbContext<EquipmentTemporaryDataDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
 
     //add adaptor
     builder.Services.AddScoped<ITokenRepository, DbTokenRepository>();
@@ -51,6 +52,8 @@ try
     builder.Services.AddScoped<EquipmentService>();
     builder.Services.AddScoped<ILearnFileAlterWarningRepository, DbLearnFileAlterWarningRepository>();
     builder.Services.AddScoped<IStoredProcedureResultRepository, SqlServerStoredProcedureResultRepository>();
+    builder.Services.AddScoped<IStoredProcedureResultRepository, SqlServerStoredProcedureResultRepository>();
+    builder.Services.AddScoped<IEquipmentTemporaryDataRepository, DbEquipmentTemporaryDataRepository>();
 
 
     //add application service
@@ -81,6 +84,10 @@ try
     builder.Services.AddScoped<IMesCommand, GetCountryPnDataCommand>();
     builder.Services.AddScoped<IMesCommand, TrackingChangeSectionCommand>();
     builder.Services.AddScoped<IMesCommand, GetFgLabeCommandl>();
+    builder.Services.AddScoped<IMesCommand, SetRemainingOpentimeCommand>();
+    builder.Services.AddScoped<IMesCommand, GetRemainingOpentimeCommand>();
+
+    builder.Services.AddScoped<IMesCommand, SpliteSnCommit>();
 
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
     builder.Services.AddSingleton<IEmailService, EmailService>();

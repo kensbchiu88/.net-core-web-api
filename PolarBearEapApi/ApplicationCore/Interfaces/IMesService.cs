@@ -22,5 +22,14 @@ namespace PolarBearEapApi.ApplicationCore.Interfaces
         Task<string> UNBIND_SN_FIXTURESN(string pSn);
         Task<string> HOLD_SNLIST_COMMIT(string pSn);
         Task<string> GET_SN_BY_RAWSN(string pSn);
+        /**
+         * SMT 大小板綁定 
+         * pWorkOrderNo 工單
+         * pPartentSN 大板子SN
+         * pChildSNList 小板子SN
+         * pCarrierNo 載具
+         * pOperator 是 user
+         */
+        Task<string> SPLITE_SN_COMMIT(string pLineName, string pSectionCode, string pStationCode, string pWorkOrderNo, string pPartentSN, string pChildSNList, string pCarrierNo, string pOperator);
     }
 }

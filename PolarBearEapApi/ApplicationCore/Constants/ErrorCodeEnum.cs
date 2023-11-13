@@ -16,5 +16,7 @@
         InvalidTokenFormat,
         JsonFieldRequire,
         InvalidStoredProcedureReturn,
+        SetDataFail,
+        InvalidDatimeFormat
     }
 }

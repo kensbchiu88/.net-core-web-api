@@ -99,6 +99,9 @@ namespace PolarBearEapApi.ApplicationCore.Extensions
                 case "GET_SN_BY_RAWSN":
                     opResponseInfoObj.Add("SN", "");
                     break;
+                case "GET_REMAINING_OPENTIME":
+                    opResponseInfoObj.Add("Data", "");
+                    break;
                 default:
                     opResponseInfoObj.Add("Result", "NG");
                     break;

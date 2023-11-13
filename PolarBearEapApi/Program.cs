@@ -87,6 +87,8 @@ try
     builder.Services.AddScoped<IMesCommand, SetRemainingOpentimeCommand>();
     builder.Services.AddScoped<IMesCommand, GetRemainingOpentimeCommand>();
 
+    builder.Services.AddScoped<IMesCommand, SpliteSnCommit>();
+
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
     builder.Services.AddSingleton<IEmailService, EmailService>();
 

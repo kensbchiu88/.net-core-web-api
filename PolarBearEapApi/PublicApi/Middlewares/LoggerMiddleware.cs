@@ -1,4 +1,6 @@
-﻿namespace PolarBearEapApi.PublicApi.Middlewares
+﻿using Serilog.Context;
+
+namespace PolarBearEapApi.PublicApi.Middlewares
 {
     public class LoggerMiddleware
     {
@@ -12,7 +14,6 @@
 
         public async Task Invoke(HttpContext context)
         {
-            var guid = Guid.NewGuid();
             var request = context.Request;
 
             request.EnableBuffering();
@@ -23,7 +24,7 @@
                 // 重要, 才能允許回捲 (request.Body.Seek(0, SeekOrigin.Begin))
                 request.Body.Seek(0, SeekOrigin.Begin);
 
-                _logger.LogInformation($"Api Request({guid.ToString()}): {requestBody}");
+                _logger.LogInformation($"Api Request: {requestBody}");
             }
 
 
@@ -52,7 +53,7 @@
             finally
             {
                 // 记录响应内容，这里可以根据需要进行日志记录或其他处理
-                _logger.LogInformation($"Api Response({guid.ToString()}): {responseBody}");
+                _logger.LogInformation($"Api Response: {responseBody}");
 
                 // 恢复原始响应流
                 context.Response.Body = originalBody;

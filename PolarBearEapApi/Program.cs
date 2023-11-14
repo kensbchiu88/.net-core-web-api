@@ -15,6 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
+    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {CorrelationId} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .Enrich.FromLogContext()
     .CreateLogger();
 
 /*
@@ -102,7 +104,6 @@ try
     //soap
     builder.Services.AddSoapCore();
     builder.Services.AddScoped<IWebService, WebService>();
-    builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
     //
 
@@ -117,6 +118,8 @@ try
 
     app.UseHttpsRedirection();
 
+    //Middleware
+    app.UseMiddleware<CorrelationIdMiddleware>();
     app.UseMiddleware<LoggerMiddleware>();
     app.UseMiddleware<ErrorHandlerMiddleware>();
     app.UseMiddleware<TokenMiddleware>();

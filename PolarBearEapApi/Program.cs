@@ -84,9 +84,12 @@ try
     builder.Services.AddScoped<IMesCommand, GetCountryPnDataCommand>();
     builder.Services.AddScoped<IMesCommand, TrackingChangeSectionCommand>();
     builder.Services.AddScoped<IMesCommand, GetFgLabeCommandl>();
+    builder.Services.AddScoped<IMesCommand, GetCountryPnCheckResultCommand>();
+
     builder.Services.AddScoped<IMesCommand, SetRemainingOpentimeCommand>();
     builder.Services.AddScoped<IMesCommand, GetRemainingOpentimeCommand>();
 
+    
     builder.Services.AddScoped<IMesCommand, SpliteSnCommit>();
 
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();

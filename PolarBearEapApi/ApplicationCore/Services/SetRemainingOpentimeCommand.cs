@@ -15,9 +15,10 @@ namespace PolarBearEapApi.ApplicationCore.Services
         private readonly ILogger<SetRemainingOpentimeCommand> _logger;
         private const string KEY = "REMAINING_OPENTIME";
 
-        public SetRemainingOpentimeCommand(IEquipmentTemporaryDataRepository repository)
+        public SetRemainingOpentimeCommand(IEquipmentTemporaryDataRepository repository, ILogger<SetRemainingOpentimeCommand> logger)
         {
             _repository = repository;
+            _logger = logger;
         }
 
         public async Task<MesCommandResponse> Execute(MesCommandRequest input)

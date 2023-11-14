@@ -10,18 +10,18 @@ namespace PolarBearEapApi.ApplicationCore.Services
     {
         public string CommandName { get; } = "LOGIN";
 
-        private readonly ITokenService _tokenService;
+        private readonly ITokenRepository _tokenService;
         private readonly ILogger<LoginCommand> _logger;
         private readonly IMesService _equipmentService;
 
-        public LoginCommand(ITokenService tokenService, ILogger<LoginCommand> logger, IMesService equipmentService)
+        public LoginCommand(ITokenRepository tokenService, ILogger<LoginCommand> logger, IMesService equipmentService)
         {
             _tokenService = tokenService;
             _logger = logger;
             _equipmentService = equipmentService;
         }
 
-        public MesCommandResponse Execute(MesCommandRequest input)
+        public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
             ValidateInput(input.SerializeData);
 
@@ -31,11 +31,10 @@ namespace PolarBearEapApi.ApplicationCore.Services
             //string fitMesResult = "NG";
 
             string? mesReturn;
-            FITMesResponse? fitMesResponse;
             //驗證帳密
             try
             {
-                mesReturn = _equipmentService.CHECK_OP_PASSWORD(username, password);
+                mesReturn = await _equipmentService.CHECK_OP_PASSWORD(username, password);
             }
             catch (Exception ex)
             {
@@ -54,7 +53,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             //產生token
             try
             {
-                string id = _tokenService.Create(username);
+                string id = await _tokenService.Create(username);
                 return Success(id);
             }
             catch (Exception ex)
@@ -89,12 +88,12 @@ namespace PolarBearEapApi.ApplicationCore.Services
 
             if (string.IsNullOrEmpty(username))
             {
-                throw new EapException(ErrorCodeEnum.JsonFieldRequire, "user field is required");
+                throw new EapException(ErrorCodeEnum.JsonFieldRequire, "OPRequestInfo.user is required");
             }
 
             if (string.IsNullOrEmpty(password))
             {
-                throw new EapException(ErrorCodeEnum.JsonFieldRequire, "pwd field is required");
+                throw new EapException(ErrorCodeEnum.JsonFieldRequire, "OPRequestInfo.pwd is required");
             }
         }
     }

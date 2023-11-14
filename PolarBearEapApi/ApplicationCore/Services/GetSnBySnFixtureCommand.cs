@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using PolarBearEapApi.ApplicationCore.Constants;
+using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.PublicApi.Models;
@@ -19,21 +20,19 @@ namespace PolarBearEapApi.ApplicationCore.Services
             _equipmentService = equipmentService;
         }
 
-        public MesCommandResponse Execute(MesCommandRequest input)
+        public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
-
+            ValidateInput(input.SerializeData);
             string? refValue = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.REF_VALUE");
 
             try
             {
-                string mesReturn = _equipmentService.GET_SN_BY_SN_FIXTURE(refValue);
+                string mesReturn = await _equipmentService.GET_SN_BY_SN_FIXTURE(refValue!);
                 return GetResponse(mesReturn);
             }
             catch (Exception ex)
             {
-                _logger.LogError(LogMessageGenerator.GetErrorMessage(input.SerializeData, ex.StackTrace ?? ""));
-                _logger.LogError(LogMessageGenerator.GetErrorMessage(input.SerializeData, ex.Message));
-                return MesCommandResponse.Fail(ErrorCodeEnum.CallMesServiceException);
+                throw new EapException(ErrorCodeEnum.CallMesServiceException, ex);
             }
         }
 
@@ -61,6 +60,16 @@ namespace PolarBearEapApi.ApplicationCore.Services
             }
 
             return response;
+        }
+
+        private static void ValidateInput(string serializedData)
+        {
+            string? refValue = JsonUtil.GetParameter(serializedData, "OPRequestInfo.REF_VALUE");
+
+            if (string.IsNullOrEmpty(refValue))
+            {
+                throw new EapException(ErrorCodeEnum.JsonFieldRequire, "OPRequestInfo.REF_VALUE is required");
+            }
         }
     }
 

@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MailKit" Version="4.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.11" />
@@ -23,8 +24,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="FIT_MES_EQPMService">
-      <HintPath>dll\FIT_MES_EQPMService.dll</HintPath>
+    <Reference Include="DBAccess">
+      <HintPath>dll\DBAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="Entity">
+      <HintPath>dll\Entity.dll</HintPath>
+    </Reference>
+    <Reference Include="GlueRule">
+      <HintPath>dll\GlueRule.dll</HintPath>
+    </Reference>
+    <Reference Include="MESService">
+      <HintPath>dll\MESService.dll</HintPath>
+    </Reference>
+    <Reference Include="Model">
+      <HintPath>dll\Model.dll</HintPath>
     </Reference>
   </ItemGroup>
 

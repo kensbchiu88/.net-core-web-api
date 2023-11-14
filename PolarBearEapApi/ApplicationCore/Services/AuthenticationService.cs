@@ -15,14 +15,14 @@ namespace PolarBearEapApi.ApplicationCore.Services
             _equipmentService = equipmentService;
         }
 
-        public bool Login(string username, string password)
+        public async Task<bool> Login(string username, string password)
         {
             bool result = false;
 
             string mesReturn;
             try
             {
-                mesReturn = _equipmentService.CHECK_OP_PASSWORD(username, password);
+                mesReturn = await _equipmentService.CHECK_OP_PASSWORD(username, password);
             }
             catch (Exception ex)
             {

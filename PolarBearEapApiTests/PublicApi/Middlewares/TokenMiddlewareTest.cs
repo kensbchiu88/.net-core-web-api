@@ -3,17 +3,9 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.PublicApi.Middlewares;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using PolarBearEapApi.ApplicationCore.Exceptions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using Azure.Core;
-using System.Diagnostics;
 using PolarBearEapApi.ApplicationCore.Constants;
 
 namespace PolarBearEapApiUnitTests.PublicApi.Middlewares
@@ -36,7 +28,7 @@ namespace PolarBearEapApiUnitTests.PublicApi.Middlewares
             // Arrange
             var mockLogger = new Mock<ILogger<TokenMiddleware>>();
             var context = FakeHttpContext(BIND_REQUEST_BODY);
-            var mockTokenService = new Mock<ITokenService>();
+            var mockTokenService = new Mock<ITokenRepository>();
             mockTokenService.Setup(service => service.Validate(It.IsAny<string>())).Throws(new EapException(ErrorCodeEnum.InvalidToken));
 
             var requestDelegate = new RequestDelegate((HttpContext httpContext) =>
@@ -47,7 +39,7 @@ namespace PolarBearEapApiUnitTests.PublicApi.Middlewares
             var middleware = new TokenMiddleware(requestDelegate, mockLogger.Object);
 
             // Act
-            var exception = await Record.ExceptionAsync(() => middleware.Invoke(context, mockTokenService.Object));
+            var exception = await Record.ExceptionAsync(() => middleware.InvokeAsync(context, mockTokenService.Object));
 
             //assert
             Assert.NotNull(exception);
@@ -66,7 +58,7 @@ namespace PolarBearEapApiUnitTests.PublicApi.Middlewares
             // Arrange
             var mockLogger = new Mock<ILogger<TokenMiddleware>>();
             var context = FakeHttpContext(UNIT_PROCESS_CHEDK_REQUEST_BODY);
-            var mockTokenService = new Mock<ITokenService>();
+            var mockTokenService = new Mock<ITokenRepository>();
             mockTokenService.Setup(service => service.Validate(It.IsAny<string>())).Throws(new EapException(ErrorCodeEnum.InvalidToken));
 
             var requestDelegate = new RequestDelegate((HttpContext httpContext) =>
@@ -77,7 +69,7 @@ namespace PolarBearEapApiUnitTests.PublicApi.Middlewares
             var middleware = new TokenMiddleware(requestDelegate, mockLogger.Object);
 
             // Act
-            var exception = await Record.ExceptionAsync(() => middleware.Invoke(context, mockTokenService.Object));
+            var exception = await Record.ExceptionAsync(() => middleware.InvokeAsync(context, mockTokenService.Object));
 
             //assert
             Assert.NotNull(exception);
@@ -97,7 +89,7 @@ namespace PolarBearEapApiUnitTests.PublicApi.Middlewares
             // Arrange
             var mockLogger = new Mock<ILogger<TokenMiddleware>>();
             var context = FakeHttpContext(GET_SN_BY_SN_FIXTURE_REQUEST_BODY);
-            var mockTokenService = new Mock<ITokenService>();
+            var mockTokenService = new Mock<ITokenRepository>();
             mockTokenService.Setup(service => service.Validate(It.IsAny<string>())).Throws(new EapException(ErrorCodeEnum.InvalidToken));
 
             var requestDelegate = new RequestDelegate((HttpContext httpContext) =>
@@ -108,7 +100,7 @@ namespace PolarBearEapApiUnitTests.PublicApi.Middlewares
             var middleware = new TokenMiddleware(requestDelegate, mockLogger.Object);
 
             // Act
-            var exception = await Record.ExceptionAsync(() => middleware.Invoke(context, mockTokenService.Object));
+            var exception = await Record.ExceptionAsync(() => middleware.InvokeAsync(context, mockTokenService.Object));
 
             //assert
             Assert.NotNull(exception);
@@ -127,7 +119,7 @@ namespace PolarBearEapApiUnitTests.PublicApi.Middlewares
             // Arrange
             var mockLogger = new Mock<ILogger<TokenMiddleware>>();
             var context = FakeHttpContext(GET_INPUT_DATA_REQUEST_BODY);
-            var mockTokenService = new Mock<ITokenService>();
+            var mockTokenService = new Mock<ITokenRepository>();
             mockTokenService.Setup(service => service.Validate(It.IsAny<string>())).Throws(new EapException(ErrorCodeEnum.InvalidToken));
 
             var requestDelegate = new RequestDelegate((HttpContext httpContext) =>
@@ -138,7 +130,7 @@ namespace PolarBearEapApiUnitTests.PublicApi.Middlewares
             var middleware = new TokenMiddleware(requestDelegate, mockLogger.Object);
 
             //assert
-            var exception = await Record.ExceptionAsync(() => middleware.Invoke(context, mockTokenService.Object));
+            var exception = await Record.ExceptionAsync(() => middleware.InvokeAsync(context, mockTokenService.Object));
             Assert.Null(exception);
             Assert.Equal(HttpStatusCode.OK, (HttpStatusCode)context.Response.StatusCode);
         }

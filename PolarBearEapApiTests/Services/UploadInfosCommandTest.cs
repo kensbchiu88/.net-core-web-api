@@ -31,16 +31,16 @@ namespace PolarBearEapApiTests
          * Then: 回傳 "{\"Result\":\"OK\"}", ErrorMessage = null
          */
         [Fact]
-        public void TestSuccess() 
+        public async Task TestSuccess() 
         {
             var mockLogger = new Mock<ILogger<UploadInfosCommand>>();
-            var mockUploadInfoService = new Mock<IUploadInfoService>();
+            var mockUploadInfoService = new Mock<IUploadInfoRepository>();
             mockUploadInfoService.Setup(service => service.Insert(It.IsAny<UploadInfoEntity>()))
-                .Returns(MockUploadInfoEntity);
+                .ReturnsAsync(MockUploadInfoEntity);
 
             var command = new UploadInfosCommand(mockUploadInfoService.Object, null);
 
-            MesCommandResponse response = command.Execute(MockMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
             Assert.Null(response.ErrorMessage);
             Assert.Equal("{\"Result\":\"OK\"}", response.OpResponseInfo);
@@ -53,16 +53,16 @@ namespace PolarBearEapApiTests
          * Then: 回傳 "{\"Result\":\"NG\"}", ErrorMessage = UploadFail
          */
         [Fact]
-        public void TestFail()
+        public async Task TestFail()
         {
             var mockLogger = new Mock<ILogger<UploadInfosCommand>>();
-            var mockUploadInfoService = new Mock<IUploadInfoService>();
+            var mockUploadInfoService = new Mock<IUploadInfoRepository>();
 
             mockUploadInfoService.Setup(service => service.Insert(It.IsAny<UploadInfoEntity>())).Throws<Exception>();
 
             var command = new UploadInfosCommand(mockUploadInfoService.Object, mockLogger.Object);
 
-            MesCommandResponse response = command.Execute(MockMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
             Assert.Equal(ErrorCodeEnum.UploadFail.ToString(), response.ErrorMessage);
             Assert.Equal("{\"Result\":\"NG\"}", response.OpResponseInfo);

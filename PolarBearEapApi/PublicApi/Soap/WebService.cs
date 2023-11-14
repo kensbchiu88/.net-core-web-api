@@ -12,9 +12,9 @@ namespace PolarBearEapApi.PublicApi.Soap
             _authenticationService = authenticationService;
         }
 
-        public bool UserLogin(string user, string passwrod)
+        public async Task<bool> UserLogin(string user, string passwrod)
         {
-            return _authenticationService.Login(user, passwrod);
+            return await _authenticationService.Login(user, passwrod);
         }
     }
 }

@@ -5,6 +5,6 @@ namespace PolarBearEapApi.ApplicationCore.Interfaces
     public interface IMesCommand
     {
         string CommandName { get; }
-        MesCommandResponse Execute(MesCommandRequest input);
+        Task<MesCommandResponse> Execute(MesCommandRequest input);
     }
 }

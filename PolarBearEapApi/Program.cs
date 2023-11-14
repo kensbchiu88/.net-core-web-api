@@ -6,6 +6,8 @@ using PolarBearEapApi.ApplicationCore.Services;
 using PolarBearEapApi.PublicApi.Middlewares;
 using PolarBearEapApi.Infra;
 using PolarBearEapApi.Infra.Services;
+using Microsoft.AspNetCore.Diagnostics;
+using PolarBearEapApi.PublicApi.Filters;
 using SoapCore;
 using PolarBearEapApi.PublicApi.Soap;
 
@@ -32,6 +34,7 @@ try
     // Add services to the container.
 
     builder.Services.AddControllers();
+
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
@@ -40,12 +43,20 @@ try
     //add context 
     builder.Services.AddDbContext<UploadInfoDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
     builder.Services.AddDbContext<EapTokenDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection"))) ;
+    builder.Services.AddDbContext<LearnFileAlterWarningDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
+    builder.Services.AddDbContext<StoreProcedureDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MesDatabaseConnection")));
+    builder.Services.AddDbContext<EquipmentTemporaryDataDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
 
     //add adaptor
-    builder.Services.AddScoped<ITokenService, DbTokenService>();
-    builder.Services.AddScoped<IUploadInfoService, DbUploadInfoService>();
+    builder.Services.AddScoped<ITokenRepository, DbTokenRepository>();
+    builder.Services.AddScoped<IUploadInfoRepository, DbUploadInfoRepository>();
     builder.Services.AddScoped<IMesService, FitMesService>();
     builder.Services.AddScoped<EquipmentService>();
+    builder.Services.AddScoped<ILearnFileAlterWarningRepository, DbLearnFileAlterWarningRepository>();
+    builder.Services.AddScoped<IStoredProcedureResultRepository, SqlServerStoredProcedureResultRepository>();
+    builder.Services.AddScoped<IStoredProcedureResultRepository, SqlServerStoredProcedureResultRepository>();
+    builder.Services.AddScoped<IEquipmentTemporaryDataRepository, DbEquipmentTemporaryDataRepository>();
+
 
     //add application service
     builder.Services.AddScoped<IMesCommandFactory<IMesCommand>, MesCommandFactory<IMesCommand>>();
@@ -58,8 +69,33 @@ try
     builder.Services.AddScoped<IMesCommand, UploadInfosCommand>();
     builder.Services.AddScoped<IMesCommand, LoginCommand>();
     builder.Services.AddScoped<IMesCommand, BindCommand>();
+    builder.Services.AddScoped<IMesCommand, GetSnBySmtSnCommand>();
+    builder.Services.AddScoped<ILearnFileAlterWarningService, LearnFileAlterWarningService>();
+    builder.Services.AddScoped<IMesCommand, BindSnFixtureSnCommand>();
+    builder.Services.AddScoped<IMesCommand, GetSnlistByFixturesnCommand>();
+    builder.Services.AddScoped<IMesCommand, SnLinkWoCommand>();
+    builder.Services.AddScoped<IMesCommand, GenerateSnByWoCommand>();
+    builder.Services.AddScoped<IMesCommand, GetInvalidtimeBySnCommand>();
+    builder.Services.AddScoped<IMesCommand, UnbindSnFixturesnCommand>();
+    builder.Services.AddScoped<IMesCommand, HoldSnlistCommitCommand>();
+    builder.Services.AddScoped<IMesCommand, GetSnByRawsnCommand>();
+
+    builder.Services.AddScoped<IMesCommand, WeightCheckCommitCommand>();
+    builder.Services.AddScoped<IMesCommand, GetCountryandqtyByWo>();
+    builder.Services.AddScoped<IMesCommand, GetControlTimeStartCommand>();
+    builder.Services.AddScoped<IMesCommand, GetCountryPnDataCommand>();
+    builder.Services.AddScoped<IMesCommand, TrackingChangeSectionCommand>();
+    builder.Services.AddScoped<IMesCommand, GetFgLabeCommandl>();
+    builder.Services.AddScoped<IMesCommand, SetRemainingOpentimeCommand>();
+    builder.Services.AddScoped<IMesCommand, GetRemainingOpentimeCommand>();
+
+    builder.Services.AddScoped<IMesCommand, SpliteSnCommit>();
 
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
+    builder.Services.AddSingleton<IEmailService, EmailService>();
+
+    //Filter
+    builder.Services.AddScoped<SimpleResponseRewriteActionFilter>(); 
 
     builder.Host.UseSerilog();
 

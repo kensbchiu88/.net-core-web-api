@@ -8,17 +8,17 @@ namespace PolarBearEapApi.ApplicationCore.Services
     public class GetInputDataCommand : IMesCommand
     {
         private readonly ILogger<GetInputDataCommand> _logger;
-        private readonly IUploadInfoService _uploadInfoService;
+        private readonly IUploadInfoRepository _uploadInfoService;
 
         string IMesCommand.CommandName { get; } = "GET_INPUT_DATA";
 
-        public GetInputDataCommand(ILogger<GetInputDataCommand> logger, IUploadInfoService uploadInfoService)
+        public GetInputDataCommand(ILogger<GetInputDataCommand> logger, IUploadInfoRepository uploadInfoService)
         {
             _logger = logger;
             _uploadInfoService = uploadInfoService;
         }
 
-        public MesCommandResponse Execute(MesCommandRequest input)
+        public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
             string? lineCode = JsonUtil.GetParameter(input.SerializeData, "LineCode");
             string? sectionCode = JsonUtil.GetParameter(input.SerializeData, "SectionCode");
@@ -27,21 +27,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
 
             try
             {
-                /*
-                var uploadInfos = _uploadInfoDbContext.UploadInfoEnties
-                    .Where(e => e.LineCode.ToUpper().Equals(lineCode) && e.SectionCode.ToUpper().Equals(sectionCode) && e.StationCode == stationCode && e.Sn.ToUpper().Equals(sn));
-
-                if (uploadInfos.Count() > 0)
-                {
-                    var uploadInfo = uploadInfos.OrderByDescending(e => e.UploadTime).First();                    
- 
-                    return Success(uploadInfo.OpRequestInfo.Replace("\\", "\\\\\\"), uploadInfo.UploadTime);
-                }
-                else {
-                    return NoDataFound(); 
-                }   
-                */
-                var uploadInfo = _uploadInfoService.GetOne(lineCode, sectionCode, stationCode, sn);
+                var uploadInfo = await _uploadInfoService.GetOne(lineCode, sectionCode, stationCode, sn);
                 if (uploadInfo != null)
                 {
                     return Success(uploadInfo.OpRequestInfo.Replace("\\", "\\\\\\"), uploadInfo.UploadTime);

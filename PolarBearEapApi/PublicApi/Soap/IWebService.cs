@@ -7,6 +7,6 @@ namespace PolarBearEapApi.PublicApi.Soap
     public interface IWebService
     {
         [OperationContract]
-        bool UserLogin(string user, string passwrod);
+        Task<bool> UserLogin(string user, string passwrod);
     }
 }

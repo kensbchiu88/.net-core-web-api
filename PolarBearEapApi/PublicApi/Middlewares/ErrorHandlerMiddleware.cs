@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
@@ -50,24 +49,58 @@ namespace PolarBearEapApi.PublicApi.Middlewares
             }
             catch (Exception error)
             {
-                _logger.LogError(LogMessageGenerator.GetErrorMessage(requestSerializeData, error.StackTrace ?? ""));
-                _logger.LogError(LogMessageGenerator.GetErrorMessage(requestSerializeData, error.Message));
-
                 if (!request.Path.ToString().Contains("soap") && request.Method == HttpMethods.Post && request.ContentLength > 0)
                 {
                     var response = context.Response;
                     response.ContentType = "application/json";
-                    var responseModel = new ApiResponse();
-                    responseModel.Hwd = requestHwd;
-                    responseModel.Indicator = requestIndicator;
-                    responseModel.SerializeData = ResponseSerializeDataGenerator.Fail(requestSerializeData);
+                    string result = string.Empty;
+                    //SerializeData不為空，Response是ApiResponse格式, 若是JsonException, 也以ApiResponse格式呈現
+                    if (!string.IsNullOrEmpty(requestSerializeData) || error is JsonException)
+                    {
+                        var responseModel = new ApiResponse();
 
-                    responseModel.Display = error.Message;
+                        responseModel.Hwd = requestHwd;
+                        responseModel.Indicator = requestIndicator;
+                        switch (error)
+                        {
+                            case JsonException:
+                                responseModel.SerializeData = ResponseSerializeDataGenerator.GenerateEmptySerializeData();
+                                responseModel.Display = ErrorCodeEnum.ParseJsonError.ToString() + ": " + error.Message;
+                                break;
+                            case EapException:
+                                try
+                                {
+                                    responseModel.SerializeData = ResponseSerializeDataGenerator.Fail(requestSerializeData);
+                                }
+                                catch 
+                                {
+                                    responseModel.SerializeData = requestSerializeData;
+                                }                            
+                                responseModel.Display = error.Message;
+                                break;
+                            default:
+                                responseModel.SerializeData = requestSerializeData;
+                                responseModel.Display = error.Message;
+                                break;
+                        }
+                        _logger.LogError(LogMessageGenerator.GetErrorMessage(requestSerializeData, error.ToString()));
 
-                    var result = JsonConvert.SerializeObject(responseModel);
+                        result = JsonConvert.SerializeObject(responseModel);
+                    }
+                    else //反之Response是SimpleResponse格式
+                    {
+                        var responseModel = new SimpleResponse<object> 
+                        { 
+                            Result = "NG",
+                            Message = error.Message
+                        };
+
+                        _logger.LogError(error.ToString());
+                        result = JsonConvert.SerializeObject(responseModel);
+                    }
+               
                     await response.WriteAsync(result);
                 }
-
             }
         }
     }

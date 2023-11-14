@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
+using PolarBearEapApi.PublicApi.Filters;
 using PolarBearEapApi.PublicApi.Models;
+using System.Diagnostics;
 
 namespace PolarBearEapApi.PublicApi.Controllers
 {
@@ -11,15 +14,17 @@ namespace PolarBearEapApi.PublicApi.Controllers
     {
         private readonly ILogger<EapApiController> _logger;
         private readonly IMesCommandFactory<IMesCommand> _mesCommandFactory;
+        private readonly ILearnFileAlterWarningService _learnFileAlterWarningService;
 
-        public EapApiController(ILogger<EapApiController> logger, IMesCommandFactory<IMesCommand> mesCommandFactory)
+        public EapApiController(ILogger<EapApiController> logger, IMesCommandFactory<IMesCommand> mesCommandFactory, ILearnFileAlterWarningService learnFileAlterWarningService)
         {
             _logger = logger;
             _mesCommandFactory = mesCommandFactory;
+            _learnFileAlterWarningService = learnFileAlterWarningService;
         }
 
         [HttpPost]
-        public ApiResponse Api([FromBody] ApiRequest data)
+        public async Task<ApiResponse> Api([FromBody] ApiRequest data)
         {
             var commandName = JsonUtil.GetParameter(data.SerializeData, "OPCategory");
             MesCommandRequest serviceInput = new MesCommandRequest
@@ -30,7 +35,7 @@ namespace PolarBearEapApi.PublicApi.Controllers
 
             //excute
             var command = _mesCommandFactory.Get(commandName ?? string.Empty);
-            MesCommandResponse serviceReturn = command.Execute(serviceInput);
+            MesCommandResponse serviceReturn = await command.Execute(serviceInput);
 
             //construct response
             ApiResponse response = new ApiResponse
@@ -43,8 +48,18 @@ namespace PolarBearEapApi.PublicApi.Controllers
             {
                 response.Display = serviceReturn.ErrorMessage;
             }
-
+            var responseString = JsonConvert.SerializeObject(response);
+            _logger.LogInformation($"Response:{responseString}");
             return response;
+        }
+
+        
+        [Route("SendLearnFileAlterWarning")]        
+        [HttpPost]
+        [ServiceFilter(typeof(SimpleResponseRewriteActionFilter))]
+        public async Task SendLearnFileAlterWarning([FromBody] SendLearnFileAlterWarningRequest data)
+        {            
+            await _learnFileAlterWarningService.Send(data.FilePath, data.AlterTime, data.Equipment);
         }
     }
 }

@@ -1,5 +1,8 @@
 ﻿using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using PolarBearEapApi.ApplicationCore.Constants;
+using PolarBearEapApi.ApplicationCore.Exceptions;
+using Microsoft.IdentityModel.Tokens;
 
 namespace PolarBearEapApi.PublicApi.Models
 {
@@ -27,6 +30,42 @@ namespace PolarBearEapApi.PublicApi.Models
                 return false;
             }
             return true;
+        }
+
+        /** 將呼叫StoredProces */
+        public static FITMesResponse ConvertFromStoredProcedureResult(string storedProcedureResult)
+        {
+            FITMesResponse response = new FITMesResponse();
+
+            if (storedProcedureResult.IsNullOrEmpty())
+            {
+                response.Result = "NG";
+                response.Display = "No Data Return";
+            }
+            else
+            {
+                var results = storedProcedureResult.Split(',').ToList();
+                if (results.Count != 3)
+                {
+                    response.Result = "NG";
+                    response.Display = "Invalid Mes Return Format";
+                }
+                else
+                {
+                    if ("OK".Equals(results[0], StringComparison.OrdinalIgnoreCase))
+                    {
+                        response.Result = "OK";
+                        response.ResultCode = results[2];
+                    }
+                    else
+                    {
+                        response.Result = "NG";
+                        response.Display = results[1];
+                    }
+                }
+            }
+
+            return response;
         }
     }
 }

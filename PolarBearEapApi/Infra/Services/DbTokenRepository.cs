@@ -9,14 +9,14 @@ using PolarBearEapApi.ApplicationCore.Constants;
 
 namespace PolarBearEapApi.Infra.Services
 {
-    public class DbTokenService : ITokenService
+    public class DbTokenRepository : ITokenRepository
     {
         private readonly EapTokenDbContext _context;
-        private readonly ILogger<DbTokenService> _logger;
+        private readonly ILogger<DbTokenRepository> _logger;
         private readonly IConfigCacheService _cacheService;
         private const int _DEFAULT_EXPIRED_HOURS = -4;
 
-        public DbTokenService(EapTokenDbContext context, ILogger<DbTokenService> logger, IConfigCacheService cacheService)
+        public DbTokenRepository(EapTokenDbContext context, ILogger<DbTokenRepository> logger, IConfigCacheService cacheService)
         {
             _context = context;
             _logger = logger;
@@ -24,23 +24,30 @@ namespace PolarBearEapApi.Infra.Services
         }
 
         //throw InvalidOperationException, TokenExpireException
-        public void Validate(string id)
+        public async Task Validate(string id)
         {
             ValidateTokenFormat(id);
 
             int expiredHours = GetExpiredHours();
 
-            var expiredTimeString = _cacheService.GetValue("TokenExpireHours");
-
             Guid tokenId = new Guid(id);
 
-            var tokens = _context.EapTokenEntities.Where(e => e.Id == tokenId);
+            var tokens = await _context.EapTokenEntities.Where(e => e.Id == tokenId).ToListAsync() ;
 
             if (tokens.Any())
             {
-                if (tokens.First().LoginTime.CompareTo(DateTime.Now.AddHours(expiredHours)) < 0)
+                var token = tokens.First();
+                if (expiredHours > 0 && token.LoginTime.CompareTo(DateTime.Now.AddHours(0 - expiredHours)) < 0)
                 {
-                    throw new EapException(ErrorCodeEnum.TokenExpired, "TokenExpired:" + id);
+                    throw new EapException(ErrorCodeEnum.TokenExpired);
+                }
+                else if (token.CardTime != null)
+                {
+                    throw new EapException(ErrorCodeEnum.TokenExpired);
+                }
+                else if(token.IsInvalid == true) 
+                {
+                    throw new EapException(ErrorCodeEnum.InvalidToken);
                 }
             }
             else
@@ -49,7 +56,7 @@ namespace PolarBearEapApi.Infra.Services
             }
         }
 
-        public string Create(string username)
+        public async Task<string> Create(string username)
         {
             //insert db
             Guid id = Guid.NewGuid();
@@ -59,17 +66,17 @@ namespace PolarBearEapApi.Infra.Services
             entity.username = username;
             entity.LoginTime = DateTime.Now;
             _context.EapTokenEntities.Add(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return id.ToString();
         }
 
-        public TokenInfo GetTokenInfo(string id)
+        public async Task<TokenInfo> GetTokenInfo(string id)
         {
             ValidateTokenFormat(id);
 
             Guid tokenId = new Guid(id);
 
-            var tokens = _context.EapTokenEntities.Where(e => e.Id == tokenId);
+            var tokens = await _context.EapTokenEntities.Where(e => e.Id == tokenId).ToListAsync();
 
             if (tokens.Any())
             {
@@ -81,13 +88,13 @@ namespace PolarBearEapApi.Infra.Services
             }
         }
 
-        public void BindMachine(string id, string lineCode, string sectionCode, string stationCode, string serverVersion)
+        public async Task BindMachine(string id, string lineCode, string sectionCode, string stationCode, string serverVersion)
         {
             ValidateTokenFormat(id);
 
             Guid tokenId = new Guid(id);
 
-            var tokens = _context.EapTokenEntities.Where(e => e.Id == tokenId);
+            var tokens = await _context.EapTokenEntities.Where(e => e.Id == tokenId).ToListAsync();
 
             if (tokens.Any())
             {
@@ -116,7 +123,7 @@ namespace PolarBearEapApi.Infra.Services
             {
                 try
                 {
-                    expiredHours = 0 - int.Parse(expiredTimeString);
+                    expiredHours = int.Parse(expiredTimeString);
                 }
                 catch
                 {
@@ -126,7 +133,7 @@ namespace PolarBearEapApi.Infra.Services
             return expiredHours;
         }
 
-        private void ValidateTokenFormat(string id)
+        private static void ValidateTokenFormat(string id)
         {
             if (string.IsNullOrEmpty(id))
                 throw new EapException(ErrorCodeEnum.InvalidTokenFormat, "Token is empty");

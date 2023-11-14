@@ -11,15 +11,15 @@ namespace PolarBearEapApi.ApplicationCore.Services
     {
         public string CommandName { get; } = "UPLOAD_INFOS";
 
-        private readonly IUploadInfoService _uploadInfoService;
+        private readonly IUploadInfoRepository _uploadInfoService;
         private readonly ILogger<UploadInfosCommand> _logger;
 
-        public UploadInfosCommand(IUploadInfoService uploadInfoService, ILogger<UploadInfosCommand> logger)
+        public UploadInfosCommand(IUploadInfoRepository uploadInfoService, ILogger<UploadInfosCommand> logger)
         {
             _uploadInfoService = uploadInfoService;
             _logger = logger;
         }
-        public MesCommandResponse Execute(MesCommandRequest input)
+        public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
             ValidateInput(input);
          
@@ -41,7 +41,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
                     OpRequestInfo = opRequestInfo,
                     UploadTime = DateTime.Now
                 };
-                _uploadInfoService.Insert(entity);
+                await _uploadInfoService.Insert(entity);
 
                 return Success();
             }

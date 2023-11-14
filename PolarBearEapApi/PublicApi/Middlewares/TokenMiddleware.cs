@@ -16,7 +16,7 @@ namespace PolarBearEapApi.PublicApi.Middlewares
             _logger = logger;
         }
 
-        public async Task Invoke(HttpContext context, ITokenService tokenService)
+        public async Task InvokeAsync(HttpContext context, ITokenRepository tokenService)
         {
             List<string> validateList = new List<string>(new string[] { "UNIT_PROCESS_CHECK", "BIND", "GET_SN_BY_SN_FIXTURE" });
 
@@ -42,7 +42,7 @@ namespace PolarBearEapApi.PublicApi.Middlewares
                         {
                             if (validateList.Contains(requestOpCategory.ToUpper()))
                             {
-                                tokenService.Validate(requestModel.Hwd);
+                                await tokenService.Validate(requestModel.Hwd);
                             }
                         }
                     }

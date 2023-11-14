@@ -30,16 +30,16 @@ namespace PolarBearEapApiTests
          * Then: 回傳 "{\"Data\":\"{\"A\": \"a\",  \"B\": \"b\",  \"C\": \"c\"}\"}", ErrorMessage = null
          */
         [Fact]
-        public void TestSuccess()
+        public async Task TestSuccess()
         {
-            var mockUploadInfoService = new Mock<IUploadInfoService>();
+            var mockUploadInfoService = new Mock<IUploadInfoRepository>();
 
             mockUploadInfoService.Setup(service => service.GetOne(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>()))
-                .Returns(MockUploadInfoEntity());
+                .ReturnsAsync(MockUploadInfoEntity());
 
             var command = new GetInputDataCommand(null, mockUploadInfoService.Object);
 
-            MesCommandResponse response = command.Execute(MockMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
             Assert.Null(response.ErrorMessage);
             var data = JsonUtil.GetCaseSensitiveParameter(response.OpResponseInfo, "Data");
@@ -55,17 +55,17 @@ namespace PolarBearEapApiTests
          * Then: 回傳 "{\"Data\":\"{}\"}", ErrorMessage = UploadFail
          */
         [Fact]
-        public void TestNoDataFound()
+        public async Task TestNoDataFound()
         {
             var mockLogger = new Mock<ILogger<GetInputDataCommand>>();
-            var mockUploadInfoService = new Mock<IUploadInfoService>();
+            var mockUploadInfoService = new Mock<IUploadInfoRepository>();
 
             mockUploadInfoService.Setup(service => service.GetOne(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>()))
-                .Returns((string lineCode, string sectionCode, int stationCode, string sn) => null);
+                .ReturnsAsync((string lineCode, string sectionCode, int stationCode, string sn) => null);
 
             var command = new GetInputDataCommand(mockLogger.Object, mockUploadInfoService.Object);
 
-            MesCommandResponse response = command.Execute(MockMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
             Assert.Equal(ErrorCodeEnum.NoDataFound.ToString(), response.ErrorMessage);
             Assert.Equal("{}", JsonUtil.GetParameter(response.OpResponseInfo, "Data"));
@@ -77,16 +77,16 @@ namespace PolarBearEapApiTests
          * Then: 回傳 "{\"Data\":\"{}\"}", ErrorMessage = UploadFail
          */
         [Fact]
-        public void TestQueryDbException()
+        public async Task TestQueryDbException()
         {
             var mockLogger = new Mock<ILogger<GetInputDataCommand>>();
-            var mockUploadInfoService = new Mock<IUploadInfoService>();
+            var mockUploadInfoService = new Mock<IUploadInfoRepository>();
 
             mockUploadInfoService.Setup(service => service.GetOne(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>())).Throws<Exception>();
 
             var command = new GetInputDataCommand(mockLogger.Object, mockUploadInfoService.Object);
 
-            MesCommandResponse response = command.Execute(MockMesCommandRequest());
+            MesCommandResponse response = await command.Execute(MockMesCommandRequest());
             Assert.NotNull(response);
             Assert.Equal(ErrorCodeEnum.QueryDbError.ToString(), response.ErrorMessage);
             Assert.Equal("{}", JsonUtil.GetParameter(response.OpResponseInfo, "Data"));

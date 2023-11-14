@@ -5,6 +5,7 @@ using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Exceptions;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
@@ -21,8 +22,9 @@ namespace PolarBearEapApi.ApplicationCore.Services
             _equipmentService = equipmentService;
         }
 
-        public MesCommandResponse Execute(MesCommandRequest input)
+        public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
+            ValidateInput(input.SerializeData);
 
             string? lineCode = JsonUtil.GetParameter(input.SerializeData, "LineCode");
             string? sectionCode = JsonUtil.GetParameter(input.SerializeData, "SectionCode");
@@ -32,7 +34,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
 
             try
             {
-                string mesReturn = _equipmentService.ADD_BOM_DATA(lineCode, sectionCode, stationCode, sn, rawSn);
+                string mesReturn = await _equipmentService.ADD_BOM_DATA(lineCode!, sectionCode!, stationCode!, sn!, rawSn!);
                 //return new MesCommandResponse(mesReturn, "{\"Result\":\"OK\",\"ResultCoded\":\"DEFAULT\"}");
                 return new MesCommandResponse(mesReturn);
             }
@@ -43,6 +45,31 @@ namespace PolarBearEapApi.ApplicationCore.Services
                 return MesCommandResponse.Fail(ErrorCodeEnum.CallMesServiceException);
             }
 
+        }
+
+        private static void ValidateInput(string serializedData)
+        {
+            List<string> requiredFields = new List<string>();
+
+            string? lineCode = JsonUtil.GetParameter(serializedData, "LineCode");
+            string? sectionCode = JsonUtil.GetParameter(serializedData, "SectionCode");
+            string? stationCode = JsonUtil.GetParameter(serializedData, "StationCode");
+            string? sn = JsonUtil.GetParameter(serializedData, "OPRequestInfo.SN");
+            string? rawSn = JsonUtil.GetParameter(serializedData, "OPRequestInfo.RAW_SN");
+
+            if (string.IsNullOrEmpty(lineCode))
+                requiredFields.Add("LineCode");
+            if (string.IsNullOrEmpty(sectionCode))
+                requiredFields.Add("SectionCode");
+            if (string.IsNullOrEmpty(stationCode))
+                requiredFields.Add("StationCode");
+            if (string.IsNullOrEmpty(sn))
+                requiredFields.Add("OPRequestInfo.SN");
+            if (string.IsNullOrEmpty(rawSn))
+                requiredFields.Add("OPRequestInfo.RAW_SN");
+
+            if (requiredFields.Count > 0)
+                throw new EapException(ErrorCodeEnum.JsonFieldRequire, "Json Fields Required: " + string.Join(",", requiredFields));
         }
     }
 }

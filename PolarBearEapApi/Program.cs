@@ -8,11 +8,15 @@ using PolarBearEapApi.Infra;
 using PolarBearEapApi.Infra.Services;
 using Microsoft.AspNetCore.Diagnostics;
 using PolarBearEapApi.PublicApi.Filters;
+using SoapCore;
+using PolarBearEapApi.PublicApi.Soap;
 
 var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
+    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {CorrelationId} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .Enrich.FromLogContext()
     .CreateLogger();
 
 /*
@@ -100,6 +104,12 @@ try
 
     builder.Host.UseSerilog();
 
+    //soap
+    builder.Services.AddSoapCore();
+    builder.Services.AddScoped<IWebService, WebService>();
+
+    //
+
     var app = builder.Build();
 
     // Configure the HTTP request pipeline.
@@ -111,13 +121,22 @@ try
 
     app.UseHttpsRedirection();
 
+    //Middleware
+    app.UseMiddleware<CorrelationIdMiddleware>();
     app.UseMiddleware<LoggerMiddleware>();
     app.UseMiddleware<ErrorHandlerMiddleware>();
     app.UseMiddleware<TokenMiddleware>();
 
+    //soap
+    app.UseRouting();
+
     app.UseAuthorization();
 
     app.MapControllers();
+
+    app.UseEndpoints(endpoints => {
+        endpoints.UseSoapEndpoint<IWebService>("/soap/IWebService", new SoapEncoderOptions(), SoapSerializer.DataContractSerializer);
+    });
 
     app.Run();
 

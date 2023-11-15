@@ -42,7 +42,7 @@ namespace PolarBearEapApi.ApplicationCore.Extensions
 
         public static string GenerateEmptySerializeData()
         {
-            return GenerateSerializeData("", "", null, "", "{}", "{}");
+            return GenerateSerializeData("", "", null, "", "{}", "{\"Result\":\"NG\"}");
         }
 
         private static string GenerateSerializeData(string lineCode, string sectionCode, int? stationCode, string opCategory, string opRequestInfo, string opResponseInfo)

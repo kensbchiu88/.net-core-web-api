@@ -1,10 +1,7 @@
-﻿using Azure;
-using FIT.MES.GlueRuleLibrary;
+﻿using FIT.MES.GlueRuleLibrary;
 using FIT.MES.Service;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.Infra;
 using PolarBearEapApi.PublicApi.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
@@ -73,9 +70,9 @@ namespace PolarBearEapApi.ApplicationCore.Services
             var result = await Task.Run(() => _equipmentService.BIND_FIXTURE_BY_SN_FIXTURE(pLineName, pSectionCode, pStationCode, pCarrierNo, pBindCarrierNo));
             return result;
         }
-        public async Task<string> GET_SNLIST_BY_FIXTURESN(string pCarrierNo)
+        public async Task<string> GET_SNLIST_BY_FIXTURESN(string pSectionCode, string pStationCode, string pCarrierNo)
         {
-            var result = await Task.Run(() => _equipmentService.GET_SNLIST_BY_FIXTURESN(pCarrierNo));
+            var result = await Task.Run(() => _equipmentService.GET_SNLIST_BY_FIXTURESN(pSectionCode, pStationCode, pCarrierNo));
             return result;
         }
 

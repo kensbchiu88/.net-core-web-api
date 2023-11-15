@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using static FIT.MES.Service.CommonEnum;
 
 namespace PolarBearEapApi.ApplicationCore.Extensions
 {

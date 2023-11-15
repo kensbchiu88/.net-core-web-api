@@ -23,7 +23,7 @@ namespace PolarBearEapApi.PublicApi.Middlewares
             ApiRequest? requestModel = new ApiRequest();
 
             var request = context.Request;
-            if (request.Method == HttpMethods.Post && request.ContentLength > 0)
+            if (!request.Path.ToString().Contains("soap") && request.Method == HttpMethods.Post && request.ContentLength > 0)
             {
                 request.EnableBuffering();
 

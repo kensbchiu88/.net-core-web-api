@@ -8,11 +8,15 @@ using PolarBearEapApi.Infra;
 using PolarBearEapApi.Infra.Services;
 using Microsoft.AspNetCore.Diagnostics;
 using PolarBearEapApi.PublicApi.Filters;
+using SoapCore;
+using PolarBearEapApi.PublicApi.Soap;
 
 var builder = WebApplication.CreateBuilder(args);
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
+    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {CorrelationId} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+    .Enrich.FromLogContext()
     .CreateLogger();
 
 /*
@@ -84,9 +88,12 @@ try
     builder.Services.AddScoped<IMesCommand, GetCountryPnDataCommand>();
     builder.Services.AddScoped<IMesCommand, TrackingChangeSectionCommand>();
     builder.Services.AddScoped<IMesCommand, GetFgLabeCommandl>();
+    builder.Services.AddScoped<IMesCommand, GetCountryPnCheckResultCommand>();
+
     builder.Services.AddScoped<IMesCommand, SetRemainingOpentimeCommand>();
     builder.Services.AddScoped<IMesCommand, GetRemainingOpentimeCommand>();
 
+    
     builder.Services.AddScoped<IMesCommand, SpliteSnCommit>();
 
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
@@ -96,6 +103,12 @@ try
     builder.Services.AddScoped<SimpleResponseRewriteActionFilter>(); 
 
     builder.Host.UseSerilog();
+
+    //soap
+    builder.Services.AddSoapCore();
+    builder.Services.AddScoped<IWebService, WebService>();
+
+    //
 
     var app = builder.Build();
 
@@ -108,13 +121,22 @@ try
 
     app.UseHttpsRedirection();
 
+    //Middleware
+    app.UseMiddleware<CorrelationIdMiddleware>();
     app.UseMiddleware<LoggerMiddleware>();
     app.UseMiddleware<ErrorHandlerMiddleware>();
     app.UseMiddleware<TokenMiddleware>();
 
+    //soap
+    app.UseRouting();
+
     app.UseAuthorization();
 
     app.MapControllers();
+
+    app.UseEndpoints(endpoints => {
+        endpoints.UseSoapEndpoint<IWebService>("/soap/IWebService", new SoapEncoderOptions(), SoapSerializer.DataContractSerializer);
+    });
 
     app.Run();
 

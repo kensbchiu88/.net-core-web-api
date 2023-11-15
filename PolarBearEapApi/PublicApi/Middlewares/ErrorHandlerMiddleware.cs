@@ -21,10 +21,10 @@ namespace PolarBearEapApi.PublicApi.Middlewares
             string? requestHwd = string.Empty;
             string? requestIndicator = string.Empty;
             string? requestSerializeData = string.Empty;
+            var request = context.Request;
             try
-            {
-                var request = context.Request;
-                if (request.Method == HttpMethods.Post && request.ContentLength > 0)
+            {                
+                if (!request.Path.ToString().Contains("soap") && request.Method == HttpMethods.Post && request.ContentLength > 0)
                 {
                     request.EnableBuffering();
 
@@ -49,55 +49,58 @@ namespace PolarBearEapApi.PublicApi.Middlewares
             }
             catch (Exception error)
             {
-                var response = context.Response;
-                response.ContentType = "application/json";
-                string result = string.Empty;
-                //SerializeData不為空，Response是ApiResponse格式, 若是JsonException, 也以ApiResponse格式呈現
-                if (!string.IsNullOrEmpty(requestSerializeData) || error is JsonException)
+                if (!request.Path.ToString().Contains("soap") && request.Method == HttpMethods.Post && request.ContentLength > 0)
                 {
-                    var responseModel = new ApiResponse();
-
-                    responseModel.Hwd = requestHwd;
-                    responseModel.Indicator = requestIndicator;
-                    switch (error)
+                    var response = context.Response;
+                    response.ContentType = "application/json";
+                    string result = string.Empty;
+                    //SerializeData不為空，Response是ApiResponse格式, 若是JsonException, 也以ApiResponse格式呈現
+                    if (!string.IsNullOrEmpty(requestSerializeData) || error is JsonException)
                     {
-                        case JsonException:
-                            responseModel.SerializeData = ResponseSerializeDataGenerator.GenerateEmptySerializeData();
-                            responseModel.Display = ErrorCodeEnum.ParseJsonError.ToString() + ": " + error.Message;
-                            break;
-                        case EapException:
-                            try
-                            {
-                                responseModel.SerializeData = ResponseSerializeDataGenerator.Fail(requestSerializeData);
-                            }
-                            catch 
-                            {
+                        var responseModel = new ApiResponse();
+
+                        responseModel.Hwd = requestHwd;
+                        responseModel.Indicator = requestIndicator;
+                        switch (error)
+                        {
+                            case JsonException:
+                                responseModel.SerializeData = ResponseSerializeDataGenerator.GenerateEmptySerializeData();
+                                responseModel.Display = ErrorCodeEnum.ParseJsonError.ToString() + ": " + error.Message;
+                                break;
+                            case EapException:
+                                try
+                                {
+                                    responseModel.SerializeData = ResponseSerializeDataGenerator.Fail(requestSerializeData);
+                                }
+                                catch 
+                                {
+                                    responseModel.SerializeData = requestSerializeData;
+                                }                            
+                                responseModel.Display = error.Message;
+                                break;
+                            default:
                                 responseModel.SerializeData = requestSerializeData;
-                            }                            
-                            responseModel.Display = error.Message;
-                            break;
-                        default:
-                            responseModel.SerializeData = requestSerializeData;
-                            responseModel.Display = error.Message;
-                            break;
+                                responseModel.Display = error.Message;
+                                break;
+                        }
+                        _logger.LogError(LogMessageGenerator.GetErrorMessage(requestSerializeData, error.ToString()));
+
+                        result = JsonConvert.SerializeObject(responseModel);
                     }
-                    _logger.LogError(LogMessageGenerator.GetErrorMessage(requestSerializeData, error.ToString()));
+                    else //反之Response是SimpleResponse格式
+                    {
+                        var responseModel = new SimpleResponse<object> 
+                        { 
+                            Result = "NG",
+                            Message = error.Message
+                        };
 
-                    result = JsonConvert.SerializeObject(responseModel);
-                }
-                else //反之Response是SimpleResponse格式
-                {
-                    var responseModel = new SimpleResponse<object> 
-                    { 
-                        Result = "NG",
-                        Message = error.Message
-                    };
-
-                    _logger.LogError(error.ToString());
-                    result = JsonConvert.SerializeObject(responseModel);
-                }
+                        _logger.LogError(error.ToString());
+                        result = JsonConvert.SerializeObject(responseModel);
+                    }
                
-                await response.WriteAsync(result);
+                    await response.WriteAsync(result);
+                }
             }
         }
     }

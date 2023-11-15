@@ -5,11 +5,6 @@ using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.ApplicationCore.Services;
 using PolarBearEapApi.PublicApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PolarBearEapApiUnitTests.Services
 {
@@ -28,7 +23,7 @@ namespace PolarBearEapApiUnitTests.Services
         {
             var mockMesService = new Mock<IMesService>();
 
-            mockMesService.Setup(service => service.GET_SNLIST_BY_FIXTURESN(It.IsAny<string>()))
+            mockMesService.Setup(service => service.GET_SNLIST_BY_FIXTURESN(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync("{\"Result\":\"OK\",\"ResultCoded\":\"" + SN + "\",\"MessageCode\":null,\"Display\":null,\"BindInfo\":null}");
 
             var command = new GetSnlistByFixturesnCommand(mockMesService.Object);
@@ -49,7 +44,7 @@ namespace PolarBearEapApiUnitTests.Services
         {
             var mockMesService = new Mock<IMesService>();
 
-            mockMesService.Setup(service => service.GET_SNLIST_BY_FIXTURESN(It.IsAny<string>()))
+            mockMesService.Setup(service => service.GET_SNLIST_BY_FIXTURESN(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync("{\"Result\":\"NG\",\"ResultCoded\":\"\",\"MessageCode\":null,\"Display\":\"" + MES_RETURN_DISPLAY + "\",\"BindInfo\":null}");
 
             var command = new GetSnlistByFixturesnCommand(mockMesService.Object);
@@ -71,7 +66,7 @@ namespace PolarBearEapApiUnitTests.Services
             var mockLogger = new Mock<ILogger<GetSnBySnFixtureCommand>>();
             var mockMesService = new Mock<IMesService>();
 
-            mockMesService.Setup(service => service.GET_SNLIST_BY_FIXTURESN(It.IsAny<string>())).Throws<Exception>();
+            mockMesService.Setup(service => service.GET_SNLIST_BY_FIXTURESN(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Throws<Exception>();
 
             var command = new GetSnlistByFixturesnCommand(mockMesService.Object);
 

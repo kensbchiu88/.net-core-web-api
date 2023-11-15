@@ -20,11 +20,15 @@ namespace PolarBearEapApi.ApplicationCore.Services
 
         public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
+            ValidateInput(input.SerializeData);
+
+            string? sectionCode = JsonUtil.GetParameter(input.SerializeData, "SectionCode");
+            string? stationCode = JsonUtil.GetParameter(input.SerializeData, "StationCode");
             string? refValue = JsonUtil.GetParameter(input.SerializeData, "OPRequestInfo.REF_VALUE");
 
             try
             {
-                string mesReturn = await _equipmentService.GET_SNLIST_BY_FIXTURESN(refValue);
+                string mesReturn = await _equipmentService.GET_SNLIST_BY_FIXTURESN(sectionCode!, stationCode!, refValue!);
                 return GetResponse(mesReturn);
             }
             catch (Exception ex)
@@ -56,7 +60,27 @@ namespace PolarBearEapApi.ApplicationCore.Services
             }
 
             return response;
+        }
 
+        private static void ValidateInput(string serializedData)
+        {
+            List<string> requiredFields = new List<string>();
+
+            string? sectionCode = JsonUtil.GetParameter(serializedData, "SectionCode");
+            string? stationCode = JsonUtil.GetParameter(serializedData, "StationCode");
+            string? refValue = JsonUtil.GetParameter(serializedData, "OPRequestInfo.REF_VALUE");
+
+
+
+            if (string.IsNullOrEmpty(sectionCode))
+                requiredFields.Add("SectionCode");
+            if (string.IsNullOrEmpty(stationCode))
+                requiredFields.Add("StationCode");
+            if (string.IsNullOrEmpty(refValue))
+                requiredFields.Add("OPRequestInfo.REF_VALUE");
+
+            if (requiredFields.Count > 0)
+                throw new EapException(ErrorCodeEnum.JsonFieldRequire, "Json Fields Required: " + string.Join(",", requiredFields));
         }
     }
 }

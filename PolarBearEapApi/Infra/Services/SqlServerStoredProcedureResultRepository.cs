@@ -16,6 +16,11 @@ namespace PolarBearEapApi.Infra.Services
             _context =  context;
         }
 
+        /**
+         * 由section code, station code 對應出 mes 的 operation name (mes的站名) 
+         * 
+         * return: Mes Operation Name
+         */
         public async Task<string> GetMesOperation(string sectionCode, string stationCode)
         {
             var result = string.Empty;
@@ -98,6 +103,33 @@ namespace PolarBearEapApi.Infra.Services
             List<StoredProcedureResultEntity> porcedureResult;
 
             porcedureResult = await _context.StoredProcedureResultEntities.FromSql($"sp_AUTO_GET_SN_BY_RAWSN {snParam}").ToListAsync();
+
+            FITMesResponse fitResponse;
+
+            if (!porcedureResult.Any())
+            {
+                fitResponse = new FITMesResponse
+                {
+                    Result = "NG",
+                    Display = "No Data Return"
+                };
+            }
+            else
+            {
+                fitResponse = FITMesResponse.ConvertFromStoredProcedureResult(porcedureResult.First().Result);
+            }
+
+            return JsonConvert.SerializeObject(fitResponse);
+        }
+
+        public async Task<string> GetQtimeStart(string sn, string operationName)
+        {
+            var snParam = new SqlParameter("@SN", sn);
+            var operationNameParam = new SqlParameter("@OPERATIONNAME", operationName);
+
+            List<StoredProcedureResultEntity> porcedureResult;
+
+            porcedureResult = await _context.StoredProcedureResultEntities.FromSql($"sp_AUTO_GET_QTIME_START {snParam}, {operationNameParam}").ToListAsync();
 
             FITMesResponse fitResponse;
 

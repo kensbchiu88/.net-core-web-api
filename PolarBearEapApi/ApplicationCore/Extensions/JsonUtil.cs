@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using PolarBearEapApi.ApplicationCore.Constants;
-using PolarBearEapApi.ApplicationCore.Exceptions;
 
 namespace PolarBearEapApi.ApplicationCore.Extensions
 {
@@ -15,23 +13,17 @@ namespace PolarBearEapApi.ApplicationCore.Extensions
             }
 
             string queryString = "$." + name.ToUpper();
-            try
-            {
-                //將Json中的null轉成NULL會出現Newtonsoft.Json.JsonReaderException，故轉大寫後需將NULL轉回null
-                JObject jObj = JObject.Parse(serializeData.ToUpper().Replace("NULL", "null"));
 
-                JToken? jToken = jObj.SelectToken(queryString);
-                if (jToken == null)
-                {
-                    return string.Empty;
-                }
+            //將Json中的null轉成NULL會出現Newtonsoft.Json.JsonReaderException，故轉大寫後需將NULL轉回null
+            JObject jObj = JObject.Parse(serializeData.ToUpper().Replace("NULL", "null"));
 
-                return jToken.ToString().Replace(Environment.NewLine, string.Empty);
-            }
-            catch (Exception ex)
+            JToken? jToken = jObj.SelectToken(queryString);
+            if (jToken == null)
             {
-                throw new EapException(ErrorCodeEnum.ParseJsonError, ex);
+                return string.Empty;
             }
+
+            return jToken.ToString().Replace(Environment.NewLine, string.Empty);
         }
 
         public static string? GetCaseSensitiveParameter(string serializeData, string name)
@@ -42,22 +34,16 @@ namespace PolarBearEapApi.ApplicationCore.Extensions
             }
 
             string queryString = "$." + name;
-            try
-            {
-                JObject jObj = JObject.Parse(serializeData);
 
-                JToken? jToken = jObj.SelectToken(queryString);
-                if (jToken == null)
-                {
-                    return string.Empty;
-                }
+            JObject jObj = JObject.Parse(serializeData);
 
-                return jToken.ToString().Replace(Environment.NewLine, string.Empty);
-            }
-            catch (Exception ex)
+            JToken? jToken = jObj.SelectToken(queryString);
+            if (jToken == null)
             {
-                throw new EapException(ErrorCodeEnum.ParseJsonError, ex);
+                return string.Empty;
             }
+
+            return jToken.ToString().Replace(Environment.NewLine, string.Empty);
         }
 
         public static string RemoveSn(string opRequestInfo)

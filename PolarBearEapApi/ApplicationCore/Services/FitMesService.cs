@@ -152,5 +152,24 @@ namespace PolarBearEapApi.ApplicationCore.Services
             var result = await Task.Run(() => _equipmentService.SPLITE_SN_COMMIT(pLineName, pSectionCode, pStationCode, pWorkOrderNo, pPartentSN, pChildSNList, pCarrierNo, pOperator));
             return result;
         }
+
+        public async Task<string> GET_QTIME_START(string sn, string sectionCode, string stationCode)
+        {
+            string result = string.Empty;
+            FITMesResponse response = new FITMesResponse();
+            var mesOperationName = await _storeProcedureResultRepository.GetMesOperation(sectionCode, stationCode);
+            if (string.IsNullOrEmpty(mesOperationName))
+            {
+                response.Result = "NG";
+                response.Display = "MES station is not defined";
+                result = JsonConvert.SerializeObject(response);
+            }
+            else
+            {
+                result = await _storeProcedureResultRepository.GetQtimeStart(sn, mesOperationName);
+            }
+
+            return result;
+        }
     }
 }

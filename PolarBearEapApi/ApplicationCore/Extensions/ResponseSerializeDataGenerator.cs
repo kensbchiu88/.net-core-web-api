@@ -101,6 +101,9 @@ namespace PolarBearEapApi.ApplicationCore.Extensions
                 case "GET_REMAINING_OPENTIME":
                     opResponseInfoObj.Add("Data", "");
                     break;
+                case "GET_QTIME_START":
+                    opResponseInfoObj.Add("Data", "");
+                    break;
                 default:
                     opResponseInfoObj.Add("Result", "NG");
                     break;

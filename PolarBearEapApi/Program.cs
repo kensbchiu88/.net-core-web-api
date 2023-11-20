@@ -94,8 +94,10 @@ try
     builder.Services.AddScoped<IMesCommand, GetRemainingOpentimeCommand>();
     builder.Services.AddScoped<IMesCommand, GetQtimeStartCommand>();
 
+    builder.Services.AddScoped<IMesCommand, SpliteSnCommitCommand>();
 
-    builder.Services.AddScoped<IMesCommand, SpliteSnCommit>();
+    builder.Services.AddScoped<IMesCommand, SpiCommitCommand>();
+    builder.Services.AddScoped<IMesCommand, UnitProcessCheckSmtCommand>();
 
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
     builder.Services.AddSingleton<IEmailService, EmailService>();

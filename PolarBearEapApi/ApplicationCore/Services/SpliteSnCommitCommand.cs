@@ -8,14 +8,14 @@ using PolarBearEapApi.PublicApi.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
-    public class SpliteSnCommit : IMesCommand
+    public class SpliteSnCommitCommand : IMesCommand
     {
         public string CommandName { get; } = "SPLITE_SN_COMMIT";
 
         private readonly IMesService _equipmentService;
         private readonly ITokenRepository _tokenRepository;
 
-        public SpliteSnCommit(IMesService equipmentService, ITokenRepository tokenRepository)
+        public SpliteSnCommitCommand(IMesService equipmentService, ITokenRepository tokenRepository)
         {
             _equipmentService = equipmentService;
             _tokenRepository = tokenRepository;

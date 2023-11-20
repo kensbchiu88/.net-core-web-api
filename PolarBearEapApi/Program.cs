@@ -48,6 +48,7 @@ try
     builder.Services.AddDbContext<LearnFileAlterWarningDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
     builder.Services.AddDbContext<StoreProcedureDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MesDatabaseConnection")));
     builder.Services.AddDbContext<EquipmentTemporaryDataDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
+    builder.Services.AddDbContext<UploadReportDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabaseConnection")));
 
     //add adaptor
     builder.Services.AddScoped<ITokenRepository, DbTokenRepository>();
@@ -58,6 +59,7 @@ try
     builder.Services.AddScoped<IStoredProcedureResultRepository, SqlServerStoredProcedureResultRepository>();
     builder.Services.AddScoped<IStoredProcedureResultRepository, SqlServerStoredProcedureResultRepository>();
     builder.Services.AddScoped<IEquipmentTemporaryDataRepository, DbEquipmentTemporaryDataRepository>();
+    builder.Services.AddScoped<IUploadReportRepository, DbUploadReportRepository>();
 
 
     //add application service
@@ -98,6 +100,8 @@ try
 
     builder.Services.AddScoped<IMesCommand, SpiCommitCommand>();
     builder.Services.AddScoped<IMesCommand, UnitProcessCheckSmtCommand>();
+
+    builder.Services.AddScoped<IMesCommand, UploadReportCommand>();
 
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
     builder.Services.AddSingleton<IEmailService, EmailService>();

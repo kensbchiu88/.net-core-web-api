@@ -9,5 +9,6 @@ namespace PolarBearEapApi.ApplicationCore.Interfaces
         Task<string> HoldSnlistCommit(string sn);
         Task<string> GetSnByRawsn(string sn);
         Task<string> GetQtimeStart(string sn, string operationName);
+        Task<string> GetBadmark(string sn);
     }
 }

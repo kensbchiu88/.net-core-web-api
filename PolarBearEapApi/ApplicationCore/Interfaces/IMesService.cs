@@ -29,5 +29,6 @@
          */
         Task<string> SPLITE_SN_COMMIT(string pLineName, string pSectionCode, string pStationCode, string pWorkOrderNo, string pPartentSN, string pChildSNList, string pCarrierNo, string pOperator);
         Task<string> GET_QTIME_START(string sn, string sectionCode, string stationCode);
+        Task<String> GET_BADMARK(string sn);
     }
 }

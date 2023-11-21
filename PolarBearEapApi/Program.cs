@@ -98,8 +98,10 @@ try
 
     builder.Services.AddScoped<IMesCommand, SpliteSnCommitCommand>();
 
-    builder.Services.AddScoped<IMesCommand, SpiCommitCommand>();
+    builder.Services.AddScoped<IMesCommand, SmtUnitProcessCommitCommand>();
     builder.Services.AddScoped<IMesCommand, UnitProcessCheckSmtCommand>();
+    builder.Services.AddScoped<IMesCommand, BccSnCreateAutoCommand>();
+    builder.Services.AddScoped<IMesCommand, LbBingdingWpPmCommand>();
 
     builder.Services.AddScoped<IMesCommand, UploadReportCommand>();
 

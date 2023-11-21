@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
@@ -8,32 +7,22 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
-    public class BindSnFixtureSnCommand : IMesCommand
+    public class UnitProcessCheckSmtCommand : IMesCommand
     {
-        public string CommandName { get; } = "BIND_SN_FIXTURESN";
-
-        private readonly IMesService _equipmentService;
-
-        public BindSnFixtureSnCommand(IMesService equipmentService)
-        {
-            _equipmentService = equipmentService;
-        }
+        public string CommandName { get; } = "UNIT_PROCESS_CHECK_SMT";
 
         public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
-            //Newtonsoft does case insensitive JSON deserialization
             SerializeDataModel inputModel = JsonConvert.DeserializeObject<SerializeDataModel>(input.SerializeData);
             ValidateInput(inputModel);
 
-            try
+            MesCommandResponse response = new MesCommandResponse
             {
-                string mesReturn = await _equipmentService.BIND_FIXTURE_BY_SN_FIXTURE(inputModel.LineCode!, inputModel.SectionCode!, inputModel.StationCode.ToString()!, inputModel.OPRequestInfo.Sn!, inputModel.OPRequestInfo.FixtureSn!);
-                return new MesCommandResponse(mesReturn);
-            }
-            catch (Exception ex)
-            {
-                throw new EapException(ErrorCodeEnum.CallMesServiceException, ex);
-            }
+                OpResponseInfo = "{\"Result\":\"NG\",\"BadMark\":\"\"}",
+                ErrorMessage = "MES not ready"
+            };
+
+            return response;
         }
 
         private static void ValidateInput(SerializeDataModel inputModel)
@@ -48,8 +37,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
                 requiredFields.Add("StationCode");
             if (string.IsNullOrEmpty(inputModel.OPRequestInfo.Sn))
                 requiredFields.Add("OPRequestInfo.SN");
-            if (string.IsNullOrEmpty(inputModel.OPRequestInfo.FixtureSn))
-                requiredFields.Add("OPRequestInfo.FIXTURE_SN");
+
 
             if (requiredFields.Count > 0)
                 throw new EapException(ErrorCodeEnum.JsonFieldRequire, "Json Fields Required: " + string.Join(",", requiredFields));
@@ -57,10 +45,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
 
         private class OpRequestInfoModel
         {
-            [JsonProperty("SN")]
             public string? Sn { get; set; }
-            [JsonProperty("FIXTURE_SN")]
-            public string? FixtureSn { get; set; }
         }
 
         private class SerializeDataModel
@@ -71,5 +56,5 @@ namespace PolarBearEapApi.ApplicationCore.Services
             [Required]
             public OpRequestInfoModel? OPRequestInfo { get; set; }
         }
-    }
+    }    
 }

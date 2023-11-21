@@ -13,7 +13,7 @@ namespace PolarBearEapApi.PublicApi.Soap
         [OperationContract]
         List<List<string>> GetLineList();
         [OperationContract]
-        List<string> GetStationByLineSection(string lineCode, string sectionCode);
+        Task<string> GetStationByLineSection(string lineCode, string sectionCode);
         [OperationContract]
         Task<bool> CheckDevRoute(string sn, string sectionCode, string sectionDesc, string stationCode, string StationDesc, string lineCode, string tester);
         [OperationContract]

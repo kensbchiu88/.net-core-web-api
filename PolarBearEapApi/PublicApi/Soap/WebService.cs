@@ -2,6 +2,7 @@
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.PublicApi.Models;
+using static Azure.Core.HttpHeader;
 
 namespace PolarBearEapApi.PublicApi.Soap
 {
@@ -50,10 +51,10 @@ namespace PolarBearEapApi.PublicApi.Soap
             return result;
         }
 
-        public List<string> GetStationByLineSection(string lineCode, string sectionCode = "0")
+        public async Task<string> GetStationByLineSection(string lineCode, string sectionCode = "0")
         { 
             var result = new List<string>() { "CLASS_CODE", "LINE_CODE", "LINE_NAME", "SECTION_CODE", "SECTION_DESC", "STATION_CODE", "STATION_NAME" };
-            return result;
+            return String.Join(";", result.ToArray());
         }
 
         public async Task<bool> CheckDevRoute(string sn, string sectionCode, string sectionDesc, string stationCode, string StationDesc, string lineCode, string tester)

@@ -7,9 +7,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
-    public class SpiCommitCommand : IMesCommand
+    public class SmtUnitProcessCommitCommand : IMesCommand
     {
-        public string CommandName { get; } = "SPI_COMMIT";
+        public string CommandName { get; } = "SMT_UNIT_PROCESS_COMMIT";
 
         public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {

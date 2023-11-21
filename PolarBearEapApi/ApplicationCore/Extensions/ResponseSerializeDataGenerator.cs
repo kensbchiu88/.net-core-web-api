@@ -104,6 +104,10 @@ namespace PolarBearEapApi.ApplicationCore.Extensions
                 case "GET_QTIME_START":
                     opResponseInfoObj.Add("Data", "");
                     break;
+                case "UNIT_PROCESS_CHECK_SMT":
+                    opResponseInfoObj.Add("Result", "NG");
+                    opResponseInfoObj.Add("BadMark", "");
+                    break;
                 default:
                     opResponseInfoObj.Add("Result", "NG");
                     break;

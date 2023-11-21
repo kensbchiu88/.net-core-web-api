@@ -171,5 +171,11 @@ namespace PolarBearEapApi.ApplicationCore.Services
 
             return result;
         }
+
+        public async Task<string> GET_BADMARK(string sn)
+        {
+            var result = await _storeProcedureResultRepository.GetBadmark(sn);
+            return result;
+        }
     }
 }

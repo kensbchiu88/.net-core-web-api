@@ -11,12 +11,12 @@ namespace PolarBearEapApi.PublicApi.Soap
         [OperationContract]
         Task<bool> UserLogin(string user, string passwrod);
         [OperationContract]
-        List<List<string>> GetLineList();
+        Task<string> GetLineList();
         [OperationContract]
         Task<string> GetStationByLineSection(string lineCode, string sectionCode);
         [OperationContract]
-        Task<bool> CheckDevRoute(string sn, string sectionCode, string sectionDesc, string stationCode, string StationDesc, string lineCode, string tester);
+        Task<string> CheckDevRoute(string sn, string sectionCode, string sectionDesc, string stationCode, string StationDesc, string lineCode, string tester);
         [OperationContract]
-        Task<bool> CommitDevData(string sn, string sectionCode, string sectionDesc, string stationCode, string stationDesc, string lineCode, string tester, string test_time, int testResult, string testData);
+        Task<string> CommitDevData(string sn, string sectionCode, string sectionDesc, string stationCode, string stationDesc, string lineCode, string tester, string test_time, int testResult, string testData);
     }
 }

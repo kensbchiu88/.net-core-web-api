@@ -61,6 +61,10 @@ namespace PolarBearEapApi.ApplicationCore.Services
             if (badmarkResponse != null && badmarkResponse.Result != null && "OK".Equals(badmarkResponse.Result.ToUpper()))
             {
                 badmark = badmarkResponse.ResultCode!;
+                if (!string.IsNullOrEmpty(badmark))
+                {
+                    badmark = badmark.Replace(':', ',');
+                }
             }
             else
             {

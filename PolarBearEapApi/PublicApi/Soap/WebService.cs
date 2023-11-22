@@ -39,16 +39,14 @@ namespace PolarBearEapApi.PublicApi.Soap
             return result;
         }
 
-        public List<List<string>> GetLineList()
+        public async Task<string> GetLineList()
         {
-            var result = new List<List<string>>();
             var line1 = new List<string>(){ "LINE_CODE1", "LINE_NAME1", "LINE_TYPE1", "LINE_DESC1", "CLASS_CODE1"};
             var line2 = new List<string>(){ "LINE_CODE2", "LINE_NAME2", "LINE_TYPE2", "LINE_DESC2", "CLASS_CODE2"};
 
-            result.Add(line1);
-            result.Add(line2);
+            var result = line1.Concat(line2);
 
-            return result;
+            return String.Join(";", result.ToArray()); ;
         }
 
         public async Task<string> GetStationByLineSection(string lineCode, string sectionCode = "0")
@@ -57,9 +55,9 @@ namespace PolarBearEapApi.PublicApi.Soap
             return String.Join(";", result.ToArray());
         }
 
-        public async Task<bool> CheckDevRoute(string sn, string sectionCode, string sectionDesc, string stationCode, string StationDesc, string lineCode, string tester)
+        public async Task<string> CheckDevRoute(string sn, string sectionCode, string sectionDesc, string stationCode, string StationDesc, string lineCode, string tester)
         {
-            bool result = false;
+            string result = "NG";
             string mesReturn;
             try
             {
@@ -73,15 +71,15 @@ namespace PolarBearEapApi.PublicApi.Soap
             //驗證MES結果
             if (FITMesResponse.IsResultOk(mesReturn))
             {
-                result = true;
+                result = "OK";
             }
 
             return result;
         }
 
-        public async Task<bool> CommitDevData(string sn, string sectionCode, string sectionDesc, string stationCode, string stationDesc, string lineCode, string tester, string test_time, int testResult, string testData)
+        public async Task<string> CommitDevData(string sn, string sectionCode, string sectionDesc, string stationCode, string stationDesc, string lineCode, string tester, string test_time, int testResult, string testData)
         {
-            bool result = false;
+            string result = "NG";
             string mesReturn;
             try
             {
@@ -103,7 +101,7 @@ namespace PolarBearEapApi.PublicApi.Soap
             //驗證MES結果
             if (FITMesResponse.IsResultOk(mesReturn))
             {
-                result = true;
+                result = "OK";
             }
 
             return result;

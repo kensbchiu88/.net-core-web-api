@@ -98,7 +98,7 @@ try
 
     builder.Services.AddScoped<IMesCommand, SpliteSnCommitCommand>();
 
-    builder.Services.AddScoped<IMesCommand, SmtUnitProcessCommitCommand>();
+    builder.Services.AddScoped<IMesCommand, UnitProcessCommitSmtCommand>();
     builder.Services.AddScoped<IMesCommand, UnitProcessCheckSmtCommand>();
     builder.Services.AddScoped<IMesCommand, BccSnCreateAutoCommand>();
     builder.Services.AddScoped<IMesCommand, LbBingdingWpPmCommand>();

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using PolarBearEapApi.ApplicationCore.Constants;
+using PolarBearEapApi.ApplicationCore.Entities;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.PublicApi.Models;
@@ -12,29 +13,31 @@ namespace PolarBearEapApi.ApplicationCore.Services
     {
         public string CommandName { get; } = "BCC_SN_CREATE_AUTO";
 
+        private readonly IMesService _equipmentService;
+        private readonly ITokenRepository _tokenRepository;
+
+        public BccSnCreateAutoCommand(IMesService equipmentService, ITokenRepository tokenRepository)
+        {
+            _equipmentService = equipmentService;
+            _tokenRepository = tokenRepository;
+        }
+
         public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
             SerializeDataModel inputModel = JsonConvert.DeserializeObject<SerializeDataModel>(input.SerializeData);
             ValidateInput(inputModel);
 
-            /*
+            TokenInfo token = await _tokenRepository.GetTokenInfo(input.Hwd);
+
             try
             {
-                string mesReturn = await _equipmentService.WEIGHT_CHECK_COMMIT(lineCode!, sectionCode!, stationCode!, wo!, sn!, token.username!);
-                return new MesCommandResponse(mesReturn);
+                string mesReturn = await _equipmentService.BCC_SN_CREATE_AUTO(inputModel.OPRequestInfo!.WorkOrder!, inputModel.OPRequestInfo.PrintNo ?? 0, token.username!);
+                return GetResponse(mesReturn);
             }
             catch (Exception ex)
             {
                 throw new EapException(ErrorCodeEnum.CallMesServiceException, ex);
             }
-            */
-            MesCommandResponse response = new MesCommandResponse
-            {
-                OpResponseInfo = "{\"SN\":\"\"}",
-                ErrorMessage = "MES not ready"
-            };
-
-            return response;
         }
 
         private static void ValidateInput(SerializeDataModel inputModel)
@@ -43,11 +46,36 @@ namespace PolarBearEapApi.ApplicationCore.Services
 
             if (string.IsNullOrEmpty(inputModel.OPRequestInfo.WorkOrder))
                 requiredFields.Add("OPRequestInfo.WORK_ORDER");
-            if (string.IsNullOrEmpty(inputModel.OPRequestInfo.PrintNo))
+            if (inputModel.OPRequestInfo.PrintNo == null)
                 requiredFields.Add("OPRequestInfo.PRINT_NO");
 
             if (requiredFields.Count > 0)
                 throw new EapException(ErrorCodeEnum.JsonFieldRequire, "Json Fields Required: " + string.Join(",", requiredFields));
+        }
+
+        private static MesCommandResponse GetResponse(string mesReturn)
+        {
+            var response = new MesCommandResponse();
+            var fitMesResponse = JsonConvert.DeserializeObject<FITMesResponse>(mesReturn);
+            if (fitMesResponse != null)
+            {
+                if (fitMesResponse.Result != null && "OK".Equals(fitMesResponse.Result.ToUpper()))
+                {
+                    response.OpResponseInfo = "{\"SN\":\"" + fitMesResponse.ResultCode + "\"}"; ;
+                }
+                else
+                {
+                    response.OpResponseInfo = "{\"SN\":\"\"}";
+                    response.ErrorMessage = fitMesResponse.Display;
+                }
+            }
+            else
+            {
+                response.OpResponseInfo = "{\"SN\":\"\"}";
+                response.ErrorMessage = ErrorCodeEnum.NoMesReturn.ToString();
+            }
+
+            return response;
         }
 
         private class OpRequestInfoModel
@@ -57,7 +85,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             [JsonProperty("LABLE_CODE")]
             public string? LabelCode { get; set; }
             [JsonProperty("PRINT_NO")]
-            public string? PrintNo { get; set; }
+            public int? PrintNo { get; set; }
         }
 
         private class SerializeDataModel

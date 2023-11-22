@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using PolarBearEapApi.ApplicationCore.Constants;
+using PolarBearEapApi.ApplicationCore.Entities;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.PublicApi.Models;
@@ -11,29 +12,31 @@ namespace PolarBearEapApi.ApplicationCore.Services
     {
         public string CommandName { get; } = "LB_BINGDING_WP_PM";
 
+        private readonly IMesService _equipmentService;
+        private readonly ITokenRepository _tokenRepository;
+
+        public LbBingdingWpPmCommand(IMesService equipmentService, ITokenRepository tokenRepository)
+        {
+            _equipmentService = equipmentService;
+            _tokenRepository = tokenRepository;
+        }
+
         public async Task<MesCommandResponse> Execute(MesCommandRequest input)
         {
             SerializeDataModel inputModel = JsonConvert.DeserializeObject<SerializeDataModel>(input.SerializeData);
             ValidateInput(inputModel);
 
-            /*
+            TokenInfo token = await _tokenRepository.GetTokenInfo(input.Hwd);
+
             try
             {
-                string mesReturn = await _equipmentService.WEIGHT_CHECK_COMMIT(lineCode!, sectionCode!, stationCode!, wo!, sn!, token.username!);
+                string mesReturn = await _equipmentService.LB_BINGDING_WP_PM(inputModel.OPRequestInfo!.WorkOrder!, inputModel.OPRequestInfo.PanelSn!, inputModel.OPRequestInfo.Sn!, inputModel.SectionCode!, inputModel.StationCode.ToString()!, token.username!);
                 return new MesCommandResponse(mesReturn);
             }
             catch (Exception ex)
             {
                 throw new EapException(ErrorCodeEnum.CallMesServiceException, ex);
-            }
-            */
-            MesCommandResponse response = new MesCommandResponse
-            {
-                OpResponseInfo = "{\"Result\":\"NG\"}",
-                ErrorMessage = "MES not ready"
-            };
-
-            return response;
+            }            
         }
 
         private static void ValidateInput(SerializeDataModel inputModel)
@@ -48,8 +51,6 @@ namespace PolarBearEapApi.ApplicationCore.Services
                 requiredFields.Add("OPRequestInfo.WORK_ORDER");
             if (string.IsNullOrEmpty(inputModel.OPRequestInfo.PanelSn))
                 requiredFields.Add("OPRequestInfo.Panel_SN");
-            if (string.IsNullOrEmpty(inputModel.OPRequestInfo.PrintNo))
-                requiredFields.Add("OPRequestInfo.PRINT_NO");
             if (string.IsNullOrEmpty(inputModel.OPRequestInfo.Sn))
                 requiredFields.Add("OPRequestInfo.SN");
 

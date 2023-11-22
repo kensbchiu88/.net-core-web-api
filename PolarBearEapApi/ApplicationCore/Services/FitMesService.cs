@@ -177,5 +177,17 @@ namespace PolarBearEapApi.ApplicationCore.Services
             var result = await _storeProcedureResultRepository.GetBadmark(sn);
             return result;
         }
+
+        public async Task<string> BCC_SN_CREATE_AUTO(string pWorkOrderNo, int pRequestQty, string pOperator)
+        {
+            var result = await Task.Run(() => _equipmentService.BCC_SN_Create_Auto(pWorkOrderNo, pRequestQty, pOperator));
+            return result;
+        }
+
+        public async Task<string> LB_BINGDING_WP_PM(string pWorkOrderNo, string pParentSN, string pChildSNList, string pSectionCode, string pStationCode, string pOperator)
+        {
+            var result = await Task.Run(() => _equipmentService.LB_BINGDING_WP_PM(pWorkOrderNo, pParentSN, pChildSNList, pSectionCode, pStationCode, pOperator));
+            return result;
+        }
     }
 }

@@ -30,17 +30,19 @@ namespace PolarBearEapApi.ApplicationCore.Services
             ValidateInput(inputModel);
 
             string mesReturn = string.Empty;
-            bool isSave2DbSuccess = false;
+            MesCommandResponse response;
             try
             {
                 mesReturn = await _equipmentService.SMT_UNIT_PROCESS_COMMIT(inputModel.LineCode!, inputModel.SectionCode!, inputModel.SectionCode!.ToString(), inputModel.OPRequestInfo!.Sn!, inputModel.OPRequestInfo.Result!, inputModel.OPRequestInfo.BinData, inputModel.OPRequestInfo.BadMark);
+                //因上傳參數目前並非必要條件，所以Commit OK則result=OK
+                response = new MesCommandResponse(mesReturn);
             }
             catch (Exception ex)
             {
                 throw new EapException(ErrorCodeEnum.CallMesServiceException, ex);
             }
 
-            //if (FITMesResponse.IsResultOk(mesReturn))
+            if (FITMesResponse.IsResultOk(mesReturn))
             {
                 try
                 {
@@ -57,16 +59,16 @@ namespace PolarBearEapApi.ApplicationCore.Services
                     };
                     await _repository.Insert(entity);
 
-                    isSave2DbSuccess = true;
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(LogMessageGenerator.GetErrorMessage(input.SerializeData, ex.ToString()));
-                    isSave2DbSuccess = false;
+                    //因上傳參數目前並非必要條件，所以只需顯示上傳參數的錯誤訊息
+                    response.ErrorMessage = $"{ErrorCodeEnum.UploadFail.ToString()}:{ex.Message}";                    
                 }
             }
 
-            return GetResponse(mesReturn, isSave2DbSuccess);
+            return response;
         }
 
         private static void ValidateInput(SerializeDataModel inputModel)
@@ -100,40 +102,6 @@ namespace PolarBearEapApi.ApplicationCore.Services
             };
 
             return JsonConvert.SerializeObject(newModel,Formatting.None,new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-        }
-
-        private static MesCommandResponse GetResponse(string mesReturn, bool isSave2DbSuccess)
-        {
-            var response = new MesCommandResponse();
-            var fitMesResponse = JsonConvert.DeserializeObject<FITMesResponse>(mesReturn);
-
-            if (fitMesResponse != null)
-            {
-                if (fitMesResponse.IsResultOk() && isSave2DbSuccess)
-                {
-                    response.OpResponseInfo = "{\"Result\":\"OK\"}";
-                }
-                else 
-                {
-                    response.OpResponseInfo = "{\"Result\":\"NG\"}";
-
-                    if (!fitMesResponse.IsResultOk())
-                    {
-                        response.ErrorMessage = fitMesResponse.Display;
-                    }
-                    if (!isSave2DbSuccess)
-                    {
-                        response.ErrorMessage = ErrorCodeEnum.UploadFail.ToString();
-                    }
-                }
-            }
-            else
-            {
-                response.OpResponseInfo = "{\"Result\":\"NG\"}";
-                response.ErrorMessage = ErrorCodeEnum.NoMesReturn.ToString();
-            }
-
-            return response;
         }
 
         private class OpRequestInfoModel

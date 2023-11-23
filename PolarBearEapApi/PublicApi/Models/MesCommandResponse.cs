@@ -19,7 +19,7 @@ namespace PolarBearEapApi.PublicApi.Models
             var fitMesResponse = JsonConvert.DeserializeObject<FITMesResponse>(mesReturnString);
             if (fitMesResponse != null)
             {
-                if (fitMesResponse.Result != null && "OK".Equals(fitMesResponse.Result.ToUpper()))
+                if (fitMesResponse.IsResultOk())
                 {
                     OpResponseInfo = "{\"Result\":\"OK\"}";
                 }

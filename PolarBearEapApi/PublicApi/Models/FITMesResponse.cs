@@ -19,17 +19,22 @@ namespace PolarBearEapApi.PublicApi.Models
         [JsonProperty("BindInfo", NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
         public string? BindInfo { get; set; }
 
+        public bool IsResultOk()
+        {
+            if (string.IsNullOrEmpty(Result) || !Result.ToUpper().Equals("OK"))
+            {
+                return false;
+            }
+            return true;
+        }
+
         /** 檢查MES執行結果 */
         public static bool IsResultOk(string mesReturnJson)
         {
             if (string.IsNullOrWhiteSpace(mesReturnJson)) return false;
 
             FITMesResponse? fitMesResponse = JsonConvert.DeserializeObject<FITMesResponse>(mesReturnJson);
-            if (fitMesResponse == null || string.IsNullOrEmpty(fitMesResponse.Result) || !fitMesResponse.Result.ToUpper().Equals("OK"))
-            {
-                return false;
-            }
-            return true;
+            return fitMesResponse.IsResultOk();
         }
 
         /** 將呼叫StoredProces */

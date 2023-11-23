@@ -33,7 +33,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             MesCommandResponse response;
             try
             {
-                mesReturn = await _equipmentService.SMT_UNIT_PROCESS_COMMIT(inputModel.LineCode!, inputModel.SectionCode!, inputModel.SectionCode!.ToString(), inputModel.OPRequestInfo!.Sn!, inputModel.OPRequestInfo.Result!, inputModel.OPRequestInfo.BinData, inputModel.OPRequestInfo.BadMark);
+                mesReturn = await _equipmentService.SMT_UNIT_PROCESS_COMMIT(inputModel.LineCode!, inputModel.SectionCode!, inputModel.StationCode!.ToString(), inputModel.OPRequestInfo!.Sn!, inputModel.OPRequestInfo.Result!, inputModel.OPRequestInfo.BinData, inputModel.OPRequestInfo.BadMark);
                 //因上傳參數目前並非必要條件，所以Commit OK則result=OK
                 response = new MesCommandResponse(mesReturn);
             }

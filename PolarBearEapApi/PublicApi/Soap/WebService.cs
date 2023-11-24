@@ -81,18 +81,11 @@ namespace PolarBearEapApi.PublicApi.Soap
         {
             string result = "NG";
             string mesReturn;
+            //testResult 撕膜機 永遠都是傳0進來
             try
             {
-                if (testResult == 1)
-                {
-                    mesReturn = await _equipmentService.UNIT_PROCESS_COMMIT(lineCode, sectionCode, stationCode, sn);
-                    _logger.LogInformation("CommitDevData lineCode:{lineCode}, sectionCode:{sectionCode}, stationCode:{stationCode}, sn:{sn}, return:{mesReturn}", lineCode, sectionCode, stationCode, sn, mesReturn);
-                }
-                else
-                {
-                    mesReturn = await _equipmentService.UNIT_PROCESS_COMMIT(lineCode!, sectionCode!, stationCode!, sn!, "FAIL", "", "");
-                    _logger.LogInformation("CommitDevData lineCode:{lineCode}, sectionCode:{sectionCode}, stationCode:{stationCode}, sn:{sn}, result:FAIL, list:{list}, message:{message} return:{mesReturn}", lineCode, sectionCode, stationCode, sn, " ", " ", mesReturn);
-                }
+                mesReturn = await _equipmentService.UNIT_PROCESS_COMMIT(lineCode, sectionCode, stationCode, sn);
+                _logger.LogInformation("CommitDevData lineCode:{lineCode}, sectionCode:{sectionCode}, stationCode:{stationCode}, sn:{sn}, return:{mesReturn}", lineCode, sectionCode, stationCode, sn, mesReturn);
             }
             catch (Exception ex)
             {

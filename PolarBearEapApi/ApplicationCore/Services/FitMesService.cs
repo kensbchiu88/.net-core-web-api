@@ -189,5 +189,11 @@ namespace PolarBearEapApi.ApplicationCore.Services
             var result = await Task.Run(() => _equipmentService.LB_BINGDING_WP_PM(pWorkOrderNo, pParentSN, pChildSNList, pSectionCode, pStationCode, pOperator));
             return result;
         }
+
+        public async Task<string> SMT_UNIT_PROCESS_COMMIT(string pLineName, string pSectionCode, string pStationCode, string pSN, string pResult, string pBin, string pBadMark)
+        {
+            var result = await Task.Run(() => _equipmentService.SMT_UNIT_PROCESS_COMMIT(pLineName, pSectionCode, pStationCode, pSN, pResult, pBin, pBadMark));
+            return result;
+        }
     }
 }

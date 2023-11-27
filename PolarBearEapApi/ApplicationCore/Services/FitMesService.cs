@@ -195,5 +195,24 @@ namespace PolarBearEapApi.ApplicationCore.Services
             var result = await Task.Run(() => _equipmentService.SMT_UNIT_PROCESS_COMMIT(pLineName, pSectionCode, pStationCode, pSN, pResult, pBin, pBadMark));
             return result;
         }
+
+        public async Task<string> CHECK_UC_CLEAR(string sectionCode, string stationCode, string carrierNo)
+        {
+            string result = string.Empty;
+            FITMesResponse response = new FITMesResponse();
+            var mesOperationName = await _storeProcedureResultRepository.GetMesOperation(sectionCode, stationCode);
+            if (string.IsNullOrEmpty(mesOperationName))
+            {
+                response.Result = "NG";
+                response.Display = "MES station is not defined";
+                result = JsonConvert.SerializeObject(response);
+            }
+            else
+            {
+                result = await _storeProcedureResultRepository.CheckUcClear(mesOperationName, carrierNo);
+            }
+
+            return result;
+        }
     }
 }

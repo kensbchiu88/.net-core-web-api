@@ -33,5 +33,6 @@
         Task<string> BCC_SN_CREATE_AUTO(string pWorkOrderNo, int pRequestQty, string pOperator);
         Task<string> LB_BINGDING_WP_PM(string pWorkOrderNo, string pParentSN, string pChildSNList, string pSectionCode, string pStationCode, string pOperator);
         Task<string> SMT_UNIT_PROCESS_COMMIT(string pLineName, string pSectionCode, string pStationCode, string pSN, string pResult, string pBin, string pBadMark);
+        Task<string> CHECK_UC_CLEAR(string sectionCode, string stationCode, string carrierNo);
     }
 }

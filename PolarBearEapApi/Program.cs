@@ -104,6 +104,7 @@ try
     builder.Services.AddScoped<IMesCommand, LbBingdingWpPmCommand>();
 
     builder.Services.AddScoped<IMesCommand, UploadReportCommand>();
+    builder.Services.AddScoped<IMesCommand, CheckUcClearCommand>();
 
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
     builder.Services.AddSingleton<IEmailService, EmailService>();

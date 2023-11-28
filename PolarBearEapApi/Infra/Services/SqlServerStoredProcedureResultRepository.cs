@@ -51,22 +51,7 @@ namespace PolarBearEapApi.Infra.Services
 
             porcedureResult = await _context.StoredProcedureResultEntities.FromSql($"dbo.sp_AUTO_UNBIND_SN_FIXTURESN {snParam}").ToListAsync();
 
-            FITMesResponse fitResponse;
-
-            if (!porcedureResult.Any())
-            {
-                fitResponse = new FITMesResponse 
-                {
-                    Result = "NG",
-                    Display = "No Data Return"
-                };
-            }
-            else
-            {
-                fitResponse = FITMesResponse.ConvertFromStoredProcedureResult(porcedureResult.First().Result);
-            }
-
-            return JsonConvert.SerializeObject(fitResponse);             
+            return ConvertStoredProcedureResultToFitMesResponseString(porcedureResult);
         }
 
         public async Task<string> HoldSnlistCommit(string sn)
@@ -77,22 +62,7 @@ namespace PolarBearEapApi.Infra.Services
 
             porcedureResult = await _context.StoredProcedureResultEntities.FromSql($"dbo.sp_AUTO_HOLD_SNLIST_COMMIT {snParam}").ToListAsync();
 
-            FITMesResponse fitResponse;
-
-            if (!porcedureResult.Any())
-            {
-                fitResponse = new FITMesResponse
-                {
-                    Result = "NG",
-                    Display = "No Data Return"
-                };
-            }
-            else
-            {
-                fitResponse = FITMesResponse.ConvertFromStoredProcedureResult(porcedureResult.First().Result);
-            }
-
-            return JsonConvert.SerializeObject(fitResponse);
+            return ConvertStoredProcedureResultToFitMesResponseString(porcedureResult);
         }
 
 
@@ -104,22 +74,7 @@ namespace PolarBearEapApi.Infra.Services
 
             porcedureResult = await _context.StoredProcedureResultEntities.FromSql($"sp_AUTO_GET_SN_BY_RAWSN {snParam}").ToListAsync();
 
-            FITMesResponse fitResponse;
-
-            if (!porcedureResult.Any())
-            {
-                fitResponse = new FITMesResponse
-                {
-                    Result = "NG",
-                    Display = "No Data Return"
-                };
-            }
-            else
-            {
-                fitResponse = FITMesResponse.ConvertFromStoredProcedureResult(porcedureResult.First().Result);
-            }
-
-            return JsonConvert.SerializeObject(fitResponse);
+            return ConvertStoredProcedureResultToFitMesResponseString(porcedureResult);
         }
 
         public async Task<string> GetQtimeStart(string sn, string operationName)
@@ -131,22 +86,7 @@ namespace PolarBearEapApi.Infra.Services
 
             porcedureResult = await _context.StoredProcedureResultEntities.FromSql($"sp_AUTO_GET_QTIME_START {snParam}, {operationNameParam}").ToListAsync();
 
-            FITMesResponse fitResponse;
-
-            if (!porcedureResult.Any())
-            {
-                fitResponse = new FITMesResponse
-                {
-                    Result = "NG",
-                    Display = "No Data Return"
-                };
-            }
-            else
-            {
-                fitResponse = FITMesResponse.ConvertFromStoredProcedureResult(porcedureResult.First().Result);
-            }
-
-            return JsonConvert.SerializeObject(fitResponse);
+            return ConvertStoredProcedureResultToFitMesResponseString(porcedureResult);
         }
 
         public async Task<string> GetBadmark(string sn)
@@ -157,6 +97,23 @@ namespace PolarBearEapApi.Infra.Services
 
             porcedureResult = await _context.StoredProcedureResultEntities.FromSql($"sp_AUTO_GET_BADMARK {snParam}").ToListAsync();
 
+            return ConvertStoredProcedureResultToFitMesResponseString(porcedureResult);
+        }
+
+        public async Task<string> CheckUcClear(string operationName, string carrierNo)
+        {
+            var operationNameParam = new SqlParameter("@operation", operationName);
+            var carrierParam = new SqlParameter("@carrierno", carrierNo);
+
+            List<StoredProcedureResultEntity> porcedureResult;
+
+            porcedureResult = await _context.StoredProcedureResultEntities.FromSql($"sp_AUTO_CHECK_UC_CLEAR {operationNameParam}, {carrierParam}").ToListAsync();
+
+            return ConvertStoredProcedureResultToFitMesResponseString(porcedureResult);
+        }
+
+        private string ConvertStoredProcedureResultToFitMesResponseString(List<StoredProcedureResultEntity> porcedureResult)
+        {
             FITMesResponse fitResponse;
 
             if (!porcedureResult.Any())

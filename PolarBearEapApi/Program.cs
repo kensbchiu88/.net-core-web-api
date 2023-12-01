@@ -105,6 +105,8 @@ try
 
     builder.Services.AddScoped<IMesCommand, UploadReportCommand>();
     builder.Services.AddScoped<IMesCommand, CheckUcClearCommand>();
+    builder.Services.AddScoped<IMesCommand, SmtUnitProcessCheckByFixturesnCommand>();
+    builder.Services.AddScoped<IMesCommand, SmtUnitProcessCommitByFixturesnCommand>();
 
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
     builder.Services.AddSingleton<IEmailService, EmailService>();

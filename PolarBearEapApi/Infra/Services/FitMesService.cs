@@ -224,5 +224,17 @@ namespace PolarBearEapApi.Infra.Services
 
             return result;
         }
+
+        public async Task<string> SMT_UNIT_PROCESS_CHECK_BYFIXTURE(string pFixtureSN, string pSectionCode, string pStationCode)
+        {
+            var result = await Task.Run(() => _equipmentService.SMT_UNIT_PROCESS_CHECK_BYFIXTURE(pFixtureSN, pSectionCode, pStationCode));
+            return result;
+        }
+
+        public async Task<string> SMT_UNIT_PROCESS_COMMIT_BYFIXTURE(string pLineName, string pSectionCode, string pStationCode, string pFixtureSN)
+        {
+            var result = await Task.Run(() => _equipmentService.SMT_UNIT_PROCESS_COMMIT_BYFIXTURE(pLineName, pSectionCode, pStationCode, pFixtureSN));
+            return result;
+        }
     }
 }

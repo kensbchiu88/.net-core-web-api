@@ -1,7 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace PolarBearEapApi.ApplicationCore.Entities
+﻿namespace PolarBearEapApi.ApplicationCore.Models
 {
+    /** Token Aggregate Object */
     public class TokenInfo
     {
         public string Id { get; set; }

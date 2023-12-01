@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace PolarBearEapApi.PublicApi.Models
 {
+    /** /api/v1/EapApi Response Model */
     public class ApiResponse
     {
         [JsonPropertyName("Hwd")]

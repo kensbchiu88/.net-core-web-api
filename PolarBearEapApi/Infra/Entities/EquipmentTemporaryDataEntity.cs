@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PolarBearEapApi.ApplicationCore.Entities
+namespace PolarBearEapApi.Infra.Entities
 {
     [Table("equipment_temporary_data")]
     public class EquipmentTemporaryDataEntity

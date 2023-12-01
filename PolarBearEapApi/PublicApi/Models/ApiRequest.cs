@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PolarBearEapApi.PublicApi.Models
 {
+    /** /api/v1/EapApi Request Model */
     public class ApiRequest
     {
         [JsonProperty("Hwd")]

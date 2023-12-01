@@ -1,18 +1,16 @@
-﻿using PolarBearEapApi.ApplicationCore.Entities;
-using PolarBearEapApi.ApplicationCore.Interfaces;
+﻿using PolarBearEapApi.ApplicationCore.Interfaces;
+using PolarBearEapApi.Infra.Entities;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
-    /** LearnFileAlterWarning Application Service */
+    /** LearnFileAlterWarning Application Service。 學習庫異動通知*/
     public class LearnFileAlterWarningService : ILearnFileAlterWarningService
     {
         private readonly ILearnFileAlterWarningRepository _repository;
-        private readonly IEmailService _emailService;
 
-        public LearnFileAlterWarningService(ILearnFileAlterWarningRepository repository, IEmailService emailService)
+        public LearnFileAlterWarningService(ILearnFileAlterWarningRepository repository)
         {
             _repository = repository;
-            _emailService = emailService;
         }
 
         public async Task Send(string filePath, string alterTime, string equipment)
@@ -25,10 +23,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             entity.Equipment = equipment;
             entity.CreateTime = DateTime.Now;
 
-            await _repository.Insert(entity);
-
-            //Todo add send email
-            //await _emailService.Send("ken.sp.chiu@fit-foxconn.com", "學習庫修改測試", "學習庫修改測試");            
+            await _repository.Insert(entity);          
         }        
     }
 }

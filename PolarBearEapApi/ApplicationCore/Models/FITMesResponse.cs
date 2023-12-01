@@ -1,11 +1,10 @@
 ﻿using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
-using PolarBearEapApi.ApplicationCore.Constants;
-using PolarBearEapApi.ApplicationCore.Exceptions;
 using Microsoft.IdentityModel.Tokens;
 
-namespace PolarBearEapApi.PublicApi.Models
+namespace PolarBearEapApi.ApplicationCore.Models
 {
+    /** 對應IMesService 回傳值的 Response Model */
     public class FITMesResponse
     {
         [JsonProperty("Result", NamingStrategyType = typeof(SnakeCaseNamingStrategy))]

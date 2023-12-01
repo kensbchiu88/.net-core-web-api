@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
+using PolarBearEapApi.ApplicationCore.Models;
 using PolarBearEapApi.ApplicationCore.Services;
 using PolarBearEapApi.PublicApi.Controllers;
 using PolarBearEapApi.PublicApi.Models;

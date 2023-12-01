@@ -1,12 +1,12 @@
 ﻿using PolarBearEapApi.ApplicationCore.Constants;
-using PolarBearEapApi.ApplicationCore.Entities;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** SN_LINK_WO SN工單綁定 */
     public class SnLinkWoCommand : IMesCommand
     {
         public string CommandName { get; } = "SN_LINK_WO";

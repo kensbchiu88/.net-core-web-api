@@ -1,12 +1,13 @@
 ﻿using PolarBearEapApi.ApplicationCore.Constants;
-using PolarBearEapApi.ApplicationCore.Entities;
+using PolarBearEapApi.Infra.Entities;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** UPLOAD_REPORT 依據SN，上傳設備參數資訊，For 線外的設備使用，如鋼網機*/
     public class UploadReportCommand : IMesCommand
     {
         public string CommandName { get; } = "UPLOAD_REPORT";

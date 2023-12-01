@@ -2,8 +2,9 @@
 using Newtonsoft.Json;
 using PolarBearEapApi.ApplicationCore.Constants;
 
-namespace PolarBearEapApi.PublicApi.Models
+namespace PolarBearEapApi.ApplicationCore.Models
 {
+    /** IMesCommand的Response Model */
     public class MesCommandResponse
     {
         public string OpResponseInfo { get; set; }

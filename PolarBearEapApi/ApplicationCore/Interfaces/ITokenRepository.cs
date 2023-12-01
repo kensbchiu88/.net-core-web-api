@@ -1,7 +1,8 @@
-﻿using PolarBearEapApi.ApplicationCore.Entities;
+﻿using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Interfaces
 {
+    /** Token Repository */
     public interface ITokenRepository
     {
         Task Validate(string id);

@@ -1,13 +1,13 @@
 ﻿using Newtonsoft.Json;
 using PolarBearEapApi.ApplicationCore.Constants;
-using PolarBearEapApi.ApplicationCore.Entities;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** LB_BINGDING_WP_PM 上傳生產結果 */
     public class LbBingdingWpPmCommand : IMesCommand
     {
         public string CommandName { get; } = "LB_BINGDING_WP_PM";

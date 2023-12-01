@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace PolarBearEapApi.ApplicationCore.Entities
+namespace PolarBearEapApi.Infra.Entities
 {
     [Table("learn_file_alter_warning")]
     public class LearnFileAlterWarningEntity

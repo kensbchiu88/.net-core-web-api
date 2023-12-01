@@ -3,10 +3,11 @@ using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** GET_SN_BY_SMTSN 雷雕碼轉換成產品碼 */
     public class GetSnBySmtSnCommand : IMesCommand
     {
         public string CommandName { get; } = "GET_SN_BY_SMTSN";

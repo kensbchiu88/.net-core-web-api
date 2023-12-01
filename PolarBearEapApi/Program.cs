@@ -56,8 +56,8 @@ try
     builder.Services.AddScoped<IMesService, FitMesService>();
     builder.Services.AddScoped<EquipmentService>();
     builder.Services.AddScoped<ILearnFileAlterWarningRepository, DbLearnFileAlterWarningRepository>();
-    builder.Services.AddScoped<IStoredProcedureResultRepository, SqlServerStoredProcedureResultRepository>();
-    builder.Services.AddScoped<IStoredProcedureResultRepository, SqlServerStoredProcedureResultRepository>();
+    builder.Services.AddScoped<IMesStoredProcedureService, MesStoredProcedureService>();
+    builder.Services.AddScoped<IMesStoredProcedureService, MesStoredProcedureService>();
     builder.Services.AddScoped<IEquipmentTemporaryDataRepository, DbEquipmentTemporaryDataRepository>();
     builder.Services.AddScoped<IUploadReportRepository, DbUploadReportRepository>();
 

@@ -3,10 +3,11 @@ using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** GET_SN_BY_RAWSN 依據子物料獲取產品SN訊息 */
     public class GetSnByRawsnCommand : IMesCommand
     {
         public string CommandName { get; } = "GET_SN_BY_RAWSN";

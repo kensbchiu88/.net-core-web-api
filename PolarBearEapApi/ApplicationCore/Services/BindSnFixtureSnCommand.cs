@@ -3,11 +3,12 @@ using Newtonsoft.Json.Serialization;
 using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** BIND_SN_FIXTURESN 綁定產品SN與載具SN */
     public class BindSnFixtureSnCommand : IMesCommand
     {
         public string CommandName { get; } = "BIND_SN_FIXTURESN";

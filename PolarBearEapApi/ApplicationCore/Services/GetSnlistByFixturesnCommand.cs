@@ -3,10 +3,11 @@ using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** GET_SNLIST_BY_FIXTURESN 根據載具碼獲得產品SN(一帶多) */
     public class GetSnlistByFixturesnCommand : IMesCommand
     {
         public string CommandName { get; } = "GET_SNLIST_BY_FIXTURESN";

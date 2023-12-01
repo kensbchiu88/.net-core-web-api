@@ -2,11 +2,12 @@
 using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Extensions;
-using PolarBearEapApi.PublicApi.Models;
-using PolarBearEapApi.ApplicationCore.Entities;
+using PolarBearEapApi.Infra.Entities;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** UPLOAD_INFOS 依據SN，上傳設備參數資訊 */
     public class UploadInfosCommand : IMesCommand
     {
         public string CommandName { get; } = "UPLOAD_INFOS";

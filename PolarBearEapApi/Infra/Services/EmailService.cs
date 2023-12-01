@@ -2,18 +2,18 @@
 using MailKit.Security;
 using MimeKit;
 using MimeKit.Text;
-using Org.BouncyCastle.Tls;
 using PolarBearEapApi.ApplicationCore.Interfaces;
 using System.Diagnostics;
 
-namespace PolarBearEapApi.ApplicationCore.Services
+namespace PolarBearEapApi.Infra.Services
 {
+    /** Email Service */
     public class EmailService : IEmailService
     {
         private readonly IConfiguration _configuration;
         private readonly string _host;
         private readonly int _port;
-        private readonly string  _sender;
+        private readonly string _sender;
         private readonly string _username;
         private readonly string _password;
 
@@ -21,7 +21,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
         {
             _configuration = configuration;
             _host = _configuration["SmtpSettings:Host"];
-            if(string.IsNullOrEmpty(_configuration["SmtpSettings:Port"]) ) 
+            if (string.IsNullOrEmpty(_configuration["SmtpSettings:Port"]))
             {
                 _port = 25;
             }
@@ -29,7 +29,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             {
                 _port = int.Parse(_configuration["SmtpSettings:Port"]!);
             }
-            
+
             _sender = _configuration["SmtpSettings:Sender"];
             _username = _configuration["SmtpSettings:Username"];
             _password = _configuration["SmtpSettings:Password"];
@@ -52,7 +52,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             if (!string.IsNullOrEmpty(_username) || !string.IsNullOrEmpty(_password))
             {
                 smtp.Authenticate(_username, _password);
-            }            
+            }
             await smtp.SendAsync(email);
             smtp.Disconnect(true);
         }

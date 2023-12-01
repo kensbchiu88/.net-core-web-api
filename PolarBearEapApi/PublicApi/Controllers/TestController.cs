@@ -3,6 +3,7 @@ using PolarBearEapApi.ApplicationCore.Interfaces;
 
 namespace PolarBearEapApi.PublicApi.Controllers
 {
+    /** ´ú¸Õ¥ÎController */
     [ApiController]
     [Route("[controller]")]
     public class TestController : ControllerBase

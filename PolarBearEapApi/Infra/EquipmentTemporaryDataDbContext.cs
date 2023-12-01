@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PolarBearEapApi.ApplicationCore.Entities;
+using PolarBearEapApi.Infra.Entities;
 
 namespace PolarBearEapApi.Infra
 {

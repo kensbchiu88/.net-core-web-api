@@ -2,16 +2,17 @@
 using FIT.MES.Service;
 using Newtonsoft.Json;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
-namespace PolarBearEapApi.ApplicationCore.Services
+namespace PolarBearEapApi.Infra.Services
 {
+    /** FIT MES對於IMesServie的實作 */
     public class FitMesService : IMesService
     {
         private readonly EquipmentService _equipmentService;
-        private readonly IStoredProcedureResultRepository _storeProcedureResultRepository;
+        private readonly IMesStoredProcedureService _storeProcedureResultRepository;
 
-        public FitMesService(EquipmentService equipmentService, IStoredProcedureResultRepository storeProcedureResultRepository)
+        public FitMesService(EquipmentService equipmentService, IMesStoredProcedureService storeProcedureResultRepository)
         {
             _equipmentService = equipmentService;
             _storeProcedureResultRepository = storeProcedureResultRepository;
@@ -103,7 +104,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
                 string mesReturn = await Task.Run(() => GuleRuleUtils.CheckGule(pSn, mesOperationName));
                 var mesReturnList = mesReturn.Split(',').ToList();
 
-                
+
                 if (mesReturnList.Count == 0)
                 {
                     response.Result = "NG";
@@ -122,7 +123,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
                         response.Display = mesReturnList[2];
                     }
                 }
-                
+
             }
 
             var result = JsonConvert.SerializeObject(response);
@@ -131,7 +132,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
         }
 
         public async Task<string> UNBIND_SN_FIXTURESN(string pSn)
-        { 
+        {
             var result = await _storeProcedureResultRepository.UnbindSnFixtureSn(pSn);
             return result;
         }
@@ -141,12 +142,21 @@ namespace PolarBearEapApi.ApplicationCore.Services
             var result = await _storeProcedureResultRepository.GetSnByRawsn(pSn);
             return result;
         }
-        
+
         public async Task<string> HOLD_SNLIST_COMMIT(string sn)
         {
             var result = await _storeProcedureResultRepository.HoldSnlistCommit(sn);
             return result;
         }
+
+        /**
+         * SMT 大小板綁定 
+         * pWorkOrderNo 工單
+         * pPartentSN 大板子SN
+         * pChildSNList 小板子SN
+         * pCarrierNo 載具
+         * pOperator 是 user
+         */
         public async Task<string> SPLITE_SN_COMMIT(string pLineName, string pSectionCode, string pStationCode, string pWorkOrderNo, string pPartentSN, string pChildSNList, string pCarrierNo, string pOperator)
         {
             var result = await Task.Run(() => _equipmentService.SPLITE_SN_COMMIT(pLineName, pSectionCode, pStationCode, pWorkOrderNo, pPartentSN, pChildSNList, pCarrierNo, pOperator));

@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
 
 namespace PolarBearEapApi.PublicApi.Models
 {
+    /** /api/v1/EapApi/SendLearnFileAlterWarning Request Model */
     public class SendLearnFileAlterWarningRequest
     {
         [JsonProperty("filePath", NamingStrategyType = typeof(SnakeCaseNamingStrategy))]

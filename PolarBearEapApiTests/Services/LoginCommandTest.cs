@@ -4,7 +4,7 @@ using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.ApplicationCore.Services;
 using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Exceptions;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApiTests
 {

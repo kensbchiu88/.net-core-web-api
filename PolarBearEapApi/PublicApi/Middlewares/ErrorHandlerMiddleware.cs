@@ -6,6 +6,7 @@ using PolarBearEapApi.PublicApi.Models;
 
 namespace PolarBearEapApi.PublicApi.Middlewares
 {
+    /** 處理Exception，將Exception轉換成Api Response的格式，避免Exception直接回傳到Client */
     public class ErrorHandlerMiddleware
     {
         private readonly RequestDelegate _next;

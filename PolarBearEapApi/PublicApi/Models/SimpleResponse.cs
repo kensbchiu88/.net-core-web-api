@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace PolarBearEapApi.PublicApi.Models
 {
+    /** General Response Model */
     public class SimpleResponse<T>
     {
         [JsonPropertyName("Result")]

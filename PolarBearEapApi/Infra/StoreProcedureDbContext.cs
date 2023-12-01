@@ -1,9 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PolarBearEapApi.ApplicationCore.Entities;
-using System.Data;
-using Microsoft.Data.SqlClient;
-using System.Xml;
-using static FIT.MES.Service.CommonEnum;
+using PolarBearEapApi.Infra.Entities;
 
 namespace PolarBearEapApi.Infra
 {

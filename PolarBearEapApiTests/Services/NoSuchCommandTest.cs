@@ -1,7 +1,7 @@
 ﻿using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
 using PolarBearEapApi.ApplicationCore.Services;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApiTests
 {

@@ -1,14 +1,12 @@
-﻿using static PolarBearEapApi.ApplicationCore.Interfaces.IMesCommand;
-using FIT.MES.Service;
-using Newtonsoft.Json;
-using PolarBearEapApi.ApplicationCore.Interfaces;
+﻿using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Extensions;
-using PolarBearEapApi.PublicApi.Models;
 using PolarBearEapApi.ApplicationCore.Exceptions;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** ADD_BOM_DATA 依據SN，上傳設備BOM資料 */
     public class AddBomDataCommand : IMesCommand
     {
         public string CommandName { get; } = "ADD_BOM_DATA";

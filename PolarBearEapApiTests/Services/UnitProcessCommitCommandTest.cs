@@ -2,8 +2,8 @@
 using Moq;
 using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Interfaces;
+using PolarBearEapApi.ApplicationCore.Models;
 using PolarBearEapApi.ApplicationCore.Services;
-using PolarBearEapApi.PublicApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

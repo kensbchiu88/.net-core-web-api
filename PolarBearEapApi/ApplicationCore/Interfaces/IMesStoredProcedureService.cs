@@ -2,7 +2,8 @@
 
 namespace PolarBearEapApi.ApplicationCore.Interfaces
 {
-    public interface IStoredProcedureResultRepository
+    /** 呼叫 MES Stored Procedure 的介面 */
+    public interface IMesStoredProcedureService
     {
         Task<string> GetMesOperation(string sectionCode, string stationCode);
         Task<string> UnbindSnFixtureSn(string sn);

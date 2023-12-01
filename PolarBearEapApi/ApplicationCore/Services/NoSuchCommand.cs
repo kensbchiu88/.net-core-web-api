@@ -1,10 +1,10 @@
 ﻿using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
-
 {
+    /** 當找不到對應的IMesCommand時，使用NoSuchCommand。Special Case Pattern */
     public class NoSuchCommand : IMesCommand
     {
         string IMesCommand.CommandName { get; } = "NO_SUCH_COMMAND";

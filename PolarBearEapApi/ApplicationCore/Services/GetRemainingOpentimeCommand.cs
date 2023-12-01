@@ -1,10 +1,11 @@
 ﻿using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** GET_REMAINING_OPENTIME 抓取前一站膠水的OPEN TIME，以廠商Set的資料回傳 */
     public class GetRemainingOpentimeCommand : IMesCommand
     {
         public string CommandName { get; } = "GET_REMAINING_OPENTIME";

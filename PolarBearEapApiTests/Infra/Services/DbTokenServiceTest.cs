@@ -3,10 +3,10 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json.Linq;
 using PolarBearEapApi.ApplicationCore.Constants;
-using PolarBearEapApi.ApplicationCore.Entities;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.Infra;
+using PolarBearEapApi.Infra.Entities;
 using PolarBearEapApi.Infra.Services;
 
 namespace PolarBearEapApiUnitTests.Infra.Services

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PolarBearEapApi.ApplicationCore.Entities
+namespace PolarBearEapApi.Infra.Entities
 {
     public class StoredProcedureResultEntity
     {

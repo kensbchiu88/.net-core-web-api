@@ -2,10 +2,11 @@
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** GET_FG_LABEL 依據產品SN獲取對應國別的FG模板 Not Ready*/
     public class GetFgLabeCommandl : IMesCommand
     {
         public string CommandName { get; } = "GET_FG_LABEL";

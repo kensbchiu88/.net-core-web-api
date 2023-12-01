@@ -2,10 +2,11 @@
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** GET_CONTROL_TIME_START Not Ready */
     public class GetControlTimeStartCommand : IMesCommand
     {
         public string CommandName { get; } = "GET_CONTROL_TIME_START";

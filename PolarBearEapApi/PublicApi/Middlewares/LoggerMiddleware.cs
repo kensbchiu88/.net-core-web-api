@@ -1,7 +1,6 @@
-﻿using Serilog.Context;
-
-namespace PolarBearEapApi.PublicApi.Middlewares
+﻿namespace PolarBearEapApi.PublicApi.Middlewares
 {
+    /** 紀錄Api Request Log與Api Response Log */
     public class LoggerMiddleware
     {
         private readonly RequestDelegate _next;

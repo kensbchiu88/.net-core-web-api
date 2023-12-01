@@ -2,9 +2,9 @@
 using Newtonsoft.Json;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
+using PolarBearEapApi.ApplicationCore.Models;
 using PolarBearEapApi.PublicApi.Filters;
 using PolarBearEapApi.PublicApi.Models;
-using System.Diagnostics;
 
 namespace PolarBearEapApi.PublicApi.Controllers
 {
@@ -49,7 +49,7 @@ namespace PolarBearEapApi.PublicApi.Controllers
                 response.Display = serviceReturn.ErrorMessage;
             }
             var responseString = JsonConvert.SerializeObject(response);
-            _logger.LogInformation($"Response:{responseString}");
+            _logger.LogDebug($"Response:{responseString}");
             return response;
         }
 

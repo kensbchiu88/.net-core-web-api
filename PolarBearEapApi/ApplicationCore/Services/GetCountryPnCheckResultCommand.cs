@@ -2,10 +2,11 @@
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** GET_COUNTRY_PN_CHECK_RESULT 查詢MES維護的國別和料號訊息是否存在 Not Ready */
     public class GetCountryPnCheckResultCommand : IMesCommand
     {
         public string CommandName { get; } = "GET_COUNTRY_PN_CHECK_RESULT";

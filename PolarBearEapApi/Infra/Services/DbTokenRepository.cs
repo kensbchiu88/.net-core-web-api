@@ -1,11 +1,9 @@
-﻿using FIT.MES.Model;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
-using PolarBearEapApi.ApplicationCore.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using PolarBearEapApi.ApplicationCore.Models;
 using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.ApplicationCore.Exceptions;
-using PolarBearEapApi.Infra;
 using PolarBearEapApi.ApplicationCore.Constants;
+using PolarBearEapApi.Infra.Entities;
 
 namespace PolarBearEapApi.Infra.Services
 {

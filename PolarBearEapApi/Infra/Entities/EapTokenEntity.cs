@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using PolarBearEapApi.ApplicationCore.Models;
 
-namespace PolarBearEapApi.ApplicationCore.Entities
+namespace PolarBearEapApi.Infra.Entities
 {
     [Table("eap_token")]
     public class EapTokenEntity

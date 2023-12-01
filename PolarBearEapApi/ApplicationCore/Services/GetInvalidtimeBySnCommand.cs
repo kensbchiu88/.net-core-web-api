@@ -1,13 +1,13 @@
 ﻿using Newtonsoft.Json;
 using PolarBearEapApi.ApplicationCore.Constants;
-using PolarBearEapApi.ApplicationCore.Entities;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** GET_INVALIDTIME_BY_SN 根據膠水獲取失效時間 */
     public class GetInvalidtimeBySnCommand : IMesCommand
     {
         public string CommandName { get; } = "GET_INVALIDTIME_BY_SN";

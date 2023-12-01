@@ -1,13 +1,12 @@
-﻿using FIT.MES.Service;
-using Newtonsoft.Json;
-using PolarBearEapApi.ApplicationCore.Constants;
+﻿using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** UNIT_PROCESS_CHECK，依據SN檢查路由，確認產品是否允許過站 */
     public class UnitProcessCheckCommand : IMesCommand
     {
         public string CommandName { get; } = "UNIT_PROCESS_CHECK";

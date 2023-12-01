@@ -1,17 +1,18 @@
 ﻿using Microsoft.Data.SqlClient;
-using PolarBearEapApi.ApplicationCore.Entities;
-using PolarBearEapApi.PublicApi.Models;
 using Microsoft.EntityFrameworkCore;
 using PolarBearEapApi.ApplicationCore.Interfaces;
 using Newtonsoft.Json;
+using PolarBearEapApi.Infra.Entities;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.Infra.Services
 {
-    public class SqlServerStoredProcedureResultRepository : IStoredProcedureResultRepository
+    /** 呼叫 MES Stored Procedure 的Service */
+    public class MesStoredProcedureService : IMesStoredProcedureService
     {
         private readonly StoreProcedureDbContext _context;
 
-        public SqlServerStoredProcedureResultRepository(StoreProcedureDbContext context)
+        public MesStoredProcedureService(StoreProcedureDbContext context)
         {
             _context =  context;
         }

@@ -2,10 +2,11 @@
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** UNIT_PROCESS_COMMIT 依據SN，提交過站資料 */
     public class UnitProcessCommitCommand : IMesCommand
     {
         public string CommandName { get; } = "UNIT_PROCESS_COMMIT";

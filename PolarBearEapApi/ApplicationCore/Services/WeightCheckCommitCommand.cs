@@ -1,14 +1,12 @@
-﻿using FIT.MES.Service;
-using PolarBearEapApi.ApplicationCore.Constants;
-using PolarBearEapApi.ApplicationCore.Entities;
+﻿using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.Infra.Services;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** WEIGHT_CHECK_COMMIT Not Ready*/
     public class WeightCheckCommitCommand : IMesCommand
     {
         public string CommandName { get; } = "WEIGHT_CHECK_COMMIT";

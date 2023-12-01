@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Metrics;
-using System.ServiceModel;
-using static FIT.MES.Service.CommonEnum;
+﻿using System.ServiceModel;
 
 
 namespace PolarBearEapApi.PublicApi.Soap

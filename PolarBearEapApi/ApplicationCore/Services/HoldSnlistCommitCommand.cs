@@ -4,10 +4,11 @@ using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** HOLD_SNLIST_COMMIT HoldSN列表 */
     public class HoldSnlistCommitCommand : IMesCommand
     {
         public string CommandName { get; } = "HOLD_SNLIST_COMMIT";

@@ -1,14 +1,15 @@
 ﻿using Newtonsoft.Json;
 using PolarBearEapApi.ApplicationCore.Constants;
-using PolarBearEapApi.ApplicationCore.Entities;
+using PolarBearEapApi.Infra.Entities;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
 using System.ComponentModel.DataAnnotations;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** SMT_UNIT_PROCESS_COMMIT， 依據SN，提交過站資料 for SMT*/
     public class SmtUnitProcessCommitCommand : IMesCommand
     {
         public string CommandName { get; } = "SMT_UNIT_PROCESS_COMMIT";           

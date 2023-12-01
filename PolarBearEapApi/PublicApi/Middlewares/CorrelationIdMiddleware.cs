@@ -2,6 +2,7 @@
 
 namespace PolarBearEapApi.PublicApi.Middlewares
 {
+    /** 產生Guid供Serilog使用，同一個Id表示是同一個Request */
     public class CorrelationIdMiddleware
     {
         private readonly RequestDelegate _next;

@@ -2,10 +2,11 @@
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** UNBIND_SN_FIXTURESN 根據產品SN，治具SN進行解綁 */
     public class UnbindSnFixturesnCommand : IMesCommand
     {
         public string CommandName { get; } = "UNBIND_SN_FIXTURESN";

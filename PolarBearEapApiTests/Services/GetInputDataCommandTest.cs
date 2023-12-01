@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
 using PolarBearEapApi.ApplicationCore.Constants;
-using PolarBearEapApi.ApplicationCore.Entities;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
+using PolarBearEapApi.ApplicationCore.Models;
 using PolarBearEapApi.ApplicationCore.Services;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.Infra.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,13 +1,12 @@
 ﻿using PolarBearEapApi.ApplicationCore.Constants;
-using PolarBearEapApi.ApplicationCore.Entities;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.Infra.Services;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** SPLITE_SN_COMMIT SMT 大小板綁定 */
     public class SpliteSnCommitCommand : IMesCommand
     {
         public string CommandName { get; } = "SPLITE_SN_COMMIT";

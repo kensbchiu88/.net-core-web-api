@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PolarBearEapApi.ApplicationCore.Entities
+namespace PolarBearEapApi.Infra.Entities
 {
     [Table("upload_report")]
     public class UploadReportEntity

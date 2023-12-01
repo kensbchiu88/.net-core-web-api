@@ -1,12 +1,13 @@
 ﻿using PolarBearEapApi.ApplicationCore.Constants;
-using PolarBearEapApi.ApplicationCore.Entities;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
+using PolarBearEapApi.Infra.Entities;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** SET_REMAINING_OPENTIME 保存目前膠水的OPEN TIME */
     public class SetRemainingOpentimeCommand : IMesCommand
     {
         public string CommandName { get; } = "SET_REMAINING_OPENTIME";

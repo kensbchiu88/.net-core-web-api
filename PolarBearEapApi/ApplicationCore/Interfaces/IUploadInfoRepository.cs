@@ -1,7 +1,8 @@
-﻿using PolarBearEapApi.ApplicationCore.Entities;
+﻿using PolarBearEapApi.Infra.Entities;
 
 namespace PolarBearEapApi.ApplicationCore.Interfaces
 {
+    /** UploadInfo Repository */
     public interface IUploadInfoRepository
     {
         Task<UploadInfoEntity> Insert(UploadInfoEntity entity);

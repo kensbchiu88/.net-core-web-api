@@ -1,13 +1,13 @@
 ﻿using Newtonsoft.Json;
 using PolarBearEapApi.ApplicationCore.Constants;
-using PolarBearEapApi.ApplicationCore.Entities;
+using PolarBearEapApi.ApplicationCore.Models;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** BCC_SN_CREATE_AUTO 根據工單，條碼規則，數量獲取SN */
     public class BccSnCreateAutoCommand : IMesCommand
 
     {

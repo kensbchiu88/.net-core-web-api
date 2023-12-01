@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.PublicApi.Models;
 using PolarBearEapApi.ApplicationCore.Constants;
-using PolarBearEapApi.ApplicationCore.Entities;
+using PolarBearEapApi.Infra.Entities;
 
 namespace IntegrationTest
 {

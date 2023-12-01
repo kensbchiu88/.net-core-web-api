@@ -2,10 +2,11 @@
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** TRACTING_CHANGE_SECTION Not Ready */
     public class TrackingChangeSectionCommand : IMesCommand
     {
         public string CommandName { get; } = "TRACTING_CHANGE_SECTION";

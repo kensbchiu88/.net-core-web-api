@@ -3,6 +3,7 @@ using PolarBearEapApi.ApplicationCore.Interfaces;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** 抓取設定檔資料並Cache到MemoryCache的Service */
     public class ConfigCacheService : IConfigCacheService
     {
         private readonly IConfiguration _configuration;
@@ -14,6 +15,7 @@ namespace PolarBearEapApi.ApplicationCore.Services
             _memoryCache = memoryCache;
         }
 
+        /** 抓取設定檔。若Cache中有資料則從Cache中抓，若Cache中沒資料則從設定檔中抓取，並存在Cache中 */
         string IConfigCacheService.GetValue(string cacheKey)
         {
             if (_memoryCache.TryGetValue(cacheKey, out string cachedValue))

@@ -2,11 +2,12 @@
 using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** CHECK_UC_CLEAR 檢查載具是否需要清洗 */
     public class CheckUcClearCommand : IMesCommand
     {
         public string CommandName { get; } = "CHECK_UC_CLEAR";

@@ -1,10 +1,11 @@
 ﻿using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Extensions;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** GET_INPUT_DATA 依據SN獲得當前工站工裝/設備參數資訊 */
     public class GetInputDataCommand : IMesCommand
     {
         private readonly ILogger<GetInputDataCommand> _logger;

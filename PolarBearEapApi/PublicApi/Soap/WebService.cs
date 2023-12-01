@@ -1,8 +1,7 @@
 ﻿using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
-using static Azure.Core.HttpHeader;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.PublicApi.Soap
 {

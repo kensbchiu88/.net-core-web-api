@@ -5,6 +5,7 @@ using PolarBearEapApi.PublicApi.Models;
 
 namespace PolarBearEapApi.PublicApi.Middlewares
 {
+    /** 檢查Token */
     public class TokenMiddleware
     {
         private readonly RequestDelegate _next;

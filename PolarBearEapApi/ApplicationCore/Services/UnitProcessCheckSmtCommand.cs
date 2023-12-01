@@ -3,11 +3,12 @@ using Newtonsoft.Json.Linq;
 using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** UNIT_PROCESS_CHECK_SMT，依據SN檢查路由，確認產品是否允許過站 for SMT */
     public class UnitProcessCheckSmtCommand : IMesCommand
     {
         public string CommandName { get; } = "UNIT_PROCESS_CHECK_SMT";

@@ -4,8 +4,9 @@ using PolarBearEapApi.PublicApi.Models;
 
 namespace PolarBearEapApi.PublicApi.Filters
 {
+    /** 將API的Response轉換成 {"Result" : "", "Data" : "", "Message" : ""}格式。供非GTK定義API使用。*/
     public class SimpleResponseRewriteActionFilter : IAsyncActionFilter
-    {
+    {        
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var executedContext = await next(); // 执行操作方法

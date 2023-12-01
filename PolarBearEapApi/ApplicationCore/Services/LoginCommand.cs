@@ -2,12 +2,13 @@
 using PolarBearEapApi.ApplicationCore.Interfaces;
 using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Extensions;
-using PolarBearEapApi.PublicApi.Models;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** LOGIN MES使用者登入 */
     public class LoginCommand : IMesCommand
     {
         public string CommandName { get; } = "LOGIN";

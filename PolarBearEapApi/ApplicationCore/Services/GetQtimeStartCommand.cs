@@ -3,10 +3,11 @@ using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Extensions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
-using PolarBearEapApi.PublicApi.Models;
+using PolarBearEapApi.ApplicationCore.Models;
 
 namespace PolarBearEapApi.ApplicationCore.Services
 {
+    /** GET_QTIME_START 抓取前一站膠水的OPEN TIME */
     public class GetQtimeStartCommand : IMesCommand
     {
         public string CommandName { get; } = "GET_QTIME_START";

@@ -21,7 +21,6 @@ namespace PolarBearEapApi.Infra.Services
             _cacheService = cacheService;
         }
 
-        //throw InvalidOperationException, TokenExpireException
         public async Task Validate(string id)
         {
             ValidateTokenFormat(id);
@@ -35,17 +34,23 @@ namespace PolarBearEapApi.Infra.Services
             if (tokens.Any())
             {
                 var token = tokens.First();
-                if (expiredHours > 0 && token.LoginTime.CompareTo(DateTime.Now.AddHours(0 - expiredHours)) < 0)
+                var isInWhitelist = await IsInWhitelist(token.username!);
+
+                //白名單中的token不會失效
+                if (!isInWhitelist)
                 {
-                    throw new EapException(ErrorCodeEnum.TokenExpired);
-                }
-                else if (token.CardTime != null)
-                {
-                    throw new EapException(ErrorCodeEnum.TokenExpired);
-                }
-                else if(token.IsInvalid == true) 
-                {
-                    throw new EapException(ErrorCodeEnum.InvalidToken);
+                    if (expiredHours > 0 && token.LoginTime.CompareTo(DateTime.Now.AddHours(0 - expiredHours)) < 0)
+                    {
+                        throw new EapException(ErrorCodeEnum.TokenExpired);
+                    }
+                    else if (token.CardTime != null)
+                    {
+                        throw new EapException(ErrorCodeEnum.TokenExpired);
+                    }
+                    else if (token.IsInvalid == true)
+                    {
+                        throw new EapException(ErrorCodeEnum.InvalidToken);
+                    }
                 }
             }
             else
@@ -137,6 +142,19 @@ namespace PolarBearEapApi.Infra.Services
                 throw new EapException(ErrorCodeEnum.InvalidTokenFormat, "Token is empty");
             if (!Guid.TryParse(id, out var newGuid))
                 throw new EapException(ErrorCodeEnum.InvalidTokenFormat, "Token format should contain 32 digits with 4 dashes (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx)");
+        }
+
+        private async Task<bool> IsInWhitelist(string username)
+        {
+            bool result = false;
+            var whitelist = await _context.EapTokenWhitelistEntities.Where(e => e.UserName.Equals(username)).ToListAsync();
+
+            if (whitelist.Any())
+            {
+                result = true;
+            }
+
+            return result;
         }
     }
 }

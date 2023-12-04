@@ -9,5 +9,6 @@ namespace PolarBearEapApi.Infra
         {
         }
         public DbSet<EapTokenEntity> EapTokenEntities { get; set; }
+        public DbSet<EapTokenWhitelistEntity> EapTokenWhitelistEntities { get; set;}
     }
 }

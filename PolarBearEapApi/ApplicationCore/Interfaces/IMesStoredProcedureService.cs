@@ -12,5 +12,6 @@ namespace PolarBearEapApi.ApplicationCore.Interfaces
         Task<string> GetQtimeStart(string sn, string operationName);
         Task<string> GetBadmark(string sn);
         Task<string> CheckUcClear(string operationName, string carrierNo);
+        Task<string> CheckUcStatus(string sn);
     }
 }

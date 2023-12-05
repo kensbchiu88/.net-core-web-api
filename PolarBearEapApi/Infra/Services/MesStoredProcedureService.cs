@@ -113,6 +113,17 @@ namespace PolarBearEapApi.Infra.Services
             return ConvertStoredProcedureResultToFitMesResponseString(porcedureResult);
         }
 
+        public async Task<string> CheckUcStatus(string sn)
+        {
+            var snParam = new SqlParameter("@SN", sn);
+
+            List<StoredProcedureResultEntity> porcedureResult;
+
+            porcedureResult = await _context.StoredProcedureResultEntities.FromSql($"sp_AUTO_CHECK_UC_STATUS {snParam}").ToListAsync();
+
+            return ConvertStoredProcedureResultToFitMesResponseString(porcedureResult);
+        }
+
         private string ConvertStoredProcedureResultToFitMesResponseString(List<StoredProcedureResultEntity> porcedureResult)
         {
             FITMesResponse fitResponse;

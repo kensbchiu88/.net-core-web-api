@@ -236,5 +236,11 @@ namespace PolarBearEapApi.Infra.Services
             var result = await Task.Run(() => _equipmentService.SMT_UNIT_PROCESS_COMMIT_BYFIXTURE(pLineName, pSectionCode, pStationCode, pFixtureSN));
             return result;
         }
+
+        public async Task<string> CHECK_UC_STATUS(string sn)
+        {
+            var result = await _storeProcedureResultRepository.CheckUcStatus(sn);
+            return result;
+        }
     }
 }

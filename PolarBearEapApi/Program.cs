@@ -107,6 +107,7 @@ try
     builder.Services.AddScoped<IMesCommand, CheckUcClearCommand>();
     builder.Services.AddScoped<IMesCommand, SmtUnitProcessCheckByFixturesnCommand>();
     builder.Services.AddScoped<IMesCommand, SmtUnitProcessCommitByFixturesnCommand>();
+    builder.Services.AddScoped<IMesCommand, GetFixtureBindStatusCommand>();
 
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
     builder.Services.AddSingleton<IEmailService, EmailService>();

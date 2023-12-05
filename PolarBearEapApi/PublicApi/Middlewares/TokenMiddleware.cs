@@ -17,7 +17,7 @@ namespace PolarBearEapApi.PublicApi.Middlewares
             _logger = logger;
         }
 
-        public async Task InvokeAsync(HttpContext context, ITokenRepository tokenService)
+        public async Task Invoke(HttpContext context, ITokenRepository tokenService)
         {
             List<string> validateList = new List<string>(new string[] { "UNIT_PROCESS_CHECK", "BIND", "GET_SN_BY_SN_FIXTURE" });
 
@@ -50,8 +50,48 @@ namespace PolarBearEapApi.PublicApi.Middlewares
                 }
             }
 
-            await _next(context);
+            //log Response for Debug
+            #if DEBUG
+                var (originalBody, responseBodyStream) = AssignMemoryStreamToResponse(context);
+            #endif
+
+            try
+            {
+                await _next(context);
+            }
+            finally
+            {
+                //log Response for Debug
+                #if DEBUG
+                    await LogResponseAndRecoverResponse(context, originalBody, responseBodyStream);
+                #endif
+            }          
         }
 
+        private (Stream originalBody, MemoryStream responseBodyStream) AssignMemoryStreamToResponse(HttpContext context)
+        {
+            var originalBody = context.Response.Body;
+            var responseBodyStream = new MemoryStream();
+            context.Response.Body = responseBodyStream;
+
+            return (originalBody, responseBodyStream);
+        }
+
+        private async Task LogResponseAndRecoverResponse(HttpContext context, Stream originalBody, MemoryStream responseBodyStream) 
+        {
+            responseBodyStream.Seek(0, SeekOrigin.Begin);
+            var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync();
+
+            // 将响应内容写回原始响应流
+            responseBodyStream.Seek(0, SeekOrigin.Begin);
+            await responseBodyStream.CopyToAsync(originalBody);
+
+            // 记录响应内容，这里可以根据需要进行日志记录或其他处理
+            _logger.LogInformation($"TokenMiddlewares Response: {responseBody}");
+
+            // 恢复原始响应流
+            context.Response.Body = originalBody;
+            responseBodyStream.Dispose();
+        }
     }
 }

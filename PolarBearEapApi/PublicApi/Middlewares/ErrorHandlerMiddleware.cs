@@ -23,8 +23,13 @@ namespace PolarBearEapApi.PublicApi.Middlewares
             string? requestIndicator = string.Empty;
             string? requestSerializeData = string.Empty;
             var request = context.Request;
+
+            //log Response for Debug
+            #if DEBUG
+                var (originalBody, responseBodyStream) = AssignMemoryStreamToResponse(context);
+            #endif
             try
-            {                
+            {
                 if (!request.Path.ToString().Contains("soap") && request.Method == HttpMethods.Post && request.ContentLength > 0)
                 {
                     request.EnableBuffering();
@@ -73,10 +78,10 @@ namespace PolarBearEapApi.PublicApi.Middlewares
                                 {
                                     responseModel.SerializeData = ResponseSerializeDataGenerator.Fail(requestSerializeData);
                                 }
-                                catch 
+                                catch
                                 {
                                     responseModel.SerializeData = requestSerializeData;
-                                }                            
+                                }
                                 responseModel.Display = error.Message;
                                 break;
                             default:
@@ -90,8 +95,8 @@ namespace PolarBearEapApi.PublicApi.Middlewares
                     }
                     else //反之Response是SimpleResponse格式
                     {
-                        var responseModel = new SimpleResponse<object> 
-                        { 
+                        var responseModel = new SimpleResponse<object>
+                        {
                             Result = "NG",
                             Message = error.Message
                         };
@@ -99,10 +104,43 @@ namespace PolarBearEapApi.PublicApi.Middlewares
                         _logger.LogError(error.ToString());
                         result = JsonConvert.SerializeObject(responseModel);
                     }
-               
+
                     await response.WriteAsync(result);
                 }
             }
+            finally
+            {
+                //log Response for Debug
+                #if DEBUG
+                    await LogResponseAndRecoverResponse(context, originalBody, responseBodyStream);
+                #endif
+            }
+        }
+
+        private (Stream originalBody, MemoryStream responseBodyStream) AssignMemoryStreamToResponse(HttpContext context)
+        {
+            var originalBody = context.Response.Body;
+            var responseBodyStream = new MemoryStream();
+            context.Response.Body = responseBodyStream;
+
+            return (originalBody, responseBodyStream);
+        }
+
+        private async Task LogResponseAndRecoverResponse(HttpContext context, Stream originalBody, MemoryStream responseBodyStream)
+        {
+            responseBodyStream.Seek(0, SeekOrigin.Begin);
+            var responseBody = await new StreamReader(responseBodyStream).ReadToEndAsync();
+
+            // 将响应内容写回原始响应流
+            responseBodyStream.Seek(0, SeekOrigin.Begin);
+            await responseBodyStream.CopyToAsync(originalBody);
+
+            // 记录响应内容，这里可以根据需要进行日志记录或其他处理
+            _logger.LogInformation($"ErrorHandlerMiddlewares Response: {responseBody}");
+
+            // 恢复原始响应流
+            context.Response.Body = originalBody;
+            responseBodyStream.Dispose();
         }
     }
 }

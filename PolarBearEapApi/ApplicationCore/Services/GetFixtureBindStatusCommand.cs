@@ -13,6 +13,8 @@ namespace PolarBearEapApi.ApplicationCore.Services
 
         private readonly IMesService _equipmentService;
 
+        private const string OK_STRING = "UC IS CURRENT USED";
+
         public GetFixtureBindStatusCommand(IMesService equipmentService) 
         {
             _equipmentService = equipmentService;
@@ -26,12 +28,44 @@ namespace PolarBearEapApi.ApplicationCore.Services
             try
             {
                 string mesReturn = await _equipmentService.CHECK_UC_STATUS(inputModel.OPRequestInfo.FixtureSn!);
-                return new MesCommandResponse(mesReturn);
+                return GetResponse(mesReturn);
             }
             catch (Exception ex)
             {
                 throw new EapException(ErrorCodeEnum.CallMesServiceException, ex);
             }
+        }
+
+        private static MesCommandResponse GetResponse(string mesReturn)
+        {
+            var response = new MesCommandResponse();
+            var fitMesResponse = JsonConvert.DeserializeObject<FITMesResponse>(mesReturn);
+            if (fitMesResponse != null)
+            {
+                if (fitMesResponse.IsResultOk())
+                {
+                    if (OK_STRING.Equals(fitMesResponse.ResultCode, StringComparison.OrdinalIgnoreCase))
+                    {
+                        response.OpResponseInfo = "{\"Result\":\"OK\"}";
+                    }
+                    else
+                    {
+                        response.OpResponseInfo = "{\"Result\":\"NG\"}";
+                    }
+                }
+                else
+                {
+                    response.OpResponseInfo = "{\"Result\":\"NG\"}";
+                    response.ErrorMessage = fitMesResponse.Display;
+                }
+            }
+            else
+            {
+                response.OpResponseInfo = "{\"Result\":\"NG\"}";
+                response.ErrorMessage = ErrorCodeEnum.NoMesReturn.ToString();
+            }
+
+            return response;
         }
 
         private static void ValidateInput(SerializeDataModel inputModel)

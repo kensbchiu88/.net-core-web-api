@@ -46,11 +46,11 @@ namespace PolarBearEapApi.ApplicationCore.Services
                 {
                     if (OK_STRING.Equals(fitMesResponse.ResultCode, StringComparison.OrdinalIgnoreCase))
                     {
-                        response.OpResponseInfo = "{\"Result\":\"OK\"}";
+                        response.OpResponseInfo = "{\"Result\":\"BIND\"}";
                     }
                     else
                     {
-                        response.OpResponseInfo = "{\"Result\":\"NG\"}";
+                        response.OpResponseInfo = "{\"Result\":\"UNBIND\"}";
                     }
                 }
                 else

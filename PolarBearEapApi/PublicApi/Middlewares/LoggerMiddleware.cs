@@ -33,7 +33,6 @@
             context.Response.Body = responseBodyStream;
             string responseBody = string.Empty;
 
-
             try
             {
                 await _next(context);

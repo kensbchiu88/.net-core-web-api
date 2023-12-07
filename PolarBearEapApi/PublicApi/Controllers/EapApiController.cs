@@ -48,8 +48,10 @@ namespace PolarBearEapApi.PublicApi.Controllers
             {
                 response.Display = serviceReturn.ErrorMessage;
             }
-            var responseString = JsonConvert.SerializeObject(response);
-            _logger.LogDebug($"Response:{responseString}");
+            #if DEBUG
+                var responseString = JsonConvert.SerializeObject(response);
+                _logger.LogInformation($"Controller Response:{responseString}");
+            #endif
             return response;
         }
 

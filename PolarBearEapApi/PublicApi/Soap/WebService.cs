@@ -60,7 +60,7 @@ namespace PolarBearEapApi.PublicApi.Soap
             string mesReturn;
             try
             {
-                mesReturn = await _equipmentService.UNIT_PROCESS_CHECK(sn!, sectionCode!, stationCode!);
+                mesReturn = await _equipmentService.SMT_UNIT_PROCESS_CHECK_BYFIXTURE(sn!, sectionCode!, stationCode!);
                 _logger.LogInformation("CheckDevRoute sn:{sn}, sectionCode:{sectionCode}, stationCode:{stationCode}, return:{mesReturn}", sn, sectionCode, stationCode, mesReturn);
             }
             catch (Exception ex)
@@ -83,7 +83,7 @@ namespace PolarBearEapApi.PublicApi.Soap
             //testResult 撕膜機 永遠都是傳0進來
             try
             {
-                mesReturn = await _equipmentService.UNIT_PROCESS_COMMIT(lineCode, sectionCode, stationCode, sn);
+                mesReturn = await _equipmentService.SMT_UNIT_PROCESS_COMMIT_BYFIXTURE("C01-1FT-01", sectionCode, stationCode, sn);
                 _logger.LogInformation("CommitDevData lineCode:{lineCode}, sectionCode:{sectionCode}, stationCode:{stationCode}, sn:{sn}, return:{mesReturn}", lineCode, sectionCode, stationCode, sn, mesReturn);
             }
             catch (Exception ex)

@@ -242,5 +242,11 @@ namespace PolarBearEapApi.Infra.Services
             var result = await _storeProcedureResultRepository.CheckUcStatus(sn);
             return result;
         }
+
+        public async Task<string> GET_IDOSUBSN_BY_FLEXSN(string flexSn)
+        {
+            var result = await _storeProcedureResultRepository.GetIdosubsnByFlexsn(flexSn);
+            return result;
+        }
     }
 }

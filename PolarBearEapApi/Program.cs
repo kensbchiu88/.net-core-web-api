@@ -109,6 +109,7 @@ try
     builder.Services.AddScoped<IMesCommand, SmtUnitProcessCommitByFixturesnCommand>();
     builder.Services.AddScoped<IMesCommand, GetFixtureBindStatusCommand>();
     builder.Services.AddScoped<IMesCommand, GetBadmarkBySnCommand>();
+    builder.Services.AddScoped<IMesCommand, GetIdosubsnByFlexsnCommand>();
 
     builder.Services.AddSingleton<IConfigCacheService, ConfigCacheService>();
     builder.Services.AddSingleton<IEmailService, EmailService>();

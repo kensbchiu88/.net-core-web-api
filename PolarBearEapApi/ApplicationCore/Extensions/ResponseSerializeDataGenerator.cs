@@ -108,6 +108,12 @@ namespace PolarBearEapApi.ApplicationCore.Extensions
                     opResponseInfoObj.Add("Result", "NG");
                     opResponseInfoObj.Add("BadMark", "");
                     break;
+                case "GET_BADMARK_BY_SN":
+                    opResponseInfoObj.Add("BadMark", "");
+                    break;
+                case "GET_IDOSUBSN_BY_FLEXSN":
+                    opResponseInfoObj.Add("IDOSUBSN", "");
+                    break;
                 default:
                     opResponseInfoObj.Add("Result", "NG");
                     break;

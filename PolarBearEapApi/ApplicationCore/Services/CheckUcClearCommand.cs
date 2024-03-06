@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Localization;
+using Newtonsoft.Json;
 using PolarBearEapApi.ApplicationCore.Constants;
 using PolarBearEapApi.ApplicationCore.Exceptions;
 using PolarBearEapApi.ApplicationCore.Interfaces;
@@ -58,7 +59,24 @@ namespace PolarBearEapApi.ApplicationCore.Services
             {
                 if (fitMesResponse.IsResultOk())
                 {
-                    response.OpResponseInfo = "{\"Result\":\"" + fitMesResponse.ResultCode + "\"}"; ;
+                    var result = string.Empty;
+                    var usageCount = string.Empty;
+
+                    if(!string.IsNullOrEmpty(fitMesResponse.ResultCode))
+                    {
+                        var results = fitMesResponse.ResultCode.Split(':');
+                        if(results.Length == 2) 
+                        {
+                            result = results[0];
+                            usageCount = results[1];
+                        }
+                        else
+                        {
+                            result = fitMesResponse.ResultCode;
+                        }
+                    }
+                    
+                    response.OpResponseInfo = "{\"Result\":\"" + result + "\", \"UC\":\"" + usageCount + "\"}"; ;
                 }
                 else
                 {

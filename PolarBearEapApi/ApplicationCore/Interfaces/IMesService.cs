@@ -37,5 +37,6 @@
         Task<string> SMT_UNIT_PROCESS_CHECK_BYFIXTURE(string pFixtureSN, string pSectionCode, string pStationCode);
         Task<string> SMT_UNIT_PROCESS_COMMIT_BYFIXTURE(string pLineName, string pSectionCode, string pStationCode, string pFixtureSN);
         Task<string> CHECK_UC_STATUS(string sn);
+        Task<string> GET_IDOSUBSN_BY_FLEXSN(string flexSn);
     }
 }

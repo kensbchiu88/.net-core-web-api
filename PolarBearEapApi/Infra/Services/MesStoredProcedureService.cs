@@ -143,6 +143,15 @@ namespace PolarBearEapApi.Infra.Services
 
             return JsonConvert.SerializeObject(fitResponse);
         }
+        public async Task<string> GetIdosubsnByFlexsn(string flexSn)
+        {
+            var flexSnParam = new SqlParameter("@FlexSN", flexSn);
 
+            List<StoredProcedureResultEntity> porcedureResult;
+
+            porcedureResult = await _context.StoredProcedureResultEntities.FromSql($"GET_IDOSUNBSN_BY_FLEXSN {flexSnParam}").ToListAsync();
+
+            return ConvertStoredProcedureResultToFitMesResponseString(porcedureResult);
+        }
     }
 }

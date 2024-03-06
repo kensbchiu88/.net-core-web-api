@@ -13,5 +13,6 @@ namespace PolarBearEapApi.ApplicationCore.Interfaces
         Task<string> GetBadmark(string sn);
         Task<string> CheckUcClear(string operationName, string carrierNo);
         Task<string> CheckUcStatus(string sn);
+        Task<string> GetIdosubsnByFlexsn(string flexSn);
     }
 }
